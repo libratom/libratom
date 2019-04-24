@@ -1,6 +1,7 @@
 CHANGES
 =======
 
+* Update requirements
 * Set up CI and packaging
 * Add Codacy badge
 * Initial commit
