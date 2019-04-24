@@ -6,3 +6,7 @@ wheel
 pylint
 isort
 flake8
+flake8-bugbear
+pip-tools
+black
+tox
