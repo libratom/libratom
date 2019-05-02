@@ -10,3 +10,4 @@ flake8-bugbear
 pip-tools
 black
 tox
+requests

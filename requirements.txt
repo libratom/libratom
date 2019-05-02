@@ -4,4 +4,4 @@
 #
 #    pip-compile --upgrade
 #
-pbr==5.1.3
+pbr==5.2.0
