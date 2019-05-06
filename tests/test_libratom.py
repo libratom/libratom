@@ -9,7 +9,7 @@ def test_version():
 
 def test_extract_plain_text_messages(enron_dataset_part003):
 
-    # Get the first PST file
+    # Get the first PST file of this enron subset
     pst_file = next(enron_dataset_part003.glob('*.pst'))
 
     with PffArchive(pst_file) as archive:

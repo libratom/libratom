@@ -1,6 +1,10 @@
 CHANGES
 =======
 
+* Add PffArchive class (#3)
+* Add fixture to fetch PST test file (#3)
+* Update requirements (#3)
+* Add black and isort to static checks
 * Update requirements
 * Set up CI and packaging
 * Add Codacy badge
