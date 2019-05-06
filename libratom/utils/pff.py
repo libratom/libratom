@@ -2,6 +2,7 @@ import logging
 from collections import deque
 from io import IOBase
 from pathlib import Path
+
 import pypff
 
 logger = logging.getLogger(__name__)
@@ -24,9 +25,9 @@ class PffArchive:
         if isinstance(file, IOBase):
             self.data.open_file_object(file)
         elif isinstance(file, Path) or isinstance(file, str):
-            self.data.open(str(file), 'rb')
+            self.data.open(str(file), "rb")
         else:
-            raise TypeError(f'Unable to load {file} of type {type(file)}')
+            raise TypeError(f"Unable to load {file} of type {type(file)}")
 
     def folders(self, bfs=True):
         folders = deque([self.data.root_folder])
