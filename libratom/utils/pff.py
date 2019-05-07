@@ -24,7 +24,7 @@ class PffArchive:
     def load(self, file):
         if isinstance(file, IOBase):
             self.data.open_file_object(file)
-        elif isinstance(file, Path) or isinstance(file, str):
+        elif isinstance(file, (Path, str)):
             self.data.open(str(file), "rb")
         else:
             raise TypeError(f"Unable to load {file} of type {type(file)}")
