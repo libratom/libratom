@@ -21,15 +21,9 @@ def test_pffarchive_load_from_invalid_type():
         _ = PffArchive(1)
 
 
-def test_pffarchive_iterate_over_folders_dfs(sample_pst_file):
+@pytest.mark.parametrize("bfs", [False, True])
+def test_pffarchive_iterate_over_messages(sample_pst_file, bfs):
 
     with PffArchive(sample_pst_file) as archive:
-        for message in archive.messages(bfs=False):
-            assert message.plain_text_body
-
-
-def test_pffarchive_iterate_over_messages(sample_pst_file):
-
-    with PffArchive(sample_pst_file) as archive:
-        for message in archive.messages():
+        for message in archive.messages(bfs=bfs):
             assert message.plain_text_body
