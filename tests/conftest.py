@@ -38,3 +38,14 @@ def enron_dataset_part003() -> Path:
         assert (path / filename).is_file()
 
     yield path
+
+
+@pytest.fixture(scope='session')
+def sample_pst_file(enron_dataset_part003) -> Path:
+    """
+    Returns:
+        A PST file path
+    """
+
+    # Get the first PST file of this enron subset
+    yield next(enron_dataset_part003.glob('*.pst'))
