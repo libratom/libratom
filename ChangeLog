@@ -1,6 +1,7 @@
 CHANGES
 =======
 
+* Add CI utility (#3)
 * Add PffArchive class (#3)
 * Add fixture to fetch PST test file (#3)
 * Update requirements (#3)
