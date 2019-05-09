@@ -1,3 +1,4 @@
+# pylint: disable=missing-docstring,redefined-outer-name,stop-iteration-return
 from pathlib import Path
 from zipfile import ZipFile
 import pytest
