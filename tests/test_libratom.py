@@ -1,4 +1,6 @@
 # pylint: disable=missing-docstring
+import email
+from email import policy
 import pytest
 
 import libratom
@@ -27,3 +29,10 @@ def test_pffarchive_iterate_over_messages(sample_pst_file, bfs):
     with PffArchive(sample_pst_file) as archive:
         for message in archive.messages(bfs=bfs):
             assert message.plain_text_body
+
+
+def test_pffarchive_format_message(sample_pst_file):
+
+    with PffArchive(sample_pst_file) as archive:
+        for message in archive.messages():
+            assert email.message_from_string(archive.format_message(message), policy=policy.default)

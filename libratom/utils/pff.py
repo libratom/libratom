@@ -82,3 +82,20 @@ class PffArchive:
         for folder in self.folders(bfs):
             for message in folder.sub_messages:
                 yield message
+
+    @staticmethod
+    def format_message(message):
+        """Formats a pypff.message object into an RFC822 compliant string
+
+        Args:
+            message: A pypff.message object
+
+        Returns:
+            A string
+        """
+        body = message.plain_text_body
+
+        if type(body) == bytes:
+            body = str(body, encoding="utf-8", errors="replace")
+
+        return f"{message.transport_headers}Body-Type: plain-text\r\n\r\n{body.strip()}"
