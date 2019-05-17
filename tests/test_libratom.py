@@ -31,8 +31,9 @@ def test_pffarchive_iterate_over_messages(sample_pst_file, bfs):
             assert message.plain_text_body
 
 
-def test_pffarchive_format_message(sample_pst_file):
+def test_pffarchive_format_message(enron_dataset_part004):
 
-    with PffArchive(sample_pst_file) as archive:
-        for message in archive.messages():
-            assert email.message_from_string(archive.format_message(message), policy=policy.default)
+    for pst_file in enron_dataset_part004.glob('*.pst'):
+        with PffArchive(pst_file) as archive:
+            for message in archive.messages():
+                assert email.message_from_string(archive.format_message(message), policy=policy.default)
