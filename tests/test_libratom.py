@@ -11,10 +11,12 @@ def test_version():
     assert libratom.__version__
 
 
-def test_pffarchive_load_from_file_object(sample_pst_file):
+@pytest.mark.parametrize("skip_tree, expected", [(False, True), (True, False)])
+def test_pffarchive_load_from_file_object(sample_pst_file, skip_tree, expected):
 
-    with sample_pst_file.open(mode="rb") as f, PffArchive(f) as archive:
+    with sample_pst_file.open(mode="rb") as f, PffArchive(f, skip_tree=skip_tree) as archive:
         assert len([message for message in archive.messages()]) == 2668
+        assert bool(archive.tree) is expected
 
 
 def test_pffarchive_load_from_invalid_type():
