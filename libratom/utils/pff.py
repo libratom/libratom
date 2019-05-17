@@ -7,6 +7,8 @@ from collections import deque
 from io import IOBase
 from pathlib import Path
 
+from treelib import Tree
+
 import pypff
 
 logger = logging.getLogger(__name__)
@@ -16,10 +18,15 @@ class PffArchive:
     """Wrapper class around pypff.file
 
     Provides methods for manipulating a PFF archive
+
+    Attributes:
+        tree: A tree representation of the folders/messages hierarchy
     """
 
-    def __init__(self, file=None):
+    def __init__(self, file=None, skip_tree=False):
+        self._skip_tree = skip_tree
         self.data = pypff.file()
+        self.tree = None
 
         if file:
             self.load(file)
@@ -29,6 +36,40 @@ class PffArchive:
 
     def __exit__(self, *_):
         self.data.close()
+
+    def _build_tree(self):
+        """Builds the internal tree structure
+
+        Builds the internal tree structure, unless self.skip_tree is truthy
+
+        Returns:
+            None
+        """
+
+        if self._skip_tree:
+            logger.info("Skipping tree representation")
+            return
+
+        self.tree = Tree()
+
+        # Set up root node
+        root = next(self.folders())
+        self.tree.create_node("root", root.identifier)
+
+        # Set up children
+        for folder in self.folders():
+            for message in folder.sub_messages:
+                self.tree.create_node(
+                    f"Message ID: {message.identifier}",
+                    message.identifier,
+                    parent=folder.identifier,
+                    data=message,
+                )
+
+            for sub_folder in folder.sub_folders:
+                self.tree.create_node(
+                    sub_folder.name, sub_folder.identifier, parent=folder.identifier
+                )
 
     def load(self, file):
         """Opens a PFF file using libpff
@@ -46,6 +87,8 @@ class PffArchive:
             self.data.open(str(file), "rb")
         else:
             raise TypeError(f"Unable to load {file} of type {type(file)}")
+
+        self._build_tree()
 
     def folders(self, bfs=True):
         """Generator function to iterate over the archive's folders
@@ -93,6 +136,7 @@ class PffArchive:
         Returns:
             A string
         """
+
         body = message.plain_text_body or message.html_body or message.rtf_body
 
         if isinstance(body, bytes):
