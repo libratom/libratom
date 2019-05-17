@@ -7,9 +7,8 @@ from collections import deque
 from io import IOBase
 from pathlib import Path
 
-from treelib import Tree
-
 import pypff
+from treelib import Tree
 
 logger = logging.getLogger(__name__)
 
