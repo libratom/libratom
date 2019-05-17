@@ -95,7 +95,7 @@ class PffArchive:
         """
         body = message.plain_text_body
 
-        if type(body) == bytes:
+        if isinstance(body, bytes):
             body = str(body, encoding="utf-8", errors="replace")
 
         return f"{message.transport_headers}Body-Type: plain-text\r\n\r\n{body.strip()}"
