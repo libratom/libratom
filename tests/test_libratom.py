@@ -13,7 +13,7 @@ def test_version():
 
 def test_pffarchive_load_from_file_object(sample_pst_file):
 
-    with sample_pst_file.open(mode='rb') as f, PffArchive(f) as archive:
+    with sample_pst_file.open(mode="rb") as f, PffArchive(f) as archive:
         assert len([message for message in archive.messages()]) == 2668
 
 
@@ -33,7 +33,9 @@ def test_pffarchive_iterate_over_messages(sample_pst_file, bfs):
 
 def test_pffarchive_format_message(enron_dataset_part004):
 
-    for pst_file in enron_dataset_part004.glob('*.pst'):
+    for pst_file in enron_dataset_part004.glob("*.pst"):
         with PffArchive(pst_file) as archive:
             for message in archive.messages():
-                assert email.message_from_string(archive.format_message(message), policy=policy.default)
+                assert email.message_from_string(
+                    archive.format_message(message), policy=policy.default
+                )
