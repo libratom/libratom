@@ -137,6 +137,8 @@ disable=print-statement,
         deprecated-urllib-function,
         xreadlines-attribute,
         deprecated-sys-function,
+        bad-continuation,  # formatting handled by black
+        ungrouped-imports,  # import order handled by isort
         exception-escape,
         comprehension-escape
 
