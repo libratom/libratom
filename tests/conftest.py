@@ -2,9 +2,9 @@
 from pathlib import Path
 from typing import List
 from zipfile import ZipFile
+
 import pytest
 import requests
-
 
 CACHED_DATA_DIR = Path("/tmp/libratom/test_data/")
 
