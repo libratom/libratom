@@ -111,6 +111,16 @@ def enron_dataset() -> Path:
     yield CACHED_ENRON_DATA_DIR
 
 
+@pytest.fixture(scope="session", params=list(CACHED_ENRON_DATA_DIR.glob("**/*.pst")))
+def enron_dataset_file(request) -> Path:
+    """
+    Returns:
+        An enron PST file
+    """
+
+    yield request.param
+
+
 @pytest.fixture(scope="session")
 def sample_pst_file(enron_dataset_part003) -> Path:
     """
