@@ -1,6 +1,8 @@
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring,logging-fstring-interpolation
 import logging
+
 import humanfriendly
+
 from libratom.utils.pff import PffArchive
 
 logger = logging.getLogger(__name__)
@@ -23,4 +25,6 @@ def test_extract_enron_messages(enron_dataset):
                 # Increment message count
                 nb_extracted += 1
 
-    logger.info(f'Extracted {nb_extracted} messages from a total of {humanfriendly.format_size(total_size)}')
+    logger.info(
+        f"Extracted {nb_extracted} messages from a total of {humanfriendly.format_size(total_size)}"
+    )
