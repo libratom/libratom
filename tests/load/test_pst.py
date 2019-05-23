@@ -13,17 +13,20 @@ def test_extract_enron_messages(enron_dataset):
     total_size = 0
 
     for pst_file in enron_dataset.glob("**/*.pst"):
+        try:
+            # Iterate over messages and copy message string
+            with PffArchive(pst_file) as archive:
+                for message in archive.messages():
+                    assert archive.format_message(message)
 
-        # Add file size to running total
-        total_size += pst_file.stat().st_size
+                    # Increment message count
+                    nb_extracted += 1
 
-        # Iterate over messages and copy message string
-        with PffArchive(pst_file) as archive:
-            for message in archive.messages():
-                assert archive.format_message(message)
+            # Add file size to running total
+            total_size += pst_file.stat().st_size
 
-                # Increment message count
-                nb_extracted += 1
+        except Exception as exc:
+            logger.exception(exc)
 
     logger.info(
         f"Extracted {nb_extracted} messages from a total of {humanfriendly.format_size(total_size)}"

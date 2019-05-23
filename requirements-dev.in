@@ -1,6 +1,7 @@
 pytest
 pytest-benchmark
 pytest-cov
+pytest-sugar
 pysnooper
 mock
 wheel
