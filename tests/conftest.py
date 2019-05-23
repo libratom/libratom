@@ -6,7 +6,7 @@ from zipfile import ZipFile
 import pytest
 import requests
 
-CACHED_DATA_DIR = Path("/tmp/libratom/test_data/")
+CACHED_ENRON_DATA_DIR = Path("/tmp/libratom/test_data/RevisedEDRMv1_Complete")
 
 
 def fetch_enron_dataset(name: str, files: List[str], url: str) -> Path:
@@ -20,19 +20,19 @@ def fetch_enron_dataset(name: str, files: List[str], url: str) -> Path:
     Returns:
         A directory path
     """
-    path = CACHED_DATA_DIR / name
+    path = CACHED_ENRON_DATA_DIR / name
 
     if not path.exists():
         # Make the directories
-        CACHED_DATA_DIR.mkdir(parents=True, exist_ok=True)
+        CACHED_ENRON_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
         # Fetch the zipped PST file
         response = requests.get(url)
-        zipped_path = CACHED_DATA_DIR / f"{name}.zip"
+        zipped_path = CACHED_ENRON_DATA_DIR / f"{name}.zip"
         zipped_path.write_bytes(response.content)
 
         # Unzip and remove archive
-        ZipFile(zipped_path).extractall(path=CACHED_DATA_DIR)
+        ZipFile(zipped_path).extractall(path=CACHED_ENRON_DATA_DIR)
         zipped_path.unlink()
 
     # Confirm the files are there
