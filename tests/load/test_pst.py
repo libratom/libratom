@@ -31,3 +31,14 @@ def test_extract_enron_messages(enron_dataset):
     logger.info(
         f"Extracted {nb_extracted} messages from a total of {humanfriendly.format_size(total_size)}"
     )
+
+
+def test_extract_enron_messages_from_file(enron_dataset_file):
+    try:
+        # Iterate over messages and copy message string
+        with PffArchive(enron_dataset_file) as archive:
+            for message in archive.messages():
+                assert archive.format_message(message)
+
+    except Exception as exc:
+        logger.exception(exc)
