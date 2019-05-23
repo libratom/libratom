@@ -1,10 +1,16 @@
-# pylint: disable=missing-docstring,redefined-outer-name,stop-iteration-return
+# pylint: disable=invalid-name,missing-docstring,redefined-outer-name,stop-iteration-return
+import os
 from pathlib import Path
 from typing import List
 from zipfile import ZipFile
 
 import pytest
 import requests
+
+# Skip load tests
+if not os.getenv("LIBRATOM_LOAD_TESTING"):
+    collect_ignore_glob = ["load/*"]
+
 
 CACHED_ENRON_DATA_DIR = Path("/tmp/libratom/test_data/RevisedEDRMv1_Complete")
 
@@ -92,6 +98,17 @@ def enron_dataset_part004() -> Path:
     )
 
     yield fetch_enron_dataset(name, files, url)
+
+
+@pytest.fixture(scope="session")
+def enron_dataset() -> Path:
+    """
+    Returns:
+        A directory path expected to contain individual enron directories
+    """
+    assert CACHED_ENRON_DATA_DIR.exists()
+
+    yield CACHED_ENRON_DATA_DIR
 
 
 @pytest.fixture(scope="session")
