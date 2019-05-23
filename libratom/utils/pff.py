@@ -138,6 +138,10 @@ class PffArchive:
 
         body = message.plain_text_body or message.html_body or message.rtf_body
 
+        if not body:
+            # Return headers only
+            return message.transport_headers or ""
+
         if isinstance(body, bytes):
             body = str(body, encoding="utf-8", errors="replace")
 
