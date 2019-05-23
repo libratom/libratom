@@ -4,5 +4,6 @@
 #
 #    pip-compile --output-file=requirements.txt requirements.in
 #
+humanfriendly==4.18
 pbr==5.2.0
 treelib==1.5.5
