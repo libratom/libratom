@@ -1,6 +1,7 @@
 # pylint: disable=missing-docstring
 import email
 import hashlib
+import logging
 from email import policy
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -9,6 +10,8 @@ import pytest
 
 import libratom
 from libratom.utils.pff import PffArchive
+
+logger = logging.getLogger(__name__)
 
 
 def test_version():
@@ -39,14 +42,16 @@ def test_pffarchive_iterate_over_messages(sample_pst_file, bfs):
             assert message.plain_text_body
 
 
-def test_pffarchive_format_message(enron_dataset_part004):
+def test_pffarchive_format_message(enron_dataset_part129):
 
-    for pst_file in enron_dataset_part004.glob("*.pst"):
+    for pst_file in enron_dataset_part129.glob("*.pst"):
         with PffArchive(pst_file) as archive:
             for message in archive.messages():
+                # The assertion here doesn't matter as much as
+                # not getting an exception from python's email parsing module
                 assert email.message_from_string(
                     archive.format_message(message), policy=policy.default
-                )
+                ) or not archive.format_message(message)
 
 
 def test_get_transport_headers_from_sent_items(enron_dataset_part004):
