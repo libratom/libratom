@@ -140,7 +140,7 @@ class PffArchive:
 
         if not body:
             # Return headers only
-            return message.transport_headers or ""
+            return message.transport_headers.strip() or ""
 
         if isinstance(body, bytes):
             body = str(body, encoding="utf-8", errors="replace")

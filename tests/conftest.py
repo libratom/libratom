@@ -101,6 +101,35 @@ def enron_dataset_part004() -> Path:
 
 
 @pytest.fixture(scope="session")
+def enron_dataset_part129() -> Path:
+    """
+    Returns:
+        A directory with 7 PST files:
+        vkaminski_000_1_1_1.pst
+        vkaminski_001_1_1_1_1.pst
+        vkaminski_001_1_2_1.pst
+        vkaminski_001_1_2_2.pst
+        vkaminski_002_1_1_1.pst
+        vkaminski_003_1_1_1.pst
+        vkaminski_003_1_1_2.pst
+    """
+
+    name = "vkaminski"
+    files = [
+        "vkaminski_000_1_1_1.pst",
+        "vkaminski_001_1_1_1_1.pst",
+        "vkaminski_001_1_2_1.pst",
+        "vkaminski_001_1_2_2.pst",
+        "vkaminski_002_1_1_1.pst",
+        "vkaminski_003_1_1_1.pst",
+        "vkaminski_003_1_1_2.pst",
+    ]
+    url = "https://s3.amazonaws.com/edrm.download.nuix.com/RevisedEDRMv1/vkaminski.zip"
+
+    yield fetch_enron_dataset(name, files, url)
+
+
+@pytest.fixture(scope="session")
 def enron_dataset() -> Path:
     """
     Returns:
@@ -115,7 +144,7 @@ def enron_dataset() -> Path:
 def enron_dataset_file(request) -> Path:
     """
     Returns:
-        An enron PST file
+        An enron PST file (per parameter)
     """
 
     yield request.param
