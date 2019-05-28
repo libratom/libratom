@@ -159,3 +159,16 @@ def sample_pst_file(enron_dataset_part003) -> Path:
 
     # Get the first PST file of this enron subset
     yield next(enron_dataset_part003.glob("*.pst"))
+
+
+@pytest.fixture
+def empty_message(mocker):
+    """
+    Returns:
+        A mock message with empty components
+    """
+
+    message = mocker.Mock()
+    message.plain_text_body = message.html_body = message.rtf_body = message.transport_headers = ""
+
+    yield message
