@@ -42,9 +42,9 @@ def test_pffarchive_iterate_over_messages(sample_pst_file, bfs):
             assert message.plain_text_body
 
 
-def test_pffarchive_format_message(enron_dataset_part129):
+def test_pffarchive_format_message(enron_dataset_part004, empty_message):
 
-    for pst_file in enron_dataset_part129.glob("*.pst"):
+    for pst_file in enron_dataset_part004.glob("*.pst"):
         with PffArchive(pst_file) as archive:
             for message in archive.messages():
                 # The assertion here doesn't matter as much as
@@ -52,6 +52,8 @@ def test_pffarchive_format_message(enron_dataset_part129):
                 assert email.message_from_string(
                     archive.format_message(message), policy=policy.default
                 ) or not archive.format_message(message)
+
+    assert PffArchive.format_message(empty_message) == ""
 
 
 def test_get_transport_headers_from_sent_items(enron_dataset_part004):
