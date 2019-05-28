@@ -35,11 +35,14 @@ def test_extract_enron_messages(enron_dataset):
 
 
 def test_extract_enron_messages_from_file(enron_dataset_file):
+    """Similar to test_extract_enron_messages but with parametrized fixture
+    """
     try:
         # Iterate over messages and copy message string
         with PffArchive(enron_dataset_file) as archive:
             for message in archive.messages():
-                assert archive.format_message(message)
+                _ = archive.format_message(message)
 
     except Exception as exc:  # pylint: disable=broad-except
+        logger.info(f'Inspecting {enron_dataset_file}')
         logger.exception(exc)
