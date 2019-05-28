@@ -19,6 +19,7 @@ flake8-bugbear==19.3.0
 flake8==3.7.7
 humanfriendly==4.18
 idna==2.8                 # via requests
+importlib-metadata==0.15  # via pluggy
 isort==4.3.20
 lazy-object-proxy==1.4.1  # via astroid
 mccabe==0.6.1             # via flake8, pylint
@@ -27,7 +28,7 @@ more-itertools==7.0.0     # via pytest
 packaging==19.0           # via pytest-sugar
 pbr==5.2.0
 pip-tools==3.7.0
-pluggy==0.11.0            # via pytest, tox
+pluggy==0.12.0            # via pytest, tox
 py-cpuinfo==5.0.0         # via pytest-benchmark
 py==1.8.0                 # via pytest, tox
 pycodestyle==2.5.0        # via flake8
@@ -37,6 +38,7 @@ pyparsing==2.4.0          # via packaging
 pysnooper==0.0.39
 pytest-benchmark==3.2.2
 pytest-cov==2.7.1
+pytest-mock==1.10.4
 pytest-sugar==0.9.2
 pytest==4.5.0
 requests==2.22.0
@@ -51,3 +53,4 @@ virtualenv==16.6.0        # via tox
 wcwidth==0.1.7            # via pytest
 wheel==0.33.4
 wrapt==1.11.1             # via astroid
+zipp==0.5.1               # via importlib-metadata
