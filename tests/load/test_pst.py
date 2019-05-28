@@ -26,7 +26,7 @@ def test_extract_enron_messages(enron_dataset):
             total_size += pst_file.stat().st_size
 
         except Exception as exc:  # pylint: disable=broad-except
-            logger.info(f'Inspecting {pst_file}')
+            logger.info(f"Inspecting {pst_file}")
             logger.exception(exc)
 
     logger.info(
@@ -44,5 +44,5 @@ def test_extract_enron_messages_from_file(enron_dataset_file):
                 _ = archive.format_message(message)
 
     except Exception as exc:  # pylint: disable=broad-except
-        logger.info(f'Inspecting {enron_dataset_file}')
+        logger.info(f"Inspecting {enron_dataset_file}")
         logger.exception(exc)
