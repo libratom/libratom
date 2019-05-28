@@ -169,6 +169,7 @@ def empty_message(mocker):
     """
 
     message = mocker.Mock()
-    message.plain_text_body = message.html_body = message.rtf_body = message.transport_headers = ""
+    for attr in ("plain_text_body", "html_body", "rtf_body", "transport_headers"):
+        setattr(message, attr, "")
 
     yield message
