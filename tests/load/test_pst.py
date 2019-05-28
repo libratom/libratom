@@ -17,7 +17,7 @@ def test_extract_enron_messages(enron_dataset):
             # Iterate over messages and copy message string
             with PffArchive(pst_file) as archive:
                 for message in archive.messages():
-                    assert archive.format_message(message)
+                    _ = archive.format_message(message)
 
                     # Increment message count
                     nb_extracted += 1
@@ -26,6 +26,7 @@ def test_extract_enron_messages(enron_dataset):
             total_size += pst_file.stat().st_size
 
         except Exception as exc:  # pylint: disable=broad-except
+            logger.info(f'Inspecting {pst_file}')
             logger.exception(exc)
 
     logger.info(
