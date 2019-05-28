@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring,invalid-name
 import email
 import hashlib
 import logging
