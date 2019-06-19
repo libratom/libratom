@@ -1,9 +1,18 @@
-dist: xenial
-sudo: false
 language: python
-python:
-  - "3.6"
-  - "3.7"
+
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+      python: 3.6
+    - os: linux
+      dist: xenial
+      python: 3.7
+    - os: osx
+      osx_image: xcode9.4
+      language: generic
+
+sudo: false
 install: pip install tox-travis codecov
 script: tox
 after_success:

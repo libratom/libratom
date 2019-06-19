@@ -1,6 +1,53 @@
 CHANGES
 =======
 
+* Update Travis build matrix
+* Add requirements for sample notebooks
+* Remove notebook draft
+* Clean up entity extraction notebooks
+* Rename entity extraction notebooks
+* Finalize concurrency notebooks
+* concurrency WIP
+* concurrency WIP
+* concurrency WIP
+* Add widget box to show extracted entities (#11)
+* Add entity extraction notebook (#11)
+* Entities extraction WIP
+* Entities extraction WIP
+* Clear notebook outputs
+* Add notebook
+* Pylint tuning
+* Extend static analysis to test code
+* Remove assertion in load test
+* Remove assertion in load test
+* Tweak unit tests
+* Update dev requirements
+* Make pytest verbose in CI
+* Strip header string in PffArchive.format\_message
+* Pylint tuning
+* Add parameter-based load test
+* Improve load test
+* Formatting
+* Add logging to load test
+* First pass at load testing
+* load testing - WIP
+* Upgrade dependencies
+* Add dependency
+* Update pylint settings
+* Add attachment extraction test
+* Increase testing of PffArchive
+* Formatting
+* Update requirements
+* Add internal tree structure to PffArchive class
+* Try to get rich body if plain text is null/empty (#6)
+* Formatting (#6)
+* Add test fixture (#6)
+* First pass at message serializing (#6)
+* Address linter issues (#3)
+* DRY (#3)
+* DRY (#3)
+* Expand unit testing (#3)
+* Improve CI setup script (#3)
 * Add CI utility (#3)
 * Add PffArchive class (#3)
 * Add fixture to fetch PST test file (#3)
