@@ -1,3 +1,5 @@
+git:
+  depth: false
 language: python
 matrix:
   include:
@@ -11,7 +13,7 @@ matrix:
     osx_image: xcode9.4
     language: generic
     env: TOXENV=py36
-sudo: true
+sudo: false
 install: pip install tox-travis codecov
 script: tox
 after_success:
@@ -24,7 +26,6 @@ deploy:
   distributions: sdist bdist_wheel
   skip_existing: true
   on:
-    all_branches: true
     repo: libratom/libratom
     fork: false
     condition: $TRAVIS_OS_NAME != osx
