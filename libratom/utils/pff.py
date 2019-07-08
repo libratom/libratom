@@ -126,11 +126,12 @@ class PffArchive:
                 yield message
 
     @staticmethod
-    def format_message(message):
+    def format_message(message, with_headers=True):
         """Formats a pypff.message object into an RFC822 compliant string
 
         Args:
             message: A pypff.message object
+            with_headers: whether to include the headers in the output
 
         Returns:
             A string
@@ -145,4 +146,4 @@ class PffArchive:
         if isinstance(body, bytes):
             body = str(body, encoding="utf-8", errors="replace")
 
-        return f"{message.transport_headers}Body-Type: plain-text\r\n\r\n{body.strip()}"
+        return f"{message.transport_headers if with_headers else ''}Body-Type: plain-text\r\n\r\n{body.strip()}"
