@@ -1,6 +1,4 @@
 ## Sample jupyter notebooks
-https://github.com/libratom/ratom-notebooks
+Sample notebooks have been moved to their own [repository](https://github.com/libratom/ratom-notebooks).
 
-Launch them in a binder instance:
-
-https://mybinder.org/v2/gh/libratom/ratom-notebooks/master
+You can [launch them](https://mybinder.org/v2/gh/libratom/ratom-notebooks/master) in a Binder instance.
