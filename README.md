@@ -14,7 +14,7 @@ Python library and supporting utilities to parse and process PST and MBOX email 
 
 Libratom requires Python 3.6 or newer, and can be installed via the Python Package Index (PyPI). Installing via **pip** will automatically install all required dependencies.
 
-To install and test this software in a new Python venv in Ubuntu 16.04LTS or newer:
+To install and test this software in a new Python virtual environment in Ubuntu 16.04LTS or newer:
 
 Make sure Python 3.6 or newer, python3-pip, and python3-venv are installed:
 ```shell
