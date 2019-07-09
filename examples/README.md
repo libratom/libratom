@@ -1,4 +1,4 @@
-#### Sample jupyter notebooks
+## Sample jupyter notebooks
 https://github.com/libratom/ratom-notebooks
 
 Launch them in a binder instance:
