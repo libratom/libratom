@@ -9,7 +9,7 @@ class PathPath(click.Path):
         return Path(super().convert(value, param, ctx))
 
 
-def validate_out_file(ctx, param, value):
+def validate_out_path(ctx, param, value):
     if value and value.is_file():
         raise click.BadParameter(f'{value} already exists')
 
