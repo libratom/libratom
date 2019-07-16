@@ -11,6 +11,6 @@ class PathPath(click.Path):
 
 def validate_out_path(ctx, param, value):
     if value and value.is_file():
-        raise click.BadParameter(f'{value} already exists')
+        raise click.BadParameter(f'File "{value}" already exists.')
 
     return value
