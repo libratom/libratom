@@ -1,6 +1,6 @@
 from pathlib import Path
 import click
-from libratom.cli import PathPath, validate_out_file
+from libratom.cli import PathPath, validate_out_path
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
@@ -15,7 +15,7 @@ def ratom():
 
 
 @ratom.command(context_settings=CONTEXT_SETTINGS, short_help='Extract named entities.')
-@click.option('-o', '--out', metavar=PATH_METAVAR, callback=validate_out_file,
+@click.option('-o', '--out', metavar=PATH_METAVAR, default=Path.cwd, callback=validate_out_path,
               type=PathPath(resolve_path=True), help=f'Write the output to {PATH_METAVAR}.')
 @click.option('-j', '--jobs', metavar=INT_METAVAR,
               type=click.IntRange(min=1, max=128), help=f'Use {INT_METAVAR} concurrent jobs.')
