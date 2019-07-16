@@ -4,6 +4,7 @@
 #
 #    pip-compile --output-file=requirements.txt requirements.in
 #
+click==7.0
 humanfriendly==4.18
 libpff-python-ratom==20190316
 pbr==5.4.0
