@@ -7,3 +7,10 @@ class PathPath(click.Path):
     """A Click path argument that returns a pathlib Path, not a string"""
     def convert(self, value, param, ctx):
         return Path(super().convert(value, param, ctx))
+
+
+def validate_out_file(ctx, param, value):
+    if value and value.is_file():
+        raise click.BadParameter(f'{value} already exists')
+
+    return value
