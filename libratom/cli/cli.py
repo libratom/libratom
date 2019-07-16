@@ -1,11 +1,10 @@
 from pathlib import Path
 import click
-from libratom.cli import PathPath
+from libratom.cli import PathPath, validate_out_file
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
-FILE_METAVAR = '<file>'
-DIR_METAVAR = '<directory>'
+PATH_METAVAR = '<path>'
 INT_METAVAR = '<n>'
 
 
@@ -15,13 +14,18 @@ def ratom():
     pass
 
 
-@ratom.command(context_settings=CONTEXT_SETTINGS)
-@click.option('-o', '--out', metavar=FILE_METAVAR, default=Path.cwd, type=PathPath(),
-              help=f'Save the output as {FILE_METAVAR}.')
-@click.option('-i', '--in', metavar=DIR_METAVAR,
-              default=Path.cwd, type=PathPath(exists=True, file_okay=False),
-              help=f'Process files in {DIR_METAVAR}.')
+@ratom.command(context_settings=CONTEXT_SETTINGS, short_help='Extract named entities.')
+@click.option('-o', '--out', metavar=PATH_METAVAR, callback=validate_out_file,
+              type=PathPath(resolve_path=True), help=f'Write the output to {PATH_METAVAR}.')
 @click.option('-j', '--jobs', metavar=INT_METAVAR,
               type=click.IntRange(min=1, max=128), help=f'Use {INT_METAVAR} concurrent jobs.')
+@click.argument('src', metavar='[SOURCE]', default=Path.cwd, type=PathPath(exists=True))
 def entities(**kwargs):
+    """
+    Extract named entities from a PST file or a directory of PST files.
+
+    If SOURCE is a directory it will be walked recursively. Any non-PST file will be skipped.
+
+    If SOURCE is not provided the current working directory is used.
+    """
     click.echo(kwargs)
