@@ -4,8 +4,24 @@
 #
 #    pip-compile --output-file=requirements.txt requirements.in
 #
+blis==0.2.4               # via spacy, thinc
+certifi==2019.6.16        # via requests
+chardet==3.0.4            # via requests
 click==7.0
+cymem==2.0.2              # via preshed, spacy, thinc
 humanfriendly==4.18
+idna==2.8                 # via requests
 libpff-python-ratom==20190316
+murmurhash==1.0.2         # via spacy, thinc
+numpy==1.16.4             # via blis, spacy, thinc
 pbr==5.4.0
+plac==0.9.6               # via spacy, thinc
+preshed==2.0.1            # via spacy, thinc
+requests==2.22.0          # via spacy
+spacy==2.1.6
+srsly==0.0.7              # via spacy, thinc
+thinc==7.0.8              # via spacy
+tqdm==4.32.2              # via thinc
 treelib==1.5.5
+urllib3==1.25.3           # via requests
+wasabi==0.2.2             # via spacy, thinc
