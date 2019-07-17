@@ -1,11 +1,6 @@
 from pathlib import Path
 import click
-from libratom.cli import PathPath, validate_out_path
-
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
-
-PATH_METAVAR = '<path>'
-INT_METAVAR = '<n>'
+from libratom.cli import PathPath, validate_out_path, CONTEXT_SETTINGS, PATH_METAVAR, INT_METAVAR
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
@@ -28,4 +23,5 @@ def entities(**kwargs):
 
     If SOURCE is not provided the current working directory is used.
     """
+
     click.echo(kwargs)
