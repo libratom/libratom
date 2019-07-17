@@ -1,6 +1,9 @@
 from pathlib import Path
+
 import click
-from libratom.cli import PathPath, validate_out_path, CONTEXT_SETTINGS, PATH_METAVAR, INT_METAVAR
+
+from libratom.cli import (CONTEXT_SETTINGS, INT_METAVAR, PATH_METAVAR,
+                          PathPath, validate_out_path)
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
