@@ -7,6 +7,7 @@
 blis==0.2.4               # via spacy, thinc
 certifi==2019.6.16        # via requests
 chardet==3.0.4            # via requests
+click-log==0.3.2
 click==7.0
 cymem==2.0.2              # via preshed, spacy, thinc
 humanfriendly==4.18
@@ -14,7 +15,7 @@ idna==2.8                 # via requests
 libpff-python-ratom==20190316
 murmurhash==1.0.2         # via spacy, thinc
 numpy==1.16.4             # via blis, spacy, thinc
-pbr==5.4.0
+pbr==5.4.1
 plac==0.9.6               # via spacy, thinc
 preshed==2.0.1            # via spacy, thinc
 requests==2.22.0          # via spacy
