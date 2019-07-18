@@ -12,6 +12,7 @@ black==19.3b0
 blis==0.2.4               # via spacy, thinc
 certifi==2019.6.16        # via requests
 chardet==3.0.4            # via requests
+click-log==0.3.2
 click==7.0
 coverage==4.5.3           # via pytest-cov
 cymem==2.0.2              # via preshed, spacy, thinc
@@ -31,8 +32,8 @@ more-itertools==7.1.0     # via pytest
 murmurhash==1.0.2         # via spacy, thinc
 numpy==1.16.4             # via blis, spacy, thinc
 packaging==19.0           # via pytest, pytest-sugar, tox
-pbr==5.4.0
-pip-tools==3.8.0
+pbr==5.4.1
+pip-tools==3.9.0
 plac==0.9.6               # via spacy, thinc
 pluggy==0.12.0            # via pytest, tox
 preshed==2.0.1            # via spacy, thinc
