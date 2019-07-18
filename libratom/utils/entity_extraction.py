@@ -4,21 +4,16 @@ Set of utility functions that use spaCy to perform named entity recognition
 """
 
 import logging
+import multiprocessing
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 
-
-from contextlib import contextmanager
-
-
-import multiprocessing
-
+import spacy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-import spacy
-
-from libratom.models.entity import Entity, Base
+from libratom.models.entity import Base, Entity
 from libratom.pff import PffArchive
 
 logger = logging.getLogger(__name__)
