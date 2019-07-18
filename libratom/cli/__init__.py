@@ -1,4 +1,7 @@
+# pylint: disable=unused-parameter
+
 from datetime import datetime
+import logging
 from pathlib import Path
 
 import click
@@ -18,7 +21,7 @@ class PathPath(click.Path):
         return Path(super().convert(value, param, ctx))
 
 
-def validate_out_path(ctx, param, value):
+def validate_out_path(ctx, param, value: Path) -> Path:
 
     # if value.is_dir():
     #     value = value / OUTPUT_FILENAME_TEMPLATE.format(ctx.params['src'].name,
@@ -28,3 +31,13 @@ def validate_out_path(ctx, param, value):
         raise click.BadParameter(f'File "{value}" already exists.')
 
     return value
+
+
+def verbosity_to_log_level(verbosity: int) -> int:
+    if verbosity > 1:
+        return logging.DEBUG
+
+    if verbosity > 0:
+        return logging.INFO
+
+    return logging.WARNING
