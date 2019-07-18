@@ -11,7 +11,7 @@ import click_log
 
 from libratom.cli import (CONTEXT_SETTINGS, INT_METAVAR, PATH_METAVAR,
                           PathPath, validate_out_path)
-from libratom.utils.entities import extract_entities
+from libratom.entities import extract_entities
 
 logger = logging.getLogger(__name__)
 click_log.basic_config(logger)
@@ -62,7 +62,7 @@ def ratom():
 @click.argument("src", metavar="[SOURCE]", default=Path.cwd, type=PathPath(exists=True))
 @click.option('-v', '--verbose', count=True, callback=set_log_level_from_verbose,
               help="Increase verbosity (can be repeated).")
-def entities(**kwargs):
+def entities(out, jobs, src, verbose):
     """
     Extract named entities from a PST file or a directory of PST files.
 
@@ -71,5 +71,4 @@ def entities(**kwargs):
     If SOURCE is not provided the current working directory is used.
     """
 
-    extract_entities(log_level=kwargs['verbose'])
-    click.echo(kwargs)
+    extract_entities(source=src, destination=out, jobs=jobs, log_level=verbose)
