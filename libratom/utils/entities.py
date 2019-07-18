@@ -6,7 +6,6 @@ import logging
 
 import spacy
 
-
 logger = logging.getLogger(__name__)
 
 
