@@ -3,7 +3,7 @@ import logging
 
 import humanfriendly
 
-from libratom.utils.pff import PffArchive
+from libratom.pff import PffArchive
 
 logger = logging.getLogger(__name__)
 
