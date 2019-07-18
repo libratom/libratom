@@ -1,3 +1,8 @@
+# pylint: disable=unused-argument
+"""
+Command-line interface for libratom
+"""
+
 from pathlib import Path
 import logging
 
@@ -22,19 +27,25 @@ click_log.basic_config(logging.getLogger('libratom'))
 
 
 def set_log_level_from_verbose(ctx, param, value):
+    """
+    Callback for ratom subcommands that sets the root logger according to the verbosity option
+    """
     if value > 1:
-        logger.setLevel(logging.DEBUG)
+        level = logging.DEBUG
     elif value > 0:
-        logger.setLevel(logging.INFO)
+        level = logging.INFO
     else:
-        logger.setLevel(logging.WARNING)
-    return value
+        level = logging.WARNING
+    logger.setLevel(level)
+    return level
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.version_option()
 def ratom():
-    pass
+    """
+    Main command
+    """
 
 
 @ratom.command(context_settings=CONTEXT_SETTINGS, short_help="Extract named entities.")
@@ -66,5 +77,5 @@ def entities(**kwargs):
     If SOURCE is not provided the current working directory is used.
     """
 
-    extract_entities(kwargs['verbose'])
+    extract_entities(log_level=kwargs['verbose'])
     click.echo(kwargs)
