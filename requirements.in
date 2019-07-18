@@ -5,3 +5,4 @@ treelib
 humanfriendly
 libpff-python-ratom
 spacy
+sqlalchemy

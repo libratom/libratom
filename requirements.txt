@@ -20,6 +20,7 @@ plac==0.9.6               # via spacy, thinc
 preshed==2.0.1            # via spacy, thinc
 requests==2.22.0          # via spacy
 spacy==2.1.6
+sqlalchemy==1.3.5
 srsly==0.0.7              # via spacy, thinc
 thinc==7.0.8              # via spacy
 tqdm==4.32.2              # via thinc
