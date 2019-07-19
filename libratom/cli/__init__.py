@@ -11,6 +11,7 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 PATH_METAVAR = "<path>"
 INT_METAVAR = "<n>"
+OUTPUT_FILENAME_TEMPLATE = "{}_entities_{}.sqlite3"
 
 
 # https://github.com/pallets/click/issues/405#issuecomment-470812067
