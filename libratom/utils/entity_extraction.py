@@ -14,7 +14,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from libratom.models.entity import Base, Entity
-from libratom.utils.pff import PffArchive
+from libratom.utils.concurrency import get_messages, libratom_job
 
 logger = logging.getLogger(__name__)
 
@@ -41,52 +41,8 @@ def open_db_session(session_factory):
         session.close()
 
 
-def get_messages(files, spacy_model):
-    """
-    Message generator to feed a pool of processes from a directory of PST files
-    """
-
-    # Iterate over files
-    for pst_file in files:
-
-        logger.info(f"Processing {pst_file}")
-
-        try:
-            with PffArchive(pst_file) as archive:
-                # Iterate over messages
-                for message in archive.messages():
-                    try:
-
-                        yield {
-                            # keyword arguments for process_message()
-                            "filename": pst_file.name,
-                            "message_id": message.identifier,
-                            "message": archive.format_message(
-                                message, with_headers=False
-                            ),
-                            "spacy_model": spacy_model,
-                        }
-
-                        # Update report per message
-                        # report["Messages"] += 1
-
-                    except Exception as exc:
-                        # Log and move on to the next message
-                        logger.exception(exc)
-
-            # Update report per file
-            # report["Files"] += 1
-            # report["Size"] += pst_file.stat().st_size
-
-            # Update progress bar
-            # progress.value += 1
-
-        except Exception as exc:
-            # Log and move on to the next file
-            logger.exception(exc)
-
-
-def process_message(spacy_model, filename: str, message_id: int, message: str):
+@libratom_job
+def process_message(filename: str, message_id: int, message: str, spacy_model):
     """
     Job function for the worker processes
     """
@@ -113,11 +69,11 @@ def process_message(spacy_model, filename: str, message_id: int, message: str):
         return None, str(exc)
 
 
-def job(kwargs):
-    """
-    To get starmap behavior with imap, in a picklable function
-    """
-    return process_message(**kwargs)
+# def job(kwargs):
+#     """
+#     To get starmap behavior with imap, in a picklable function
+#     """
+#     return process_message(**kwargs)
 
 
 def extract_entities(
@@ -163,7 +119,7 @@ def extract_entities(
         logger.info(f"Starting Pool with {pool._processes} processes")
 
         for ents, exc in pool.imap(
-            job, get_messages(files, spacy_model), chunksize=100
+            process_message, get_messages(files, spacy_model=spacy_model), chunksize=100
         ):
             if exc:
                 # report['Errors'] += 1
