@@ -21,10 +21,9 @@ from libratom.cli import (
 from libratom.utils.entity_extraction import extract_entities
 
 logger = logging.getLogger(__name__)
-click_log.basic_config(logger)
 
-# Use the same logging configuration for libratom and its children
-click_log.basic_config(logging.getLogger("libratom"))
+# Set configuration on the root logger
+click_log.basic_config(logging.getLogger())
 
 
 def set_log_level_from_verbose(ctx, param, value):
@@ -91,5 +90,10 @@ def entities(out, jobs, src, verbose):
 
     status = extract_entities(source=src, destination=out, jobs=jobs, log_level=verbose)
 
-    logger.info('All done')
+    # logger.debug(f'A debug msg from {__name__}')
+    # logger.info(f'An info msg from {__name__}')
+    # logger.warning(f'A warning msg from {__name__}')
+    # logger.error(f'An error msg from {__name__}')
+
+    logger.info('All Done')
     sys.exit(status)
