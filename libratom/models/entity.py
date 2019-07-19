@@ -1,4 +1,4 @@
-# pylint: disable=too-few-public-methods,missing-docstring
+# pylint: disable=too-few-public-methods,missing-docstring,invalid-name
 
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base

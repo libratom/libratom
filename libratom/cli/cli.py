@@ -1,22 +1,32 @@
-# pylint: disable=unused-argument
+# pylint: disable=unused-argument,logging-fstring-interpolation,invalid-name
 """
 Command-line interface for libratom
 """
 
 import logging
+import multiprocessing
+from datetime import datetime
 from pathlib import Path
 
 import click
 import click_log
 
+import spacy
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 from libratom.cli import (
     CONTEXT_SETTINGS,
     INT_METAVAR,
     PATH_METAVAR,
+    OUTPUT_FILENAME_TEMPLATE,
     PathPath,
     validate_out_path,
 )
-from libratom.utils.entity_extraction import extract_entities
+from libratom.models.entity import Base, Entity
+
+
+SPACY_MODEL = "en_core_web_sm"  # Command line option?
 
 logger = logging.getLogger(__name__)
 click_log.basic_config(logger)
@@ -81,4 +91,30 @@ def entities(out, jobs, src, verbose):
     If SOURCE is not provided the current working directory is used.
     """
 
-    extract_entities(source=src, destination=out, jobs=jobs, log_level=verbose)
+    # Resolve output file
+    if out.is_dir():
+        out.mkdir(parents=True, exist_ok=True)
+        out = out / OUTPUT_FILENAME_TEMPLATE.format(
+            src.name, datetime.now().isoformat(timespec="seconds")
+        )
+    else:
+        # Make parent dirs if needed
+        out.parent.mkdir(parents=True, exist_ok=True)
+
+    # Load spacy model
+    logger.info(f"Loading spacy model: {SPACY_MODEL}")
+    spacy_model = spacy.load(SPACY_MODEL)
+
+    # DB setup
+    logger.info(f"Creating database file: {out}")
+    engine = create_engine(f"sqlite:///{out}")
+    Session = sessionmaker(bind=engine)
+
+    Base.metadata.create_all(engine)
+
+    logger.info("An info msg")
+    logger.warning("A warning msg")
+    logger.error("An error msg")
+    logger.info(f"jobs: {jobs}, out: {out}")
+
+    # logging.error('something happened in entities')
