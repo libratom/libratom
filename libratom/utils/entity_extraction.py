@@ -115,14 +115,14 @@ def process_message(spacy_model, filename: str, message_id: int, message: str):
 
 def job(kwargs):
     """
-    Actual job function that takes a dictionary (since we can't pickle lambdas or local functions)
+    To get starmap behavior with imap, in a picklable function
     """
     return process_message(**kwargs)
 
 
 def extract_entities(
     source: Path, destination: Path, jobs: int = None, log_level=logging.WARNING
-) -> None:
+) -> int:
     """
     Main entity extraction function called by the CLI
     """
@@ -155,6 +155,7 @@ def extract_entities(
     else:
         files = [source]
 
+    # Start of multiprocessing
     with multiprocessing.Pool(processes=jobs) as pool, open_db_session(
         Session
     ) as session:
@@ -180,3 +181,5 @@ def extract_entities(
                 except:
                     session.rollback()
                     raise
+
+    return 0

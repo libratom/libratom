@@ -4,6 +4,7 @@ Command-line interface for libratom
 """
 
 import logging
+import sys
 from pathlib import Path
 
 import click
@@ -88,11 +89,7 @@ def entities(out, jobs, src, verbose):
     If SOURCE is not provided the current working directory is used.
     """
 
-    extract_entities(source=src, destination=out, jobs=jobs, log_level=verbose)
+    status = extract_entities(source=src, destination=out, jobs=jobs, log_level=verbose)
 
-    # logger.info("An info msg")
-    # logger.warning("A warning msg")
-    # logger.error("An error msg")
-    # logger.info(f"jobs: {jobs}, out: {out}")
-
-    # logging.error('something happened in entities')
+    logger.info('All done')
+    sys.exit(status)
