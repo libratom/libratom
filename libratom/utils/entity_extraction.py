@@ -1,4 +1,4 @@
-# pylint: disable=logging-fstring-interpolation,invalid-name
+# pylint: disable=logging-fstring-interpolation,invalid-name,broad-except
 """
 Set of utility functions that use spaCy to perform named entity recognition
 """
@@ -14,13 +14,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from libratom.models.entity import Base, Entity
-from libratom.pff import PffArchive
+from libratom.utils.pff import PffArchive
 
 logger = logging.getLogger(__name__)
 
 OUTPUT_FILENAME_TEMPLATE = "{}_entities_{}.sqlite3"
-SPACY_MODEL = "en_core_web_sm"
-
+SPACY_MODEL_NAME = "en_core_web_sm"
+SPACY_MODEL = None
 
 
 @contextmanager
@@ -42,12 +42,10 @@ def open_db_session(session_factory):
         session.close()
 
 
-
 def get_messages(files, report):
     """
     Message generator to feed a pool of processes from a directory of PST files
     """
-    # pylint:disable=broad-except
 
     # Iterate over files
     for pst_file in files:
@@ -59,21 +57,23 @@ def get_messages(files, report):
 
                         yield {
                             # keyword arguments for process_message()
-                            'filename': pst_file.name,
-                            'message_id': message.identifier,
-                            'message': archive.format_message(message, with_headers=False)
+                            "filename": pst_file.name,
+                            "message_id": message.identifier,
+                            "message": archive.format_message(
+                                message, with_headers=False
+                            ),
                         }
 
                         # Update report per message
-                        report['Messages'] += 1
+                        report["Messages"] += 1
 
                     except Exception as exc:
                         # Log and move on to the next message
                         logger.exception(exc)
 
             # Update report per file
-            report['Files'] += 1
-            report['Size'] += pst_file.stat().st_size
+            report["Files"] += 1
+            report["Size"] += pst_file.stat().st_size
 
             # Update progress bar
             # progress.value += 1
@@ -83,8 +83,9 @@ def get_messages(files, report):
             logger.exception(exc)
 
 
-
-def extract_entities(source: Path, destination: Path, jobs: int = None, log_level=logging.WARNING) -> None:
+def extract_entities(
+    source: Path, destination: Path, jobs: int = None, log_level=logging.WARNING
+) -> None:
     """
     Main entity extraction function called by the CLI
     """
@@ -94,46 +95,61 @@ def extract_entities(source: Path, destination: Path, jobs: int = None, log_leve
     # Resolve output file
     if destination.is_dir():
         destination.mkdir(parents=True, exist_ok=True)
-        destination = destination / OUTPUT_FILENAME_TEMPLATE.format(source.name,
-                                                                    datetime.now().isoformat(timespec='seconds'))
+        destination = destination / OUTPUT_FILENAME_TEMPLATE.format(
+            source.name, datetime.now().isoformat(timespec="seconds")
+        )
     else:
         # Make parent dirs if needed
         destination.parent.mkdir(parents=True, exist_ok=True)
 
     # Load spacy model
-    logger.info(f'Loading spacy model: {SPACY_MODEL}')
-    nlp = spacy.load(SPACY_MODEL)
+    logger.info(f"Loading spacy model: {SPACY_MODEL_NAME}")
+    spacy_model = spacy.load(SPACY_MODEL_NAME)
 
     # DB setup
-    logger.info(f'Creating database file: {destination}')
-    engine = create_engine(f'sqlite:///{destination}')
+    logger.info(f"Creating database file: {destination}")
+    engine = create_engine(f"sqlite:///{destination}")
     Session = sessionmaker(bind=engine)
 
     Base.metadata.create_all(engine)
 
-    logger.info('An info msg')
-    logger.warning('A warning msg')
-    logger.error('An error msg')
-    logger.info(f'jobs: {jobs}, out: {destination}')
+    logger.info("An info msg")
+    logger.warning("A warning msg")
+    logger.error("An error msg")
+    logger.info(f"jobs: {jobs}, out: {destination}")
 
     # logging.error('something happened in entities')
 
 
-def process_message(filename: str, message_id: int, message: str):
+def job_function_factory(spacy_model):
     """
-    Job function for the worker processes
+    Factory function that returns a worker function using a given spacy model
     """
 
-    # Return basic types to avoid serialization issues
+    def process_message(filename: str, message_id: int, message: str):
+        """
+        Job function for the worker processes
+        """
 
-    try:
-        # Extract entities from the message
-        doc = nlp(message)
+        # Return basic types to avoid serialization issues
 
-        entities = [{'text': ent.text, 'label_': ent.label_, 'filename': filename, 'message_id': message_id} for ent in
-                    doc.ents]
+        try:
+            # Extract entities from the message
+            doc = spacy_model(message)
 
-        return entities, None
+            entities = [
+                {
+                    "text": ent.text,
+                    "label_": ent.label_,
+                    "filename": filename,
+                    "message_id": message_id,
+                }
+                for ent in doc.ents
+            ]
 
-    except Exception as exc:
-        return None, str(exc)
+            return entities, None
+
+        except Exception as exc:
+            return None, str(exc)
+
+    return lambda kwargs: process_message(**kwargs)
