@@ -10,14 +10,8 @@ from pathlib import Path
 import click
 import click_log
 
-from libratom.cli import (
-    CONTEXT_SETTINGS,
-    INT_METAVAR,
-    PATH_METAVAR,
-    PathPath,
-    validate_in_path,
-    validate_out_path,
-)
+from libratom.cli import (CONTEXT_SETTINGS, INT_METAVAR, PATH_METAVAR,
+                          PathPath, validate_in_path, validate_out_path)
 from libratom.utils.entity_extraction import extract_entities
 
 logger = logging.getLogger(__name__)
@@ -90,10 +84,5 @@ def entities(out, jobs, src, verbose):
 
     status = extract_entities(source=src, destination=out, jobs=jobs, log_level=verbose)
 
-    # logger.debug(f'A debug msg from {__name__}')
-    # logger.info(f'An info msg from {__name__}')
-    # logger.warning(f'A warning msg from {__name__}')
-    # logger.error(f'An error msg from {__name__}')
-
-    logger.info('All Done')
+    logger.info("All Done")
     sys.exit(status)
