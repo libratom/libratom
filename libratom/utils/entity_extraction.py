@@ -5,7 +5,6 @@ Set of utility functions that use spaCy to perform named entity recognition
 
 import logging
 import multiprocessing
-from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 
@@ -14,7 +13,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from libratom.models.entity import Base, Entity
-from libratom.utils.concurrency import get_messages, libratom_job
+from libratom.utils.concurrency import get_messages, imap_job, worker_init
+from libratom.utils.database import db_session
 
 logger = logging.getLogger(__name__)
 
@@ -22,26 +22,7 @@ OUTPUT_FILENAME_TEMPLATE = "{}_entities_{}.sqlite3"
 SPACY_MODEL = "en_core_web_sm"  # Command line option?
 
 
-@contextmanager
-def open_db_session(session_factory):
-    """
-    Database session context manager
-    """
-    # pylint:disable=bare-except
-
-    session = session_factory()
-
-    try:
-        yield session
-        session.commit()
-    except:
-        session.rollback()
-        raise
-    finally:
-        session.close()
-
-
-@libratom_job
+@imap_job
 def process_message(filename: str, message_id: int, message: str, spacy_model):
     """
     Job function for the worker processes
@@ -67,13 +48,6 @@ def process_message(filename: str, message_id: int, message: str, spacy_model):
 
     except Exception as exc:
         return None, str(exc)
-
-
-# def job(kwargs):
-#     """
-#     To get starmap behavior with imap, in a picklable function
-#     """
-#     return process_message(**kwargs)
 
 
 def extract_entities(
@@ -112,30 +86,44 @@ def extract_entities(
         files = [source]
 
     # Start of multiprocessing
-    with multiprocessing.Pool(processes=jobs) as pool, open_db_session(
-        Session
-    ) as session:
+    with multiprocessing.Pool(
+        processes=jobs, initializer=worker_init
+    ) as pool, db_session(Session) as session:
 
         logger.info(f"Starting Pool with {pool._processes} processes")
 
-        for ents, exc in pool.imap(
-            process_message, get_messages(files, spacy_model=spacy_model), chunksize=100
-        ):
-            if exc:
-                # report['Errors'] += 1
-                logger.error(exc)
+        try:
 
-            for entity in ents:
-                session.add(Entity(**entity))
+            for ents, error in pool.imap(
+                process_message,
+                get_messages(files, spacy_model=spacy_model),
+                chunksize=100,
+            ):
+                if error:
+                    # report['Errors'] += 1
+                    logger.error(error)
 
-            # report['Entities'] += len(entities)
+                for entity in ents:
+                    session.add(Entity(**entity))
 
-            # Commit if we have 10k or more new entities
-            if len(session.new) >= 10000:
-                try:
-                    session.commit()
-                except:
-                    session.rollback()
-                    raise
+                # report['Entities'] += len(entities)
+
+                # Commit if we have 10k or more new entities
+                if len(session.new) >= 10000:
+                    try:
+                        session.commit()
+                    except Exception as exc:
+                        logger.exception(exc)
+                        session.rollback()
+
+        except KeyboardInterrupt:
+            logger.warning('Cancelling running task')
+            logger.info('Terminating workers')
+
+            # Clean up process pool
+            pool.terminate()
+            pool.join()
+
+            return 1
 
     return 0

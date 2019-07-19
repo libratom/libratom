@@ -5,6 +5,7 @@ Set of utilities for parallel execution of libratom code
 
 import functools
 import logging
+import signal
 
 from libratom.utils.pff import PffArchive
 
@@ -59,7 +60,18 @@ def get_messages(files, **kwargs):
             logger.exception(exc)
 
 
-def libratom_job(func):
+def worker_init():
+    """
+    Initializer for worker processes that makes them ignore interrupt signals
+
+    https://docs.python.org/3/library/signal.html#signal.signal
+    https://docs.python.org/3/library/signal.html#signal.SIG_IGN
+    """
+
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+
+
+def imap_job(func):
     """
     Decorator that lets us write imap job functions with unpacked keyword arguments
     """
