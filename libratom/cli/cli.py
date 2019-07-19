@@ -1,32 +1,23 @@
-# pylint: disable=unused-argument,logging-fstring-interpolation,invalid-name
+# pylint: disable=unused-argument
 """
 Command-line interface for libratom
 """
 
 import logging
-import multiprocessing
-from datetime import datetime
 from pathlib import Path
 
 import click
 import click_log
 
-import spacy
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
 from libratom.cli import (
     CONTEXT_SETTINGS,
     INT_METAVAR,
     PATH_METAVAR,
-    OUTPUT_FILENAME_TEMPLATE,
     PathPath,
+    validate_in_path,
     validate_out_path,
 )
-from libratom.models.entity import Base, Entity
-
-
-SPACY_MODEL = "en_core_web_sm"  # Command line option?
+from libratom.utils.entity_extraction import extract_entities
 
 logger = logging.getLogger(__name__)
 click_log.basic_config(logger)
@@ -74,7 +65,13 @@ def ratom():
     type=click.IntRange(min=1, max=128),
     help=f"Use {INT_METAVAR} concurrent jobs.",
 )
-@click.argument("src", metavar="[SOURCE]", default=Path.cwd, type=PathPath(exists=True))
+@click.argument(
+    "src",
+    metavar="[SOURCE]",
+    default=Path.cwd,
+    type=PathPath(exists=True, resolve_path=True),
+    callback=validate_in_path,
+)
 @click.option(
     "-v",
     "--verbose",
@@ -91,30 +88,11 @@ def entities(out, jobs, src, verbose):
     If SOURCE is not provided the current working directory is used.
     """
 
-    # Resolve output file
-    if out.is_dir():
-        out.mkdir(parents=True, exist_ok=True)
-        out = out / OUTPUT_FILENAME_TEMPLATE.format(
-            src.name, datetime.now().isoformat(timespec="seconds")
-        )
-    else:
-        # Make parent dirs if needed
-        out.parent.mkdir(parents=True, exist_ok=True)
+    extract_entities(source=src, destination=out, jobs=jobs, log_level=verbose)
 
-    # Load spacy model
-    logger.info(f"Loading spacy model: {SPACY_MODEL}")
-    spacy_model = spacy.load(SPACY_MODEL)
-
-    # DB setup
-    logger.info(f"Creating database file: {out}")
-    engine = create_engine(f"sqlite:///{out}")
-    Session = sessionmaker(bind=engine)
-
-    Base.metadata.create_all(engine)
-
-    logger.info("An info msg")
-    logger.warning("A warning msg")
-    logger.error("An error msg")
-    logger.info(f"jobs: {jobs}, out: {out}")
+    # logger.info("An info msg")
+    # logger.warning("A warning msg")
+    # logger.error("An error msg")
+    # logger.info(f"jobs: {jobs}, out: {out}")
 
     # logging.error('something happened in entities')
