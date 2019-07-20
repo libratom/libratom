@@ -1,9 +1,12 @@
 # pylint: disable=missing-docstring,invalid-name
 
+from pathlib import Path
+
 import pytest
 
 import libratom
 from libratom.cli.cli import ratom
+from tests.conftest import Expected
 
 
 @pytest.mark.parametrize(
@@ -25,18 +28,26 @@ def test_ratom(cli_runner, params, expected):
 @pytest.mark.parametrize(
     "params, expected",
     [
-        ([], ["nothing to do"]),
-        (["-h"], ["Usage"]),
-        (["-v"], ["nothing to do", "All done"]),
+        ([], Expected(status=0, tokens=["nothing to do"])),
+        (["-h"], Expected(status=0, tokens=["Usage"])),
+        (["-v"], Expected(status=0, tokens=["nothing to do", "All done"])),
+        (
+            ["-o", Path(__file__)],
+            Expected(status=2, tokens=["Invalid value", "already exists"]),
+        ),
+        (
+            ["/wrong/input/path"],
+            Expected(status=2, tokens=["Invalid value", "does not exist"]),
+        ),
     ],
 )
-def test_ratom_entities(isolated_cli_runner, params, expected):
+def test_ratom_entities(cli_runner, params, expected):
 
-    args = ["entities"]
-    args.extend(params)
+    subcommand = ["entities"]
+    subcommand.extend(params)
 
-    result = isolated_cli_runner.invoke(ratom, args=args)
-    assert result.exit_code == 0
+    result = cli_runner.invoke(ratom, subcommand)
+    assert result.exit_code == expected.status
 
-    for token in expected:
+    for token in expected.tokens:
         assert token in result.output
