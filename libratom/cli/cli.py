@@ -1,4 +1,4 @@
-# pylint: disable=unused-argument
+# pylint: disable=unused-argument,logging-fstring-interpolation
 """
 Command-line interface for libratom
 """
@@ -90,6 +90,8 @@ def entities(out, jobs, src, verbose, progress):
     If SOURCE is not provided the current working directory is used.
     """
 
+    status = 0
+
     # Resolve output file based on src parameter
     if out.is_dir():
         out = out / OUTPUT_FILENAME_TEMPLATE.format(
@@ -102,21 +104,24 @@ def entities(out, jobs, src, verbose, progress):
     else:
         files = [src]
 
-    if progress:
-        with click.progressbar(
-            length=len(files), label="Processing files"
-        ) as progress_bar:
-            status = extract_entities(
-                files=files,
-                destination=out,
-                jobs=jobs,
-                log_level=verbose,
-                progress=progress_bar,
-            )
+    if not files:
+        logger.warning(f"No PST file found in {src}; nothing to do")
     else:
-        status = extract_entities(
-            files=files, destination=out, jobs=jobs, log_level=verbose
-        )
+        if progress:
+            with click.progressbar(
+                length=len(files), label="Processing files"
+            ) as progress_bar:
+                status = extract_entities(
+                    files=files,
+                    destination=out,
+                    jobs=jobs,
+                    log_level=verbose,
+                    progress=progress_bar,
+                )
+        else:
+            status = extract_entities(
+                files=files, destination=out, jobs=jobs, log_level=verbose
+            )
 
     logger.info("All done")
     sys.exit(status)
