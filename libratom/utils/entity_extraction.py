@@ -87,7 +87,7 @@ def extract_entities(
         processes=jobs, initializer=worker_init
     ) as pool, db_session(Session) as session:
 
-        logger.info(f"Starting Pool with {pool._processes} processes")
+        logger.info(f"Starting pool with {pool._processes} processes")
 
         try:
 
