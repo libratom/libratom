@@ -1,12 +1,22 @@
-# pylint: disable=missing-docstring,invalid-name
+# pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 
 from pathlib import Path
+from typing import List
 
 import pytest
 
 import libratom
 from libratom.cli.cli import ratom
-from tests.conftest import Expected
+
+
+class Expected:
+    """
+    Result object type for parametrized tests. Expand as necessary...
+    """
+
+    def __init__(self, status: int, tokens: List[str]):
+        self.status = status
+        self.tokens = tokens
 
 
 @pytest.mark.parametrize(
