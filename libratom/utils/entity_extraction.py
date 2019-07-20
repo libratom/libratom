@@ -5,8 +5,8 @@ Set of utility functions that use spaCy to perform named entity recognition
 
 import logging
 import multiprocessing
-from datetime import datetime
 from pathlib import Path
+from typing import List
 
 import spacy
 from sqlalchemy import create_engine
@@ -20,6 +20,8 @@ logger = logging.getLogger(__name__)
 
 OUTPUT_FILENAME_TEMPLATE = "{}_entities_{}.sqlite3"
 SPACY_MODEL = "en_core_web_sm"  # Command line option?
+MESSAGE_BATCH_SIZE = 100
+DB_COMMIT_BATCH_SIZE = 10000
 
 
 @imap_job
@@ -36,6 +38,7 @@ def process_message(filename: str, message_id: int, message: str, spacy_model):
 
         entities = [
             {
+                # Keys are column names from libratom.models.entity.Entity
                 "text": ent.text,
                 "label_": ent.label_,
                 "filename": filename,
@@ -51,7 +54,11 @@ def process_message(filename: str, message_id: int, message: str, spacy_model):
 
 
 def extract_entities(
-    source: Path, destination: Path, jobs: int = None, log_level=logging.WARNING
+    files: List[Path],
+    destination: Path,
+    jobs: int = None,
+    log_level=logging.WARNING,
+    **kwargs,
 ) -> int:
     """
     Main entity extraction function called by the CLI
@@ -59,31 +66,18 @@ def extract_entities(
 
     logger.setLevel(log_level)
 
-    # Resolve output file
-    if destination.is_dir():
-        destination.mkdir(parents=True, exist_ok=True)
-        destination = destination / OUTPUT_FILENAME_TEMPLATE.format(
-            source.name, datetime.now().isoformat(timespec="seconds")
-        )
-    else:
-        # Make parent dirs if needed
-        destination.parent.mkdir(parents=True, exist_ok=True)
-
     # Load spacy model
     logger.info(f"Loading spacy model: {SPACY_MODEL}")
     spacy_model = spacy.load(SPACY_MODEL)
+
+    # Make DB file's parents if needed
+    destination.parent.mkdir(parents=True, exist_ok=True)
 
     # DB setup
     logger.info(f"Creating database file: {destination}")
     engine = create_engine(f"sqlite:///{destination}")
     Session = sessionmaker(bind=engine)
     Base.metadata.create_all(engine)
-
-    # Get list of files from the source
-    if source.is_dir():
-        files = list(source.glob("**/*.pst"))
-    else:
-        files = [source]
 
     # Start of multiprocessing
     with multiprocessing.Pool(
@@ -96,20 +90,17 @@ def extract_entities(
 
             for ents, error in pool.imap(
                 process_message,
-                get_messages(files, spacy_model=spacy_model),
-                chunksize=100,
+                get_messages(files, spacy_model=spacy_model, **kwargs),
+                chunksize=MESSAGE_BATCH_SIZE,
             ):
                 if error:
-                    # report['Errors'] += 1
                     logger.error(error)
 
                 for entity in ents:
                     session.add(Entity(**entity))
 
-                # report['Entities'] += len(entities)
-
-                # Commit if we have 10k or more new entities
-                if len(session.new) >= 10000:
+                # Commit if we reach a certain amount of pending new entities
+                if len(session.new) >= DB_COMMIT_BATCH_SIZE:
                     try:
                         session.commit()
                     except Exception as exc:
@@ -117,8 +108,8 @@ def extract_entities(
                         session.rollback()
 
         except KeyboardInterrupt:
-            logger.warning('Cancelling running task')
-            logger.info('Terminating workers')
+            logger.warning("Cancelling running task")
+            logger.info("Terminating workers")
 
             # Clean up process pool
             pool.terminate()

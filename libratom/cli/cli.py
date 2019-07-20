@@ -5,14 +5,21 @@ Command-line interface for libratom
 
 import logging
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import click
 import click_log
 
-from libratom.cli import (CONTEXT_SETTINGS, INT_METAVAR, PATH_METAVAR,
-                          PathPath, validate_in_path, validate_out_path)
-from libratom.utils.entity_extraction import extract_entities
+from libratom.cli import (
+    CONTEXT_SETTINGS,
+    INT_METAVAR,
+    PATH_METAVAR,
+    PathPath,
+    validate_in_path,
+    validate_out_path,
+)
+from libratom.utils.entity_extraction import OUTPUT_FILENAME_TEMPLATE, extract_entities
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +80,8 @@ def ratom():
     callback=set_log_level_from_verbose,
     help="Increase verbosity (can be repeated).",
 )
-def entities(out, jobs, src, verbose):
+@click.option("-p", "--progress", is_flag=True, help="Show progress.")
+def entities(out, jobs, src, verbose, progress):
     """
     Extract named entities from a PST file or a directory of PST files.
 
@@ -82,7 +90,33 @@ def entities(out, jobs, src, verbose):
     If SOURCE is not provided the current working directory is used.
     """
 
-    status = extract_entities(source=src, destination=out, jobs=jobs, log_level=verbose)
+    # Resolve output file based on src parameter
+    if out.is_dir():
+        out = out / OUTPUT_FILENAME_TEMPLATE.format(
+            src.name, datetime.now().isoformat(timespec="seconds")
+        )
+
+    # Get list of PST files from the source
+    if src.is_dir():
+        files = list(src.glob("**/*.pst"))
+    else:
+        files = [src]
+
+    if progress:
+        with click.progressbar(
+            length=len(files), label="Processing files"
+        ) as progress_bar:
+            status = extract_entities(
+                files=files,
+                destination=out,
+                jobs=jobs,
+                log_level=verbose,
+                progress=progress_bar,
+            )
+    else:
+        status = extract_entities(
+            files=files, destination=out, jobs=jobs, log_level=verbose
+        )
 
     logger.info("All Done")
     sys.exit(status)
