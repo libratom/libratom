@@ -16,7 +16,6 @@ from libratom.cli import (
     INT_METAVAR,
     PATH_METAVAR,
     PathPath,
-    validate_in_path,
     validate_out_path,
 )
 from libratom.utils.entity_extraction import OUTPUT_FILENAME_TEMPLATE, extract_entities
@@ -71,7 +70,6 @@ def ratom():
     metavar="[SOURCE]",
     default=Path.cwd,
     type=PathPath(exists=True, resolve_path=True),
-    callback=validate_in_path,
 )
 @click.option(
     "-v",
