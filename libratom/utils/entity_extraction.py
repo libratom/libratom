@@ -6,9 +6,10 @@ Set of utility functions that use spaCy to perform named entity recognition
 import logging
 import multiprocessing
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
 import spacy
+from spacy.language import Language
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -25,7 +26,9 @@ DB_COMMIT_BATCH_SIZE = 10000
 
 
 @imap_job
-def process_message(filename: str, message_id: int, message: str, spacy_model):
+def process_message(
+    filename: str, message_id: int, message: str, spacy_model: Language
+) -> Tuple:
     """
     Job function for the worker processes
     """
