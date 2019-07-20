@@ -118,5 +118,5 @@ def entities(out, jobs, src, verbose, progress):
             files=files, destination=out, jobs=jobs, log_level=verbose
         )
 
-    logger.info("All Done")
+    logger.info("All done")
     sys.exit(status)

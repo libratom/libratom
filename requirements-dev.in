@@ -3,6 +3,7 @@ pytest-benchmark
 pytest-cov
 pytest-mock
 pytest-sugar
+pytest-click
 pysnooper
 mock
 wheel
