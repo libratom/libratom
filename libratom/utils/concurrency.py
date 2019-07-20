@@ -1,4 +1,4 @@
-# pylint: disable=logging-fstring-interpolation,broad-except
+# pylint: disable=logging-fstring-interpolation,broad-except,too-few-public-methods
 """
 Set of utilities for parallel execution of libratom code
 """
@@ -12,10 +12,24 @@ from libratom.utils.pff import PffArchive
 logger = logging.getLogger(__name__)
 
 
+class MockProgress:
+    """
+    Default progress object in case none was supplied
+    """
+
+    def update(self, n_steps):
+        """
+        Do nothing
+        """
+
+
 def get_messages(files, **kwargs):
     """
     Message generator to feed a pool of processes from a directory of PST files
     """
+
+    # Pop progress object from the optional arguments
+    progress = kwargs.pop("progress", MockProgress())
 
     # Iterate over files
     for pst_file in files:
@@ -41,19 +55,12 @@ def get_messages(files, **kwargs):
 
                         yield res
 
-                        # Update report per message
-                        # report["Messages"] += 1
-
                     except Exception as exc:
                         # Log and move on to the next message
                         logger.exception(exc)
 
-            # Update report per file
-            # report["Files"] += 1
-            # report["Size"] += pst_file.stat().st_size
-
-            # Update progress bar
-            # progress.value += 1
+            # Update progress (one unit per file)
+            progress.update(1)
 
         except Exception as exc:
             # Log and move on to the next file

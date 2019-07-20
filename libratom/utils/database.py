@@ -17,10 +17,13 @@ def db_session(session_factory):
 
     try:
         yield session
-        session.commit()
+        if session.new or session.dirty or session.deleted:
+            session.commit()
+
     except Exception as exc:
         logger.exception(exc)
         session.rollback()
         raise
+
     finally:
         session.close()
