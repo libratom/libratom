@@ -65,7 +65,7 @@ def test_ratom_entities(cli_runner, params, expected):
 
 @pytest.mark.parametrize(
     "params, expected",
-    [(["-v"], Expected(status=0, tokens=["Creating database file", "All done"]))],
+    [(["-vvp"], Expected(status=0, tokens=["Creating database file", "All done"]))],
 )
 def test_ratom_entities_enron_001(
     isolated_cli_runner, enron_dataset_part001, params, expected
@@ -74,6 +74,30 @@ def test_ratom_entities_enron_001(
     subcommand = ["entities"]
     subcommand.extend(params)
     subcommand.append(str(enron_dataset_part001))
+
+    result = isolated_cli_runner.invoke(ratom, subcommand)
+    assert result.exit_code == expected.status
+
+    for token in expected.tokens:
+        assert token in result.output
+
+
+@pytest.mark.parametrize(
+    "params, expected",
+    [(["-v"], Expected(status=0, tokens=["Creating database file", "All done"]))],
+)
+def test_ratom_entities_enron_001_from_file(
+    isolated_cli_runner, enron_dataset_part001, params, expected
+):
+
+    subcommand = ["entities"]
+    subcommand.extend(params)
+
+    # Use file name as source
+    files = list(enron_dataset_part001.glob("*.pst"))
+    assert len(files) == 1
+
+    subcommand.append(str(files[0]))
 
     result = isolated_cli_runner.invoke(ratom, subcommand)
     assert result.exit_code == expected.status
