@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name,missing-docstring,redefined-outer-name,stop-iteration-return
+# pylint: disable=invalid-name,missing-docstring,redefined-outer-name,stop-iteration-return,too-few-public-methods
 import os
 from pathlib import Path
 from typing import List
@@ -13,6 +13,16 @@ if not os.getenv("LIBRATOM_LOAD_TESTING"):
 
 
 CACHED_ENRON_DATA_DIR = Path("/tmp/libratom/test_data/RevisedEDRMv1_Complete")
+
+
+class Expected:
+    """
+    Result object type for parametrized tests. Expand as necessary...
+    """
+
+    def __init__(self, status: int, tokens: List[str]):
+        self.status = status
+        self.tokens = tokens
 
 
 def fetch_enron_dataset(name: str, files: List[str], url: str) -> Path:
