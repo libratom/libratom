@@ -61,3 +61,22 @@ def test_ratom_entities(cli_runner, params, expected):
 
     for token in expected.tokens:
         assert token in result.output
+
+
+@pytest.mark.parametrize(
+    "params, expected",
+    [(["-v"], Expected(status=0, tokens=["Creating database file", "All done"]))],
+)
+def test_ratom_entities_enron_001(
+    isolated_cli_runner, enron_dataset_part001, params, expected
+):
+
+    subcommand = ["entities"]
+    subcommand.extend(params)
+    subcommand.append(str(enron_dataset_part001))
+
+    result = isolated_cli_runner.invoke(ratom, subcommand)
+    assert result.exit_code == expected.status
+
+    for token in expected.tokens:
+        assert token in result.output

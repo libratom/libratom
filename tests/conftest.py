@@ -49,6 +49,21 @@ def fetch_enron_dataset(name: str, files: List[str], url: str) -> Path:
 
 
 @pytest.fixture(scope="session")
+def enron_dataset_part001() -> Path:
+    """
+    Returns:
+        A directory with one PST file:
+        albert_meyers_000_1_1.pst
+    """
+
+    name = "albert_meyers"
+    files = ["albert_meyers_000_1_1.pst"]
+    url = "https://s3.amazonaws.com/edrm.download.nuix.com/RevisedEDRMv1/albert_meyers.zip"
+
+    yield fetch_enron_dataset(name, files, url)
+
+
+@pytest.fixture(scope="session")
 def enron_dataset_part002() -> Path:
     """
     Returns:
