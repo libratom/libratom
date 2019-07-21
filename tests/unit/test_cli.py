@@ -4,9 +4,13 @@ from pathlib import Path
 from typing import List
 
 import pytest
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 import libratom
 from libratom.cli.cli import ratom
+from libratom.models.entity import Entity
+from libratom.utils.database import db_session
 
 
 class Expected:
@@ -104,3 +108,21 @@ def test_ratom_entities_enron_001_from_file(
 
     for token in expected.tokens:
         assert token in result.output
+
+    # Validate output file
+    db_file = None
+    for line in result.output.splitlines():
+        if line.startswith("Creating database file:"):
+            db_file = Path(line.rsplit(maxsplit=1)[1].strip())
+
+    assert db_file.is_file()
+
+    # Open DB session
+    engine = create_engine(f"sqlite:///{db_file}")
+    Session = sessionmaker(bind=engine)
+
+    with db_session(Session) as session:
+        assert session.query(Entity).count() == 14283
+
+        for entity in session.query(Entity)[:10]:
+            assert str(entity)
