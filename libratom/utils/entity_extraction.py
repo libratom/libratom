@@ -118,6 +118,10 @@ def extract_entities(
             pool.terminate()
             pool.join()
 
+            # Remove incomplete DB file
+            logger.info(f"Removing {destination}")
+            destination.unlink()
+
             return 1
 
     return 0
