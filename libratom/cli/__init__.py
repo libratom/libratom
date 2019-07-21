@@ -1,4 +1,4 @@
-# pylint: disable=unused-argument
+# pylint: disable=unused-argument,too-few-public-methods
 """
 Command-line interface for libratom
 """
