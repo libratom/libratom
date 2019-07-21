@@ -86,6 +86,11 @@ def entities(out, jobs, src, verbose, progress):
     If SOURCE is a directory it will be walked recursively. Any non-PST file will be skipped.
 
     If SOURCE is not provided the current working directory is used.
+
+    Upon success the result will be a new .sqlite3 database file. If an output path is provided
+    it will be either the output file's parent directory or the file itself.
+
+    If no output path is provided the file will be written in the current working directory.
     """
 
     status = 0
