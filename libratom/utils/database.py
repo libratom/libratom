@@ -23,7 +23,6 @@ def db_session(session_factory):
     except Exception as exc:
         logger.exception(exc)
         session.rollback()
-        raise
 
     finally:
         session.close()
