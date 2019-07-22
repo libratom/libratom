@@ -112,15 +112,12 @@ def extract_entities(
 
         except KeyboardInterrupt:
             logger.warning("Cancelling running task")
+            logger.info(f"Partial results written to {destination}")
             logger.info("Terminating workers")
 
             # Clean up process pool
             pool.terminate()
             pool.join()
-
-            # Remove incomplete DB file
-            logger.info(f"Removing {destination}")
-            destination.unlink()
 
             return 1
 
