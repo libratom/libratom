@@ -108,7 +108,13 @@ def extract_entities(
 
             # Download quietly
             spacy_msg.no_print = True
-            spacy.cli.download(spacy_model_name)
+            try:
+                spacy.cli.download(spacy_model_name, False, "--quiet")
+            except SystemExit:
+                logger.error(f"Unable to install spacy model {spacy_model_name}")
+                logger.error("Exiting")
+
+                return 1
 
             # Now try loading it again
             reload(pkg_resources)

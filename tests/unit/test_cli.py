@@ -11,7 +11,7 @@ import libratom
 from libratom.cli.cli import ratom
 from libratom.models.entity import Entity
 from libratom.utils.database import db_session
-from libratom.utils.entity_extraction import get_msg_count
+from libratom.utils.entity_extraction import extract_entities, get_msg_count
 
 
 class Expected:
@@ -127,6 +127,17 @@ def test_ratom_entities_enron_001_from_file(
 
         for entity in session.query(Entity)[:10]:
             assert str(entity)
+
+
+def test_handle_spacy_download(enron_dataset_part001):
+    files = enron_dataset_part001.glob("*.pst")
+
+    assert (
+        extract_entities(
+            files=files, destination=Path.cwd(), spacy_model_name="no_such_model"
+        )
+        == 1
+    )
 
 
 def test_get_msg_count(sample_pst_file):
