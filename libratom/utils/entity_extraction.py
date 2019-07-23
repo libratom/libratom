@@ -18,6 +18,7 @@ from sqlalchemy.orm import sessionmaker
 from libratom.models.entity import Base, Entity
 from libratom.utils.concurrency import get_messages, imap_job, worker_init
 from libratom.utils.database import db_session
+from libratom.utils.pff import PffArchive
 
 logger = logging.getLogger(__name__)
 
@@ -59,17 +60,11 @@ def process_message(
 
 
 def extract_entities(
-    files: List[Path],
-    destination: Path,
-    jobs: int = None,
-    log_level=logging.WARNING,
-    **kwargs,
+    files: List[Path], destination: Path, jobs: int = None, **kwargs
 ) -> int:
     """
     Main entity extraction function called by the CLI
     """
-
-    logger.setLevel(log_level)
 
     # Load spacy model
     logger.info(f"Loading spacy model: {SPACY_MODEL}")
@@ -148,3 +143,12 @@ def extract_entities(
             return 1
 
     return 0
+
+
+def get_msg_count(path: Path) -> int:
+    """
+    Get the number of messages for a given PST file path
+    """
+
+    with PffArchive(path) as pst_file:
+        return pst_file.message_count

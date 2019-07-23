@@ -11,6 +11,9 @@ from libratom.utils.pff import PffArchive
 
 logger = logging.getLogger(__name__)
 
+# Interval between progress updates in the message generator
+MSG_PROGRESS_STEP = 10
+
 
 class MockProgress:
     """
@@ -31,15 +34,18 @@ def get_messages(files, **kwargs):
     # Pop progress object from the optional arguments
     progress = kwargs.pop("progress", MockProgress())
 
+    # Included in our message count per file, to track progress
+    remainder = 0
+    msg_count = 0
+
     # Iterate over files
     for pst_file in files:
-
-        logger.info(f"Processing {pst_file}")
-
         try:
             with PffArchive(pst_file) as archive:
                 # Iterate over messages
-                for message in archive.messages():
+                for msg_count, message in enumerate(
+                    archive.messages(), start=1 + remainder
+                ):
                     try:
                         # Keyword arguments for process_message()
                         res = {
@@ -55,16 +61,23 @@ def get_messages(files, **kwargs):
 
                         yield res
 
+                        # Update progress every N messages
+                        if not msg_count % MSG_PROGRESS_STEP:
+                            progress.update(MSG_PROGRESS_STEP)
+
                     except Exception as exc:
                         # Log and move on to the next message
                         logger.exception(exc)
 
-            # Update progress (one unit per file)
-            progress.update(1)
+                # Number of messages not counted towards progress is carried over
+                remainder = msg_count % MSG_PROGRESS_STEP
 
         except Exception as exc:
             # Log and move on to the next file
             logger.exception(exc)
+
+    # Update progress with what's left
+    progress.update(msg_count % MSG_PROGRESS_STEP)
 
 
 def worker_init():

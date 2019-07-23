@@ -18,7 +18,11 @@ from libratom.cli import (
     PathPath,
     validate_out_path,
 )
-from libratom.utils.entity_extraction import OUTPUT_FILENAME_TEMPLATE, extract_entities
+from libratom.utils.entity_extraction import (
+    OUTPUT_FILENAME_TEMPLATE,
+    extract_entities,
+    get_msg_count,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -35,8 +39,9 @@ def set_log_level_from_verbose(ctx, param, value):
     elif value > 0:
         level = logging.INFO
     else:
+        # Default
         level = logging.WARNING
-    logger.setLevel(level)
+    logging.getLogger().setLevel(level)
     return level
 
 
@@ -77,9 +82,10 @@ def ratom():
     count=True,
     callback=set_log_level_from_verbose,
     help="Increase verbosity (can be repeated).",
+    expose_value=False,
 )
 @click.option("-p", "--progress", is_flag=True, help="Show progress.")
-def entities(out, jobs, src, verbose, progress):
+def entities(out, jobs, src, progress):
     """
     Extract named entities from a PST file or a directory of PST files.
 
@@ -107,24 +113,30 @@ def entities(out, jobs, src, verbose, progress):
     else:
         files = [src]
 
+    # Get the total number of messages
+    logger.info("Getting total message count")
+    msg_count = 0
+    if progress:
+        with click.progressbar(files, label="Processing files") as bar:
+            for file in bar:
+                msg_count += get_msg_count(file)
+    else:
+        for file in files:
+            msg_count += get_msg_count(file)
+
+    # Get messages and extract entities
     if not files:
         logger.warning(f"No PST file found in {src}; nothing to do")
     else:
         if progress:
             with click.progressbar(
-                length=len(files), label="Processing files"
+                length=msg_count, label="Extracting entities"
             ) as progress_bar:
                 status = extract_entities(
-                    files=files,
-                    destination=out,
-                    jobs=jobs,
-                    log_level=verbose,
-                    progress=progress_bar,
+                    files=files, destination=out, jobs=jobs, progress=progress_bar
                 )
         else:
-            status = extract_entities(
-                files=files, destination=out, jobs=jobs, log_level=verbose
-            )
+            status = extract_entities(files=files, destination=out, jobs=jobs)
 
     logger.info("All done")
     sys.exit(status)
