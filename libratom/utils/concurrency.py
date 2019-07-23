@@ -77,7 +77,7 @@ def get_messages(files, **kwargs):
             logger.exception(exc)
 
     # Update progress with what's left
-    progress.update(msg_count % MSG_PROGRESS_STEP)
+    progress.update(remainder)
 
 
 def worker_init():
