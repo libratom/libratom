@@ -1,3 +1,4 @@
+# pylint: disable=broad-except
 """
 Database related utilities
 """

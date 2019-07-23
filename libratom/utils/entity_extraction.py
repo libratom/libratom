@@ -5,11 +5,11 @@ Set of utility functions that use spaCy to perform named entity recognition
 
 import logging
 import multiprocessing
-import pkg_resources
 from importlib import reload
 from pathlib import Path
 from typing import List, Tuple
 
+import pkg_resources
 import spacy
 from spacy.language import Language
 from sqlalchemy import create_engine
@@ -78,13 +78,18 @@ def extract_entities(
         spacy_model = spacy.load(SPACY_MODEL)
 
     except OSError as exc:
-        logger.warning(f'Unable to load spacy model {SPACY_MODEL}')
+        logger.warning(f"Unable to load spacy model {SPACY_MODEL}")
 
-        if 'E050' in str(exc):
+        if "E050" in str(exc):
             # https://github.com/explosion/spaCy/blob/v2.1.6/spacy/errors.py#L207
             # Model not found, try installing it
-            logger.warning(f'Downloading {SPACY_MODEL}')
-            spacy.cli.download(SPACY_MODEL, False, '--quiet')
+            logger.warning(f"Downloading {SPACY_MODEL}")
+
+            from spacy.cli.download import msg
+
+            # Download quietly
+            msg.no_print = True
+            spacy.cli.download(SPACY_MODEL)
 
             # Now try loading it again
             reload(pkg_resources)
