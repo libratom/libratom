@@ -85,10 +85,10 @@ def extract_entities(
             # Model not found, try installing it
             logger.warning(f"Downloading {SPACY_MODEL}")
 
-            from spacy.cli.download import msg
+            from spacy.cli.download import msg as spacy_msg
 
             # Download quietly
-            msg.no_print = True
+            spacy_msg.no_print = True
             spacy.cli.download(SPACY_MODEL)
 
             # Now try loading it again
