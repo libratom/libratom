@@ -132,11 +132,8 @@ def test_ratom_entities_enron_001_from_file(
 def test_handle_spacy_download(enron_dataset_part001):
     files = enron_dataset_part001.glob("*.pst")
 
-    assert (
-        extract_entities(
-            files=files, destination=Path.cwd(), spacy_model_name="no_such_model"
-        )
-        == 1
+    assert 1 == extract_entities(
+        files=files, destination=Path.cwd(), spacy_model_name="no_such_model"
     )
 
 
