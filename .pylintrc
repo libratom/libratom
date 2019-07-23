@@ -219,7 +219,7 @@ attr-naming-style=snake_case
 
 # Bad variable names which should always be refused, separated by a comma.
 bad-names=foo,
-          bar,
+          # bar,   # e.g: with progress_bar() as bar
           baz,
           toto,
           tutu,

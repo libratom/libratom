@@ -1,3 +1,4 @@
+# pylint: disable=consider-using-ternary
 """
 PFF parsing utilities. Requires libpff.
 """
@@ -125,6 +126,16 @@ class PffArchive:
             for message in folder.sub_messages:
                 yield message
 
+    @property
+    def message_count(self):
+        """Returns the total number of messages in the archive
+
+        Returns:
+            An int
+        """
+
+        return sum(folder.number_of_sub_messages for folder in self.folders())
+
     @staticmethod
     def format_message(message, with_headers=True):
         """Formats a pypff.message object into an RFC822 compliant string
@@ -141,7 +152,7 @@ class PffArchive:
 
         if not body:
             # Return headers only
-            return message.transport_headers.strip() or ""
+            return message.transport_headers and message.transport_headers.strip() or ""
 
         if isinstance(body, bytes):
             body = str(body, encoding="utf-8", errors="replace")
