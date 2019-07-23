@@ -6,6 +6,7 @@ Set of utility functions that use spaCy to perform named entity recognition
 import logging
 import multiprocessing
 import os
+from collections import namedtuple
 from importlib import reload
 from pathlib import Path
 from typing import List, Tuple
@@ -24,11 +25,27 @@ from libratom.utils.pff import PffArchive
 logger = logging.getLogger(__name__)
 
 OUTPUT_FILENAME_TEMPLATE = "{}_entities_{}.sqlite3"
-SPACY_MODEL = "en_core_web_sm"  # Command line option?
 
 # Allow these to be set through the environment
-MSG_BATCH_SIZE = int(os.environ.get('RATOM_MSG_BATCH_SIZE', 100))
-DB_COMMIT_BATCH_SIZE = int(os.environ.get('RATOM_DB_COMMIT_BATCH_SIZE', 10000))
+MSG_BATCH_SIZE = int(os.environ.get("RATOM_MSG_BATCH_SIZE", 100))
+DB_COMMIT_BATCH_SIZE = int(os.environ.get("RATOM_DB_COMMIT_BATCH_SIZE", 10000))
+
+# Spacy trained model names
+SPACY_MODEL_NAMES = [
+    "de_core_news_sm",
+    "es_core_news_sm",
+    "es_core_news_md",
+    "pt_core_news_sm",
+    "it_core_news_sm",
+    "nl_core_news_sm",
+    "en_core_web_sm",
+    "en_core_web_md",
+    "en_core_web_lg",
+    "fr_core_news_sm",
+    "fr_core_news_md",
+]
+
+SPACY_MODELS = namedtuple("SpacyModels", SPACY_MODEL_NAMES)(*SPACY_MODEL_NAMES)
 
 
 @imap_job
@@ -63,35 +80,39 @@ def process_message(
 
 
 def extract_entities(
-    files: List[Path], destination: Path, jobs: int = None, **kwargs
+    files: List[Path],
+    destination: Path,
+    spacy_model_name: str,
+    jobs: int = None,
+    **kwargs,
 ) -> int:
     """
     Main entity extraction function called by the CLI
     """
 
     # Load spacy model
-    logger.info(f"Loading spacy model: {SPACY_MODEL}")
+    logger.info(f"Loading spacy model: {spacy_model_name}")
 
     try:
-        spacy_model = spacy.load(SPACY_MODEL)
+        spacy_model = spacy.load(spacy_model_name)
 
     except OSError as exc:
-        logger.warning(f"Unable to load spacy model {SPACY_MODEL}")
+        logger.warning(f"Unable to load spacy model {spacy_model_name}")
 
         if "E050" in str(exc):
             # https://github.com/explosion/spaCy/blob/v2.1.6/spacy/errors.py#L207
             # Model not found, try installing it
-            logger.warning(f"Downloading {SPACY_MODEL}")
+            logger.warning(f"Downloading {spacy_model_name}")
 
             from spacy.cli.download import msg as spacy_msg
 
             # Download quietly
             spacy_msg.no_print = True
-            spacy.cli.download(SPACY_MODEL)
+            spacy.cli.download(spacy_model_name)
 
             # Now try loading it again
             reload(pkg_resources)
-            spacy_model = spacy.load(SPACY_MODEL)
+            spacy_model = spacy.load(spacy_model_name)
 
         else:
             logger.exception(exc)

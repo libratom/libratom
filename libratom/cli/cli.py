@@ -20,6 +20,8 @@ from libratom.cli import (
 )
 from libratom.utils.entity_extraction import (
     OUTPUT_FILENAME_TEMPLATE,
+    SPACY_MODEL_NAMES,
+    SPACY_MODELS,
     extract_entities,
     get_msg_count,
 )
@@ -64,6 +66,13 @@ def ratom():
     help=f"Write the output to {PATH_METAVAR}.",
 )
 @click.option(
+    "--spacy-model",
+    help="Use a given spaCy model to extract entities.",
+    type=click.Choice(SPACY_MODEL_NAMES),
+    metavar="<model>",
+    default=SPACY_MODELS.en_core_web_sm,
+)
+@click.option(
     "-j",
     "--jobs",
     metavar=INT_METAVAR,
@@ -85,7 +94,7 @@ def ratom():
     expose_value=False,
 )
 @click.option("-p", "--progress", is_flag=True, help="Show progress.")
-def entities(out, jobs, src, progress):
+def entities(out, spacy_model, jobs, src, progress):
     """
     Extract named entities from a PST file or a directory of PST files.
 
@@ -133,10 +142,16 @@ def entities(out, jobs, src, progress):
                 length=msg_count, label="Extracting entities"
             ) as progress_bar:
                 status = extract_entities(
-                    files=files, destination=out, jobs=jobs, progress=progress_bar
+                    files=files,
+                    destination=out,
+                    spacy_model_name=spacy_model,
+                    jobs=jobs,
+                    progress=progress_bar,
                 )
         else:
-            status = extract_entities(files=files, destination=out, jobs=jobs)
+            status = extract_entities(
+                files=files, destination=out, spacy_model_name=spacy_model, jobs=jobs
+            )
 
     logger.info("All done")
     sys.exit(status)
