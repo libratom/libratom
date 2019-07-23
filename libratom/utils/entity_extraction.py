@@ -5,6 +5,7 @@ Set of utility functions that use spaCy to perform named entity recognition
 
 import logging
 import multiprocessing
+import os
 from importlib import reload
 from pathlib import Path
 from typing import List, Tuple
@@ -24,8 +25,10 @@ logger = logging.getLogger(__name__)
 
 OUTPUT_FILENAME_TEMPLATE = "{}_entities_{}.sqlite3"
 SPACY_MODEL = "en_core_web_sm"  # Command line option?
-MESSAGE_BATCH_SIZE = 100
-DB_COMMIT_BATCH_SIZE = 10000
+
+# Allow these to be set through the environment
+MSG_BATCH_SIZE = int(os.environ.get('RATOM_MSG_BATCH_SIZE', 100))
+DB_COMMIT_BATCH_SIZE = int(os.environ.get('RATOM_DB_COMMIT_BATCH_SIZE', 10000))
 
 
 @imap_job
@@ -115,7 +118,7 @@ def extract_entities(
             for ents, error in pool.imap(
                 process_message,
                 get_messages(files, spacy_model=spacy_model, **kwargs),
-                chunksize=MESSAGE_BATCH_SIZE,
+                chunksize=MSG_BATCH_SIZE,
             ):
                 if error:
                     logger.error(error)

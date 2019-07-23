@@ -5,6 +5,7 @@ Set of utilities for parallel execution of libratom code
 
 import functools
 import logging
+import os
 import signal
 
 from libratom.utils.pff import PffArchive
@@ -12,7 +13,7 @@ from libratom.utils.pff import PffArchive
 logger = logging.getLogger(__name__)
 
 # Interval between progress updates in the message generator
-MSG_PROGRESS_STEP = 10
+MSG_PROGRESS_STEP = int(os.environ.get('RATOM_MSG_PROGRESS_STEP', 10))
 
 
 class MockProgress:
