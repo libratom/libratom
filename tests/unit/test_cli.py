@@ -11,6 +11,7 @@ import libratom
 from libratom.cli.cli import ratom
 from libratom.models.entity import Entity
 from libratom.utils.database import db_session
+from libratom.utils.entity_extraction import get_msg_count
 
 
 class Expected:
@@ -126,3 +127,7 @@ def test_ratom_entities_enron_001_from_file(
 
         for entity in session.query(Entity)[:10]:
             assert str(entity)
+
+
+def test_get_msg_count(sample_pst_file):
+    assert get_msg_count(sample_pst_file) == 2668
