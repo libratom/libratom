@@ -16,24 +16,13 @@ logger = logging.getLogger(__name__)
 MSG_PROGRESS_STEP = int(os.environ.get("RATOM_MSG_PROGRESS_STEP", 10))
 
 
-class MockProgress:
-    """
-    Default progress object in case none was supplied
-    """
-
-    def update(self, n_steps):
-        """
-        Do nothing
-        """
-
-
 def get_messages(files, **kwargs):
     """
     Message generator to feed a pool of processes from a directory of PST files
     """
 
-    # Pop progress object from the optional arguments
-    progress = kwargs.pop("progress", MockProgress())
+    # Pop progress callback from the optional arguments, default to no-op
+    update_progress = kwargs.pop("progress_callback", lambda *_, **__: None)
 
     # Included in our message count per file, to track progress
     remainder = 0
@@ -64,7 +53,7 @@ def get_messages(files, **kwargs):
 
                         # Update progress every N messages
                         if not msg_count % MSG_PROGRESS_STEP:
-                            progress.update(MSG_PROGRESS_STEP)
+                            update_progress(MSG_PROGRESS_STEP)
 
                     except Exception as exc:
                         # Log and move on to the next message
@@ -78,7 +67,7 @@ def get_messages(files, **kwargs):
             logger.exception(exc)
 
     # Update progress with what's left
-    progress.update(remainder)
+    update_progress(remainder)
 
 
 def worker_init():
