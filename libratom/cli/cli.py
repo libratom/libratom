@@ -127,7 +127,6 @@ def entities(out, spacy_model, jobs, src, progress):
         files = [src]
 
     # Get the total number of messages
-    logger.info("Getting total message count")
     msg_count = 0
     if progress:
         with progress_bars.counter(
