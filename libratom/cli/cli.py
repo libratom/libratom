@@ -149,7 +149,7 @@ def entities(out, spacy_model, jobs, src, progress):
     else:
         if progress:
             with progress_bars.counter(
-                total=msg_count, desc="Extracting entities", unit="msg", color="green"
+                total=msg_count, desc="Processing messages", unit="msg", color="green"
             ) as msg_bar:
                 status = extract_entities(
                     files=files,
