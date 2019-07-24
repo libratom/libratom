@@ -16,13 +16,13 @@ logger = logging.getLogger(__name__)
 MSG_PROGRESS_STEP = int(os.environ.get("RATOM_MSG_PROGRESS_STEP", 10))
 
 
-def get_messages(files, **kwargs):
+def get_messages(files, progress_callback=None, **kwargs):
     """
     Message generator to feed a pool of processes from a directory of PST files
     """
 
-    # Pop progress callback from the optional arguments, default to no-op
-    update_progress = kwargs.pop("progress_callback", lambda *_, **__: None)
+    # Default progress callback to no-op
+    update_progress = progress_callback or (lambda *_, **__: None)
 
     # Included in our message count per file, to track progress
     remainder = 0
