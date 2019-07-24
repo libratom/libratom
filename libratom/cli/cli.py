@@ -146,7 +146,7 @@ def entities(out, spacy_model, jobs, src, progress):
                     destination=out,
                     spacy_model_name=spacy_model,
                     jobs=jobs,
-                    progress=progress_bar,
+                    progress_callback=progress_bar.update,
                 )
         else:
             status = extract_entities(
