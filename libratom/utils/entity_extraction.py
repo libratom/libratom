@@ -27,8 +27,13 @@ logger = logging.getLogger(__name__)
 OUTPUT_FILENAME_TEMPLATE = "{}_entities_{}.sqlite3"
 
 # Allow these to be set through the environment
-MSG_BATCH_SIZE = int(os.environ.get("RATOM_MSG_BATCH_SIZE", 100))
-DB_COMMIT_BATCH_SIZE = int(os.environ.get("RATOM_DB_COMMIT_BATCH_SIZE", 10000))
+ENV_MSG_BATCH_SIZE = int(os.environ.get("RATOM_MSG_BATCH_SIZE", 100))
+ENV_DB_COMMIT_BATCH_SIZE = int(os.environ.get("RATOM_DB_COMMIT_BATCH_SIZE", 10_000))
+
+# Use the same default as spacy: https://github.com/explosion/spaCy/blob/v2.1.6/spacy/language.py#L130-L149
+ENV_SPACY_MODEL_TEXT_MAX_LENGTH = int(
+    os.environ.get("RATOM_SPACY_MODEL_TEXT_MAX_LENGTH", 1_000_000)
+)
 
 # Spacy trained model names
 SPACY_MODEL_NAMES = [
@@ -90,6 +95,11 @@ def extract_entities(
     Main entity extraction function called by the CLI
     """
 
+    # Confirm environment settingsb
+    for key, value in globals().items():
+        if key.startswith("ENV_"):
+            logger.debug(f"{key}: {value}")
+
     # Load spacy model
     logger.info(f"Loading spacy model: {spacy_model_name}")
 
@@ -124,6 +134,9 @@ def extract_entities(
             logger.exception(exc)
             return 1
 
+    # Set text length limit for model
+    spacy_model.max_length = ENV_SPACY_MODEL_TEXT_MAX_LENGTH
+
     # Make DB file's parents if needed
     destination.parent.mkdir(parents=True, exist_ok=True)
 
@@ -145,7 +158,7 @@ def extract_entities(
             for ents, error in pool.imap(
                 process_message,
                 get_messages(files, spacy_model=spacy_model, **kwargs),
-                chunksize=MSG_BATCH_SIZE,
+                chunksize=ENV_MSG_BATCH_SIZE,
             ):
                 if error:
                     logger.error(error)
@@ -154,7 +167,7 @@ def extract_entities(
                     session.add(Entity(**entity))
 
                 # Commit if we reach a certain amount of pending new entities
-                if len(session.new) >= DB_COMMIT_BATCH_SIZE:
+                if len(session.new) >= ENV_DB_COMMIT_BATCH_SIZE:
                     try:
                         session.commit()
                     except Exception as exc:
