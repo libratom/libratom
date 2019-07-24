@@ -76,7 +76,7 @@ def process_message(
         return entities, None
 
     except Exception as exc:
-        return [], str(exc)
+        return [], f"file: {filename}, message ID: {message_id}, spacy error: {exc}"
 
 
 def extract_entities(
