@@ -10,6 +10,7 @@ from pathlib import Path
 
 import click
 import click_log
+import enlighten
 
 from libratom.cli import (
     CONTEXT_SETTINGS,
@@ -110,6 +111,9 @@ def entities(out, spacy_model, jobs, src, progress):
 
     status = 0
 
+    # Progress bar manager
+    progress_bars = enlighten.get_manager()
+
     # Resolve output file based on src parameter
     if out.is_dir():
         out = out / OUTPUT_FILENAME_TEMPLATE.format(
@@ -126,9 +130,16 @@ def entities(out, spacy_model, jobs, src, progress):
     logger.info("Getting total message count")
     msg_count = 0
     if progress:
-        with click.progressbar(files, label="Processing files") as bar:
-            for file in bar:
+        with progress_bars.counter(
+            total=len(files),
+            desc="Initial file scan",
+            unit="files",
+            color="green",
+            leave=False,
+        ) as file_bar:
+            for file in files:
                 msg_count += get_msg_count(file)
+                file_bar.update()
     else:
         for file in files:
             msg_count += get_msg_count(file)
@@ -138,15 +149,15 @@ def entities(out, spacy_model, jobs, src, progress):
         logger.warning(f"No PST file found in {src}; nothing to do")
     else:
         if progress:
-            with click.progressbar(
-                length=msg_count, label="Extracting entities"
-            ) as progress_bar:
+            with progress_bars.counter(
+                total=msg_count, desc="Extracting entities", unit="msg", color="green"
+            ) as msg_bar:
                 status = extract_entities(
                     files=files,
                     destination=out,
                     spacy_model_name=spacy_model,
                     jobs=jobs,
-                    progress_callback=progress_bar.update,
+                    progress_callback=msg_bar.update,
                 )
         else:
             status = extract_entities(
