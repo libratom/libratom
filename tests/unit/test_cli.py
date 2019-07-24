@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring,invalid-name,too-few-public-methods,misplaced-comparison-constant
+# pylint: disable=missing-docstring,invalid-name,too-few-public-methods,misplaced-comparison-constant,no-value-for-parameter
 
 from pathlib import Path
 from typing import List
@@ -11,7 +11,11 @@ import libratom
 from libratom.cli.cli import ratom
 from libratom.models.entity import Entity
 from libratom.utils.database import db_session
-from libratom.utils.entity_extraction import extract_entities, get_msg_count
+from libratom.utils.entity_extraction import (
+    extract_entities,
+    get_msg_count,
+    process_message,
+)
 
 
 class Expected:
@@ -135,6 +139,22 @@ def test_handle_spacy_download(enron_dataset_part001):
     assert 1 == extract_entities(
         files=files, destination=Path.cwd(), spacy_model_name="no_such_model"
     )
+
+
+def test_process_message():
+    filename, message_id = "/foo/bar", 1234
+    out, err = process_message(
+        # Must use dictionary form if function is called explicitly
+        {
+            "filename": filename,
+            "message_id": message_id,
+            "message": "hello",
+            "spacy_model": None,
+        }
+    )
+    assert filename in err
+    assert str(message_id) in err
+    assert out == []
 
 
 def test_get_msg_count(enron_dataset_part044):
