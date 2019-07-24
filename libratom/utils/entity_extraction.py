@@ -51,7 +51,7 @@ SPACY_MODELS = namedtuple("SpacyModels", SPACY_MODEL_NAMES)(*SPACY_MODEL_NAMES)
 @imap_job
 def process_message(
     filename: str, message_id: int, message: str, spacy_model: Language
-) -> Tuple:
+) -> Tuple[List, str]:
     """
     Job function for the worker processes
     """
@@ -76,7 +76,7 @@ def process_message(
         return entities, None
 
     except Exception as exc:
-        return None, str(exc)
+        return [], str(exc)
 
 
 def extract_entities(
