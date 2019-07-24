@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring,invalid-name,too-few-public-methods
+# pylint: disable=missing-docstring,invalid-name,too-few-public-methods,misplaced-comparison-constant
 
 from pathlib import Path
 from typing import List
@@ -137,5 +137,7 @@ def test_handle_spacy_download(enron_dataset_part001):
     )
 
 
-def test_get_msg_count(sample_pst_file):
-    assert get_msg_count(sample_pst_file) == 2668
+def test_get_msg_count(enron_dataset_part044):
+    files = enron_dataset_part044.glob("*.pst")
+
+    assert sum(get_msg_count(file) for file in files) == 558

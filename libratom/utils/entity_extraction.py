@@ -180,5 +180,10 @@ def get_msg_count(path: Path) -> int:
     Get the number of messages for a given PST file path
     """
 
-    with PffArchive(path) as pst_file:
-        return pst_file.message_count
+    try:
+        with PffArchive(path) as pst_file:
+            return pst_file.message_count
+
+    except Exception as exc:
+        logger.exception(exc)
+        return 0
