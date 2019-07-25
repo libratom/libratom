@@ -154,7 +154,7 @@ def extract_entities(
                     logger.warning(
                         f"Skipping message {message_id} from file {filename}"
                     )
-                    logger.debug(error)
+                    logger.debug(f"File: {filename}, message ID: {message_id}, {error}")
 
                 for entity in ents:
                     session.add(
