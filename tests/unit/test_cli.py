@@ -105,7 +105,6 @@ def test_ratom_entities_enron_001_from_file(
 
     # Use file name as source
     files = list(enron_dataset_part001.glob("*.pst"))
-    assert len(files) == 1
 
     subcommand.append(str(files[0]))
 
@@ -151,7 +150,6 @@ def test_ratom_entities_enron_012_from_file(
 
     # Use file name as source
     files = list(enron_dataset_part012.glob("*.pst"))
-    assert len(files) == 1
 
     subcommand.append(str(files[0]))
 
