@@ -13,7 +13,8 @@ coverage:
         if_ci_failed: error
         only_pulls: false
         flags: null
-        paths: null
+        paths:
+          libratom
     patch:
       default:
         # basic
@@ -27,4 +28,5 @@ coverage:
         if_ci_failed: error
         only_pulls: false
         flags: null
-        paths: null
+        paths:
+          libratom
