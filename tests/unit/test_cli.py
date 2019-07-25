@@ -1,5 +1,6 @@
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods,misplaced-comparison-constant,no-value-for-parameter
 
+import os
 from pathlib import Path
 from typing import List
 
@@ -131,6 +132,31 @@ def test_ratom_entities_enron_001_from_file(
 
         for entity in session.query(Entity)[:10]:
             assert str(entity)
+
+
+@pytest.mark.skipif(
+    not os.getenv("CONTINUOUS_INTEGRATION", None),
+    reason="Keep local test runs reasonably short",
+)
+@pytest.mark.parametrize(
+    "params, expected",
+    [(["-vp"], Expected(status=0, tokens=["Creating database file", "All done"]))],
+)
+def test_ratom_entities_enron_012_from_file(
+    isolated_cli_runner, enron_dataset_part012, params, expected
+):
+
+    subcommand = ["entities"]
+    subcommand.extend(params)
+
+    # Use file name as source
+    files = list(enron_dataset_part012.glob("*.pst"))
+    assert len(files) == 1
+
+    subcommand.append(str(files[0]))
+
+    result = isolated_cli_runner.invoke(ratom, subcommand)
+    assert result.exit_code == expected.status
 
 
 def test_handle_spacy_download(enron_dataset_part001):
