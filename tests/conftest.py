@@ -116,6 +116,22 @@ def enron_dataset_part004() -> Path:
 
 
 @pytest.fixture(scope="session")
+def enron_dataset_part012() -> Path:
+    """
+    Returns:
+        A directory with two PST files:
+        chris_dorland_000_1_1_1.pst
+        chris_dorland_001_1_1_1.pst
+    """
+
+    name = "jason_wolfe"
+    files = ["chris_dorland_000_1_1_1.pst", "chris_dorland_001_1_1_1.pst"]
+    url = "https://s3.amazonaws.com/edrm.download.nuix.com/RevisedEDRMv1/chris_dorland.zip"
+
+    yield fetch_enron_dataset(name, files, url)
+
+
+@pytest.fixture(scope="session")
 def enron_dataset_part044() -> Path:
     """
     Returns:
