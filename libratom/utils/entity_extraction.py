@@ -212,7 +212,7 @@ def count_messages_in_files(
             good_files.add(file)
 
         except Exception as exc:
-            logger.warning(f"Skipping {file.name}")
+            logger.warning(f"Skipping file {file.name}")
             logger.debug(exc, exc_info=True)
 
         update_progress()
