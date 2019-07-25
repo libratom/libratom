@@ -24,7 +24,7 @@ sudo apt install python3 python3-pip python3-venv
 Create and activate a Python virtual environment:
 ```shell
 python3 -m venv venv
-source /venv/bin/activate
+source venv/bin/activate
 ```
 
 Make sure pip is upgraded to the latest version:
@@ -37,9 +37,49 @@ Install libratom:
 pip install libratom
 ```
 
-## Using libratom
+## Entity extraction
 
-Additional usage documentation will appear here as the project matures. For now, you can try out some of the functionality in Jupyter notebooks we've prepared at:
+Libratom provides a CLI with planned support for a range of email processing tasks. Currently, the CLI supports entity extraction from individual PST files and directories of PST files. 
+
+To see available commands, type:
+
+```shell
+(venv) user@host:~$ ratom -h
+```
+
+To see detailed help for the entity extraction command, type:
+
+```shell
+(venv) user@host:~$ ratom entities -h
+```
+
+To run the extractor with default settings over a PST file or directory of PST files, type the following:
+
+```shell
+(venv) user@host:~$ ratom entities -p /path/to/PST-file-or-directory
+```
+
+Progress is displayed in a bar at the bottom of the window. To terminate a job early and shut down all workers, type Ctrl-C.
+
+By default, the tool will use the spaCy en\_core\_web\_sm model, and will start as many concurrent jobs as there are virtual cores available. Entities are written to a sqlite3 file automatically named using the existing file or directory name and current datetime stamp, and with the following single-table schema:
+
+```shell
+sqlite> .schema
+CREATE TABLE entities (
+	id INTEGER NOT NULL, 
+	text VARCHAR, 
+	label_ VARCHAR, 
+	filename VARCHAR, 
+	message_id INTEGER, 
+	PRIMARY KEY (id)
+);
+```
+
+In this schema, id is the primary key, text is the entity instance, label\_ is the entity type, filename is the PST file associated with this message and entity instance, message\_id is the PST-internal identifier for the message.
+
+## Additional libratom use cases
+
+More usage documentation will appear here as the project matures. For now, you can try out some of the functionality in Jupyter notebooks we've prepared at:
 
 [https://github.com/libratom/ratom-notebooks](https://github.com/libratom/ratom-notebooks)
 
