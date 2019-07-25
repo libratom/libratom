@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import List
 
 import pytest
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
 
 import libratom
@@ -127,10 +127,40 @@ def test_ratom_entities_enron_001_from_file(
     Session = sessionmaker(bind=engine)
 
     with db_session(Session) as session:
-        assert session.query(Entity).count() == 14283
-
+        # Sanity check
         for entity in session.query(Entity)[:10]:
             assert str(entity)
+
+        # Verify total entity count
+        assert session.query(Entity).count() == 14283
+
+        # Verify count per entity type
+        results = (
+            session.query(Entity.label_, func.count(Entity.label_))
+            .group_by(Entity.label_)
+            .all()
+        )
+        expected_counts = {
+            "CARDINAL": 1937,
+            "DATE": 552,
+            "EVENT": 8,
+            "FAC": 45,
+            "GPE": 315,
+            "LAW": 18,
+            "LOC": 20,
+            "MONEY": 183,
+            "NORP": 55,
+            "ORDINAL": 56,
+            "ORG": 8802,
+            "PERCENT": 13,
+            "PERSON": 1116,
+            "PRODUCT": 39,
+            "QUANTITY": 3,
+            "TIME": 1098,
+            "WORK_OF_ART": 23,
+        }
+        for entity_type, count in results:
+            assert expected_counts[entity_type] == count
 
 
 @pytest.mark.skipif(
