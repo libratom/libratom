@@ -124,7 +124,7 @@ def enron_dataset_part012() -> Path:
         chris_dorland_001_1_1_1.pst
     """
 
-    name = "jason_wolfe"
+    name = "chris_dorland"
     files = ["chris_dorland_000_1_1_1.pst", "chris_dorland_001_1_1_1.pst"]
     url = "https://s3.amazonaws.com/edrm.download.nuix.com/RevisedEDRMv1/chris_dorland.zip"
 
