@@ -12,8 +12,8 @@ from libratom.cli.cli import ratom
 from libratom.models.entity import Entity
 from libratom.utils.database import db_session
 from libratom.utils.entity_extraction import (
+    count_messages_in_files,
     extract_entities,
-    get_msg_count,
     process_message,
 )
 
@@ -157,7 +157,9 @@ def test_process_message():
     assert out == []
 
 
-def test_get_msg_count(enron_dataset_part044):
+def test_count_messages_in_files(enron_dataset_part044):
     files = enron_dataset_part044.glob("*.pst")
+    count, good_files = count_messages_in_files(files)
 
-    assert sum(get_msg_count(file) for file in files) == 558
+    assert count == 558
+    assert len(good_files) == 1
