@@ -9,7 +9,7 @@ import os
 from collections import namedtuple
 from importlib import reload
 from pathlib import Path
-from typing import Callable, Iterable, List, Set, Tuple
+from typing import Callable, Iterable, List, Optional, Set, Tuple
 
 import pkg_resources
 import spacy
@@ -56,7 +56,7 @@ SPACY_MODELS = namedtuple("SpacyModels", SPACY_MODEL_NAMES)(*SPACY_MODEL_NAMES)
 @imap_job
 def process_message(
     filename: str, message_id: int, message: str, spacy_model: Language
-) -> Tuple[List, str]:
+) -> Tuple[List, str, int, Optional[str]]:
     """
     Job function for the worker processes
     """
@@ -66,28 +66,12 @@ def process_message(
     try:
         # Extract entities from the message
         doc = spacy_model(message)
+        entities = [(ent.text, ent.label_) for ent in doc.ents]
 
-        entities = [
-            {
-                # Keys are column names from libratom.models.entity.Entity
-                "text": ent.text,
-                "label_": ent.label_,
-                "filename": filename,
-                "message_id": message_id,
-            }
-            for ent in doc.ents
-        ]
-
-        return entities, None
+        return entities, filename, message_id, None
 
     except Exception as exc:
-        # Since an exception here likely comes from spacy we'll try to get its code (safely)
-        tokens = str(exc).split(maxsplit=1)
-        err_code = tokens and tokens[0] or ""
-        return (
-            [],
-            f"file: {filename}, message ID: {message_id}, spacy error: {err_code}",
-        )
+        return [], filename, message_id, str(exc)
 
 
 def extract_entities(
@@ -161,17 +145,26 @@ def extract_entities(
 
         try:
 
-            for ents, error in pool.imap(
+            for ents, filename, message_id, error in pool.imap(
                 process_message,
                 get_messages(files, spacy_model=spacy_model, **kwargs),
                 chunksize=RATOM_MSG_BATCH_SIZE,
             ):
                 if error:
-                    # Log it as an error elsewhere?
-                    logger.warning(error)
+                    logger.warning(
+                        f"Skipping message {message_id} from file {filename}"
+                    )
+                    logger.debug(error)
 
                 for entity in ents:
-                    session.add(Entity(**entity))
+                    session.add(
+                        Entity(
+                            text=entity[0],
+                            label_=entity[1],
+                            filename=filename,
+                            message_id=message_id,
+                        )
+                    )
 
                 # Commit if we reach a certain amount of pending new entities
                 if len(session.new) >= RATOM_DB_COMMIT_BATCH_SIZE:
@@ -218,8 +211,9 @@ def count_messages_in_files(
 
             good_files.add(file)
 
-        except Exception:
+        except Exception as exc:
             logger.warning(f"Skipping {file.name}")
+            logger.debug(exc, exc_info=True)
 
         update_progress()
 

@@ -142,19 +142,21 @@ def test_handle_spacy_download(enron_dataset_part001):
 
 
 def test_process_message():
-    filename, message_id = "/foo/bar", 1234
-    out, err = process_message(
+    filename_in, message_id_in = "/foo/bar", 1234
+    entities, filename, message_id, error = process_message(
         # Must use dictionary form if function is called explicitly
         {
-            "filename": filename,
-            "message_id": message_id,
+            "filename": filename_in,
+            "message_id": message_id_in,
             "message": "hello",
             "spacy_model": None,
         }
     )
-    assert filename in err
-    assert str(message_id) in err
-    assert out == []
+
+    assert filename == filename_in
+    assert message_id == message_id_in
+    assert entities == []
+    assert error
 
 
 def test_count_messages_in_files(enron_dataset_part044):
