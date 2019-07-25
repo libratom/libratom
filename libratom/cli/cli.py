@@ -23,8 +23,8 @@ from libratom.utils.entity_extraction import (
     OUTPUT_FILENAME_TEMPLATE,
     SPACY_MODEL_NAMES,
     SPACY_MODELS,
+    count_messages_in_files,
     extract_entities,
-    get_msg_count,
 )
 
 logger = logging.getLogger(__name__)
@@ -122,12 +122,11 @@ def entities(out, spacy_model, jobs, src, progress):
 
     # Get list of PST files from the source
     if src.is_dir():
-        files = list(src.glob("**/*.pst"))
+        files = set(src.glob("**/*.pst"))
     else:
-        files = [src]
+        files = {src}
 
     # Get the total number of messages
-    msg_count = 0
     if progress:
         with progress_bars.counter(
             total=len(files),
@@ -136,12 +135,12 @@ def entities(out, spacy_model, jobs, src, progress):
             color="green",
             leave=False,
         ) as file_bar:
-            for file in files:
-                msg_count += get_msg_count(file)
-                file_bar.update()
+            msg_count, files = count_messages_in_files(
+                files, progress_callback=file_bar.update
+            )
+
     else:
-        for file in files:
-            msg_count += get_msg_count(file)
+        msg_count, files = count_messages_in_files(files)
 
     # Get messages and extract entities
     if not files:

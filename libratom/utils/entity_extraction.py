@@ -1,4 +1,4 @@
-# pylint: disable=broad-except,logging-fstring-interpolation,invalid-name,protected-access
+# pylint: disable=broad-except,logging-fstring-interpolation,invalid-name,protected-access,consider-using-ternary
 """
 Set of utility functions that use spaCy to perform named entity recognition
 """
@@ -9,7 +9,7 @@ import os
 from collections import namedtuple
 from importlib import reload
 from pathlib import Path
-from typing import List, Tuple
+from typing import Callable, Iterable, List, Set, Tuple
 
 import pkg_resources
 import spacy
@@ -81,11 +81,17 @@ def process_message(
         return entities, None
 
     except Exception as exc:
-        return [], f"file: {filename}, message ID: {message_id}, spacy error: {exc}"
+        # Since an exception here likely comes from spacy we'll try to get its code (safely)
+        tokens = str(exc).split(maxsplit=1)
+        err_code = tokens and tokens[0] or ""
+        return (
+            [],
+            f"file: {filename}, message ID: {message_id}, spacy error: {err_code}",
+        )
 
 
 def extract_entities(
-    files: List[Path],
+    files: Iterable[Path],
     destination: Path,
     spacy_model_name: str,
     jobs: int = None,
@@ -161,7 +167,8 @@ def extract_entities(
                 chunksize=RATOM_MSG_BATCH_SIZE,
             ):
                 if error:
-                    logger.error(error)
+                    # Log it as an error elsewhere?
+                    logger.warning(error)
 
                 for entity in ents:
                     session.add(Entity(**entity))
@@ -188,15 +195,32 @@ def extract_entities(
     return 0
 
 
-def get_msg_count(path: Path) -> int:
+def count_messages_in_files(
+    files: Iterable[Path], progress_callback: Callable = None
+) -> Tuple[int, Set[Path]]:
     """
-    Get the number of messages for a given PST file path
+    Get the number of messages in a set of PST files
+
+    Return the total message count and a set of the valid files
+
+    Used by the main entity extraction function to perform an initial scan
     """
 
-    try:
-        with PffArchive(path) as pst_file:
-            return pst_file.message_count
+    # Default progress callback to no-op
+    update_progress = progress_callback or (lambda *_, **__: None)
 
-    except Exception as exc:
-        logger.exception(exc)
-        return 0
+    msg_count, good_files = 0, set()
+
+    for file in files:
+        try:
+            with PffArchive(file) as pst_file:
+                msg_count += pst_file.message_count
+
+            good_files.add(file)
+
+        except Exception:
+            logger.warning(f"Skipping {file.name}")
+
+        update_progress()
+
+    return msg_count, good_files
