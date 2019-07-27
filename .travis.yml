@@ -27,5 +27,6 @@ deploy:
   skip_existing: true
   on:
     repo: libratom/libratom
+    tags: true
     fork: false
     condition: $TRAVIS_OS_NAME != osx
