@@ -85,7 +85,7 @@ def extract_entities(
     Main entity extraction function called by the CLI
     """
 
-    # Confirm environment settingsb
+    # Confirm environment settings
     for key, value in globals().items():
         if key.startswith("RATOM_"):
             logger.debug(f"{key}: {value}")
