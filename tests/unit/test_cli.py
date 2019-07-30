@@ -12,7 +12,7 @@ import libratom
 from libratom.cli.cli import ratom
 from libratom.models.entity import Entity
 from libratom.utils.database import db_session
-from libratom.utils.entity_extraction import (
+from libratom.utils.entities import (
     count_messages_in_files,
     extract_entities,
     process_message,

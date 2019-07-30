@@ -74,35 +74,25 @@ def process_message(
         return [], filename, message_id, str(exc)
 
 
-def extract_entities(
-    files: Iterable[Path],
-    destination: Path,
-    spacy_model_name: str,
-    jobs: int = None,
-    **kwargs,
-) -> int:
+def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
     """
-    Main entity extraction function called by the CLI
+    Loads and returns a given spaCy model
+
+    If the model is not present, an attempt will be made to download and install it
     """
 
-    # Confirm environment settings
-    for key, value in globals().items():
-        if key.startswith("RATOM_"):
-            logger.debug(f"{key}: {value}")
-
-    # Load spacy model
     logger.info(f"Loading spacy model: {spacy_model_name}")
 
     try:
         spacy_model = spacy.load(spacy_model_name)
 
     except OSError as exc:
-        logger.warning(f"Unable to load spacy model {spacy_model_name}")
+        logger.info(f"Unable to load spacy model {spacy_model_name}")
 
         if "E050" in str(exc):
             # https://github.com/explosion/spaCy/blob/v2.1.6/spacy/errors.py#L207
             # Model not found, try installing it
-            logger.warning(f"Downloading {spacy_model_name}")
+            logger.info(f"Downloading {spacy_model_name}")
 
             from spacy.cli.download import msg as spacy_msg
 
@@ -114,7 +104,7 @@ def extract_entities(
                 logger.error(f"Unable to install spacy model {spacy_model_name}")
                 logger.error("Exiting")
 
-                return 1
+                return None
 
             # Now try loading it again
             reload(pkg_resources)
@@ -122,10 +112,38 @@ def extract_entities(
 
         else:
             logger.exception(exc)
-            return 1
+            return None
 
     # Set text length limit for model
     spacy_model.max_length = RATOM_SPACY_MODEL_MAX_LENGTH
+
+    return spacy_model
+
+
+def extract_entities(
+    files: Iterable[Path],
+    destination: Path,
+    spacy_model_name: str,
+    jobs: int = None,
+    **kwargs,
+) -> int:
+    """
+    Main entity extraction function that does two things:
+
+    1) Load a given spaCy model, after downloading and installing it if necessary
+
+    2) Start a process pool to extract named entities from a given iterable of files
+    """
+
+    # Confirm environment settings
+    for key, value in globals().items():
+        if key.startswith("RATOM_"):
+            logger.debug(f"{key}: {value}")
+
+    # Get spaCy model
+    spacy_model = load_spacy_model(spacy_model_name)
+    if not spacy_model:
+        return 1
 
     # Make DB file's parents if needed
     destination.parent.mkdir(parents=True, exist_ok=True)
