@@ -12,13 +12,8 @@ import click
 import click_log
 import enlighten
 
-from libratom.cli import (
-    CONTEXT_SETTINGS,
-    INT_METAVAR,
-    PATH_METAVAR,
-    PathPath,
-    validate_out_path,
-)
+from libratom.cli import CONTEXT_SETTINGS, INT_METAVAR, PATH_METAVAR
+from libratom.cli.utils import MockContext, PathPath, validate_out_path
 from libratom.utils.entity_extraction import (
     OUTPUT_FILENAME_TEMPLATE,
     SPACY_MODEL_NAMES,
@@ -111,8 +106,12 @@ def entities(out, spacy_model, jobs, src, progress):
 
     status = 0
 
-    # Progress bar manager
-    progress_bars = enlighten.get_manager()
+    # Make or fake our progress bar context objects
+    if progress:
+        progress_bars = enlighten.get_manager()
+        progress_bar_context = progress_bars.counter
+    else:
+        progress_bar_context = MockContext
 
     # Resolve output file based on src parameter
     if out.is_dir():
@@ -127,39 +126,30 @@ def entities(out, spacy_model, jobs, src, progress):
         files = {src}
 
     # Get the total number of messages
-    if progress:
-        with progress_bars.counter(
-            total=len(files),
-            desc="Initial file scan",
-            unit="files",
-            color="green",
-            leave=False,
-        ) as file_bar:
-            msg_count, files = count_messages_in_files(
-                files, progress_callback=file_bar.update
-            )
-
-    else:
-        msg_count, files = count_messages_in_files(files)
+    with progress_bar_context(
+        total=len(files),
+        desc="Initial file scan",
+        unit="files",
+        color="green",
+        leave=False,
+    ) as file_bar:
+        msg_count, files = count_messages_in_files(
+            files, progress_callback=file_bar.update
+        )
 
     # Get messages and extract entities
     if not files:
         logger.warning(f"No PST file found in {src}; nothing to do")
     else:
-        if progress:
-            with progress_bars.counter(
-                total=msg_count, desc="Processing messages", unit="msg", color="green"
-            ) as msg_bar:
-                status = extract_entities(
-                    files=files,
-                    destination=out,
-                    spacy_model_name=spacy_model,
-                    jobs=jobs,
-                    progress_callback=msg_bar.update,
-                )
-        else:
+        with progress_bar_context(
+            total=msg_count, desc="Processing messages", unit="msg", color="green"
+        ) as msg_bar:
             status = extract_entities(
-                files=files, destination=out, spacy_model_name=spacy_model, jobs=jobs
+                files=files,
+                destination=out,
+                spacy_model_name=spacy_model,
+                jobs=jobs,
+                progress_callback=msg_bar.update,
             )
 
     logger.info("All done")
