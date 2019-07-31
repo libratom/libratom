@@ -10,7 +10,7 @@ from pathlib import Path
 import enlighten
 
 from libratom.cli.utils import MockContext
-from libratom.utils.entities import (
+from libratom.lib.entities import (
     OUTPUT_FILENAME_TEMPLATE,
     count_messages_in_files,
     extract_entities,
