@@ -8,7 +8,7 @@ import logging
 import os
 import signal
 from pathlib import Path
-from typing import Callable, Iterable
+from typing import Callable, Dict, Iterable
 
 from libratom.lib.pff import PffArchive
 
@@ -18,7 +18,9 @@ logger = logging.getLogger(__name__)
 MSG_PROGRESS_STEP = int(os.environ.get("RATOM_MSG_PROGRESS_STEP", 10))
 
 
-def get_messages(files: Iterable[Path], progress_callback: Callable = None, **kwargs):
+def get_messages(
+    files: Iterable[Path], progress_callback: Callable = None, **kwargs
+) -> Dict:
     """
     Message generator to feed a pool of processes from a directory of PST files
     """

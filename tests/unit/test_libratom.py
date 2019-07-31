@@ -9,6 +9,7 @@ from tempfile import TemporaryDirectory
 import pytest
 
 import libratom
+from libratom.lib.concurrency import get_messages
 from libratom.lib.pff import PffArchive
 
 logger = logging.getLogger(__name__)
@@ -105,3 +106,23 @@ def test_extract_message_attachments(enron_dataset_part002):
 
             # Sanity check on the file
             assert filepath.stat().st_size == att.size
+
+
+def test_get_messages_with_bad_files(enron_dataset_part044):
+    count = 0
+    for count, res in enumerate(
+        get_messages(files=enron_dataset_part044.glob("*.pst")), start=1
+    ):
+        assert res
+
+    assert count == 558
+
+
+def test_get_messages_with_bad_messages(enron_dataset_part012):
+    count = 0
+    for count, res in enumerate(
+        get_messages(files=enron_dataset_part012.glob("*.pst")), start=1
+    ):
+        assert res
+
+    assert count == 11262
