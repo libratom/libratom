@@ -97,5 +97,7 @@ def entities(out, spacy_model, jobs, src, progress):
     If no output path is provided the file will be written in the current working directory.
     """
 
-    status = subcommands.entities(out, spacy_model, jobs, src, progress)
+    status = subcommands.entities(
+        out=out, spacy_model_name=spacy_model, jobs=jobs, src=src, progress=progress
+    )
     sys.exit(status)
