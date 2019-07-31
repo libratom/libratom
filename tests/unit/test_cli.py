@@ -1,6 +1,7 @@
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods,misplaced-comparison-constant,no-value-for-parameter
 
 import os
+import tempfile
 from pathlib import Path
 from typing import List
 
@@ -9,6 +10,7 @@ from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
 
 import libratom
+import libratom.cli.subcommands as subcommands
 from libratom.cli.cli import ratom
 from libratom.lib.database import db_session
 from libratom.lib.entities import (
@@ -187,7 +189,16 @@ def test_ratom_entities_enron_012_from_file(
     assert result.exit_code == expected.status
 
 
-def test_spacy_download_bad_model():
+def test_entities_with_bad_model(enron_dataset_part001):
+    with tempfile.TemporaryDirectory() as tmpdir:
+        assert 1 == subcommands.entities(
+            out=Path(tmpdir),
+            spacy_model_name="no_such_model",
+            jobs=2,
+            src=enron_dataset_part001,
+            progress=False,
+        )
+
     assert not load_spacy_model(spacy_model_name="no_such_model")
 
 
