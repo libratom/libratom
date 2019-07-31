@@ -124,11 +124,9 @@ def extract_entities(
     **kwargs,
 ) -> int:
     """
-    Main entity extraction function that does two things:
+    Main entity extraction function that extracts named entities from a given iterable of files
 
-    1) Load a given spaCy model, after downloading and installing it if necessary
-
-    2) Start a process pool to extract named entities from a given iterable of files
+    Spawns multiples processes via multiprocessing.Pool
     """
 
     # Confirm environment settings
