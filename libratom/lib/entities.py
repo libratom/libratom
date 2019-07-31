@@ -81,8 +81,6 @@ def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
     If the model is not present, an attempt will be made to download and install it
     """
 
-    logger.info(f"Loading spacy model: {spacy_model_name}")
-
     try:
         spacy_model = spacy.load(spacy_model_name)
 
@@ -102,8 +100,6 @@ def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
                 spacy.cli.download(spacy_model_name, False, "--quiet")
             except SystemExit:
                 logger.error(f"Unable to install spacy model {spacy_model_name}")
-                logger.error("Exiting")
-
                 return None
 
             # Now try loading it again
@@ -123,7 +119,7 @@ def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
 def extract_entities(
     files: Iterable[Path],
     destination: Path,
-    spacy_model_name: str,
+    spacy_model: Language,
     jobs: int = None,
     **kwargs,
 ) -> int:
@@ -139,11 +135,6 @@ def extract_entities(
     for key, value in globals().items():
         if key.startswith("RATOM_"):
             logger.debug(f"{key}: {value}")
-
-    # Get spaCy model
-    spacy_model = load_spacy_model(spacy_model_name)
-    if not spacy_model:
-        return 1
 
     # Make DB file's parents if needed
     destination.parent.mkdir(parents=True, exist_ok=True)

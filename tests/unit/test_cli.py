@@ -13,7 +13,7 @@ from libratom.cli.cli import ratom
 from libratom.lib.database import db_session
 from libratom.lib.entities import (
     count_messages_in_files,
-    extract_entities,
+    load_spacy_model,
     process_message,
 )
 from libratom.models.entity import Entity
@@ -187,12 +187,8 @@ def test_ratom_entities_enron_012_from_file(
     assert result.exit_code == expected.status
 
 
-def test_handle_spacy_download(enron_dataset_part001):
-    files = enron_dataset_part001.glob("*.pst")
-
-    assert 1 == extract_entities(
-        files=files, destination=Path.cwd(), spacy_model_name="no_such_model"
-    )
+def test_spacy_download_bad_model():
+    assert not load_spacy_model(spacy_model_name="no_such_model")
 
 
 def test_process_message():
