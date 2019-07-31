@@ -2,6 +2,7 @@
 import email
 import hashlib
 import logging
+import tempfile
 from email import policy
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -10,6 +11,7 @@ import pytest
 
 import libratom
 from libratom.lib.concurrency import get_messages
+from libratom.lib.entities import SPACY_MODELS, extract_entities, load_spacy_model
 from libratom.lib.pff import PffArchive
 
 logger = logging.getLogger(__name__)
@@ -109,6 +111,7 @@ def test_extract_message_attachments(enron_dataset_part002):
 
 
 def test_get_messages_with_bad_files(enron_dataset_part044):
+
     count = 0
     for count, res in enumerate(
         get_messages(files=enron_dataset_part044.glob("*.pst")), start=1
@@ -119,6 +122,7 @@ def test_get_messages_with_bad_files(enron_dataset_part044):
 
 
 def test_get_messages_with_bad_messages(enron_dataset_part012):
+
     count = 0
     for count, res in enumerate(
         get_messages(files=enron_dataset_part012.glob("*.pst")), start=1
@@ -126,3 +130,17 @@ def test_get_messages_with_bad_messages(enron_dataset_part012):
         assert res
 
     assert count == 11262
+
+
+def test_extract_entities_with_bad_messages(enron_dataset_part012):
+
+    tmp_filename = "test.sqlite3"
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        status = extract_entities(
+            files=enron_dataset_part012.glob("*.pst"),
+            destination=Path(tmpdir) / tmp_filename,
+            spacy_model=load_spacy_model(SPACY_MODELS.en_core_web_sm),
+        )
+
+        assert status == 0
