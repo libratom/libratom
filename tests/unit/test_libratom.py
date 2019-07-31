@@ -112,24 +112,24 @@ def test_extract_message_attachments(enron_dataset_part002):
 
 def test_get_messages_with_bad_files(enron_dataset_part044):
 
-    count = 0
-    for count, res in enumerate(
+    _count = 0
+    for _count, res in enumerate(
         get_messages(files=enron_dataset_part044.glob("*.pst")), start=1
     ):
         assert res
 
-    assert count == 558
+    assert _count == 558
 
 
 def test_get_messages_with_bad_messages(enron_dataset_part012):
 
-    count = 0
-    for count, res in enumerate(
+    _count = 0
+    for _count, res in enumerate(
         get_messages(files=enron_dataset_part012.glob("*.pst")), start=1
     ):
         assert res
 
-    assert count == 11262
+    assert _count == 11262
 
 
 def test_extract_entities_with_bad_messages(enron_dataset_part012):
