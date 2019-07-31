@@ -17,10 +17,10 @@ from spacy.language import Language
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from libratom.lib.concurrency import get_messages, imap_job, worker_init
+from libratom.lib.database import db_session
+from libratom.lib.pff import PffArchive
 from libratom.models.entity import Base, Entity
-from libratom.utils.concurrency import get_messages, imap_job, worker_init
-from libratom.utils.database import db_session
-from libratom.utils.pff import PffArchive
 
 logger = logging.getLogger(__name__)
 

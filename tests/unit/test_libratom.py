@@ -9,7 +9,7 @@ from tempfile import TemporaryDirectory
 import pytest
 
 import libratom
-from libratom.utils.pff import PffArchive
+from libratom.lib.pff import PffArchive
 
 logger = logging.getLogger(__name__)
 

@@ -10,7 +10,7 @@ import signal
 from pathlib import Path
 from typing import Callable, Iterable
 
-from libratom.utils.pff import PffArchive
+from libratom.lib.pff import PffArchive
 
 logger = logging.getLogger(__name__)
 
