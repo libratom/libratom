@@ -2,10 +2,9 @@ language: python
 sudo: false
 git:
   depth: false
-before_install:
-  - &upgrade_pip pip install --upgrade pip
+install:
+  - pip install --upgrade pip
   - pip install tox-travis codecov
-install: skip
 script: tox
 after_success: codecov
 
@@ -33,10 +32,9 @@ jobs:
       os: linux
       dist: xenial
       python: 3.7
-      before_install: *upgrade_pip
-      install: pip install -r requirements.txt
-      script: echo "Releasing to PyPI..."
-      after_success: skip
+      install: skip
+      script: skip
+      after_success: true
       deploy:
         provider: pypi
         user: ratom
@@ -44,3 +42,6 @@ jobs:
           secure: CRS29sGi3Z+nDlcQ3Zz3FjPW25YWQVsd97PurPbvQU2nesyQO5FwRTEX/O9ndgKufyeQ7f98cdW+O636R0OzeJYitOavkiwYagjGiBfzv4gb/KTtOkfywG8bGLeA0cqq/WuFhXFAxj6a42vSThWRX7mi61aDzGXS9g6RLDE03z7Uq4/6NSOH2lbEoch6Y9HK63WNaUlCLbWQUsSAwuYLCxeoIvsVTkJlheBGyBqWKPBygr2bnHfSSxK0AvEh6IVGvR2QpG/YUDAHBBomkahJ0W9n8wkTcfU4jib5sT/5MJT0QRu20z27cy2kjnW+ip8fqF4DUmF9e1ZxNUYyqHya+qHwhEM+/uUy3O8ILvWgNMfU+DLCvxctVUE1y/pl++UOPHriyfHYFKGty7bSqiJukEyHzxhGIFi0eWnTObAwJnfC49L5oO3JQ7ywIv215V5U0EAhX3bXRVGaBv2X0vQfDqQu38DqjccDvD7TUsJJNM4k8+67eaxX4yKY6eU+OevhX6AvvATE2RTE5jA6XFG6w3RQ+85sK/MZNjOpyBFdPQ3eI7i2FU33Fq6g74JffWe9KpUoU5EIo/tPwab5iF+WFvJlXPIjSzLpNZSocxo9wa32nKdmkZg0o5dDXmWqp/MwDy6UB+k+95DnCvL4kp6nTwLuRhAMU98XflxiMHBNfRY=
         distributions: sdist bdist_wheel
         skip_existing: true
+        on:
+          all_branches: true
+          condition: $TRAVIS_BRANCH = master || ! -z $TRAVIS_TAG
