@@ -11,8 +11,8 @@ after_success: codecov
 
 stages:
   - test
-  - name: deploy
-    if: fork is false and (branch = master or tag is present)
+  - name: release
+    if: fork is false and type != pull_request and (branch = master or tag is present)
 
 jobs:
   include:
@@ -28,14 +28,14 @@ jobs:
       language: generic
       env: TOXENV=py36
 
-    # DEPLOY
-    - stage: deploy
+    # RELEASE
+    - stage: release
       os: linux
       dist: xenial
       python: 3.7
       before_install: *upgrade_pip
       install: pip install -r requirements.txt
-      script: skip
+      script: echo "Releasing to PyPI..."
       after_success: skip
       deploy:
         provider: pypi
