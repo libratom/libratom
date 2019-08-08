@@ -1,4 +1,4 @@
-![Logo](https://github.com/libratom/ratom-logos/blob/master/basic_variations/RATOM_Vector_Logo_v1_300px.png)
+![Logo](https://github.com/libratom/ratom-logos/raw/master/basic_variations/RATOM_Vector_Logo_v1_300px.png)
 
 # libratom
 
