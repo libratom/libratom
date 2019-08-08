@@ -3,8 +3,8 @@ sudo: false
 git:
   depth: false
 install:
-  - pip install --upgrade pip
-  - pip install tox-travis codecov
+  - pip3 install --upgrade pip
+  - pip3 install tox-travis codecov
 script: tox
 after_success: codecov
 
