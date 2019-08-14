@@ -87,7 +87,7 @@ More usage documentation will appear here as the project matures. For now, you c
 
 Logos, documentation, and other non-software products of the RATOM team are distributed under the terms of Creative Commons 4.0 Attribution. Software items in RATOM repositories are distributed under the terms of the MIT License. See the LICENSE file for additional details.
 
-&copy; 2019, The University of North Carolina at Chapel Hill. All rights reserved.
+&copy; 2019, The University of North Carolina at Chapel Hill.
 
 ## Development Team and Support
 
