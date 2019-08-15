@@ -121,6 +121,18 @@ def test_get_messages_with_bad_files(enron_dataset_part044):
     assert _count == 558
 
 
+def test_get_message_by_id(sample_pst_file):
+    with PffArchive(sample_pst_file) as archive:
+        for message in archive.messages():
+            assert archive.get_message_by_id(message.identifier)
+
+
+def test_get_message_by_id_with_bad_id(sample_pst_file):
+    with PffArchive(sample_pst_file) as archive:
+        with pytest.raises(ValueError):
+            assert archive.get_message_by_id(1234)
+
+
 def test_get_messages_with_bad_messages(enron_dataset_part012):
 
     _count = 0

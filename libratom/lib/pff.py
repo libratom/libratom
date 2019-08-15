@@ -4,6 +4,7 @@ PFF parsing utilities. Requires libpff.
 """
 
 import logging
+from bisect import bisect_left
 from collections import deque
 from io import IOBase
 from pathlib import Path
@@ -24,7 +25,9 @@ class PffArchive:
         tree: A tree representation of the folders/messages hierarchy
     """
 
-    def __init__(self, file: Union[Path, IOBase, str] = None, skip_tree: bool = False) -> None:
+    def __init__(
+        self, file: Union[Path, IOBase, str] = None, skip_tree: bool = False
+    ) -> None:
         self._skip_tree = skip_tree
         self.data = pypff.file()
         self.tree = None
@@ -126,6 +129,27 @@ class PffArchive:
         for folder in self.folders(bfs):
             for message in folder.sub_messages:
                 yield message
+
+    def get_message_by_id(self, message_id: int) -> pypff.message:
+        """Gets a message by its ID
+
+        Args:
+            message_id: The target message's identifier attribute
+
+        Returns:
+            A pypff.message object
+        """
+        # fmt: off
+        for folder in self.folders():
+            messages = folder.sub_messages
+            # Use the fact that message IDs are stored sequentially in a given folder
+            if messages and messages[0].identifier <= message_id <= messages[-1].identifier:
+                i = bisect_left([message.identifier for message in messages], message_id)
+                if i != len(messages) and messages[i].identifier == message_id:
+                    return messages[i]
+
+        raise ValueError(f"No message found with identifier: {message_id}")
+        # fmt: on
 
     @property
     def message_count(self) -> int:
