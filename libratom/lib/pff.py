@@ -116,7 +116,7 @@ class PffArchive:
             else:
                 folders.extend(folder.sub_folders)
 
-    def messages(self, bfs=True) -> Generator[pypff.message, None, None]:
+    def messages(self, bfs: bool = True) -> Generator[pypff.message, None, None]:
         """Generator function to iterate over the archive's messages
 
         Args:
