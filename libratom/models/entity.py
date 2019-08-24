@@ -7,7 +7,7 @@ Base = declarative_base()
 
 
 class Entity(Base):
-    __tablename__ = "entities"
+    __tablename__ = "entity"
 
     id = Column(Integer, primary_key=True)
     text = Column(String)
