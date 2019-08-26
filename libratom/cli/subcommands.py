@@ -1,4 +1,4 @@
-# pylint: disable=logging-fstring-interpolation
+# pylint: disable=logging-fstring-interpolation,invalid-name
 """
 The functions in this module are entry points for ratom sub-commands, e.g. `ratom entities ...`
 """
@@ -9,13 +9,18 @@ from pathlib import Path
 
 import enlighten
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 from libratom.cli.utils import MockContext
+from libratom.lib.database import db_session
 from libratom.lib.entities import (
     OUTPUT_FILENAME_TEMPLATE,
     count_messages_in_files,
     extract_entities,
     load_spacy_model,
 )
+from libratom.models.entity import Base
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +53,10 @@ def entities(
     else:
         files = {src}
 
+    if not files:
+        logger.warning(f"No PST file found in {src}; nothing to do")
+        return 0
+
     # Get the total number of messages
     with progress_bar_context(
         total=len(files),
@@ -66,20 +75,26 @@ def entities(
     if not spacy_model:
         return 1
 
+    # Make DB file's parents if needed
+    out.parent.mkdir(parents=True, exist_ok=True)
+
+    # DB setup
+    logger.info(f"Creating database file: {out}")
+    engine = create_engine(f"sqlite:///{out}")
+    Session = sessionmaker(bind=engine)
+    Base.metadata.create_all(engine)
+
     # Get messages and extract entities
-    if not files:
-        logger.warning(f"No PST file found in {src}; nothing to do")
-    else:
-        with progress_bar_context(
-            total=msg_count, desc="Processing messages", unit="msg", color="green"
-        ) as msg_bar:
-            status = extract_entities(
-                files=files,
-                destination=out,
-                spacy_model=spacy_model,
-                jobs=jobs,
-                progress_callback=msg_bar.update,
-            )
+    with progress_bar_context(
+        total=msg_count, desc="Processing messages", unit="msg", color="green"
+    ) as msg_bar, db_session(Session) as session:
+        status = extract_entities(
+            files=files,
+            session=session,
+            spacy_model=spacy_model,
+            jobs=jobs,
+            progress_callback=msg_bar.update,
+        )
 
     logger.info("All done")
 
