@@ -14,13 +14,11 @@ from typing import Callable, Iterable, List, Optional, Set, Tuple
 import pkg_resources
 import spacy
 from spacy.language import Language
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.session import Session
 
 from libratom.lib.concurrency import get_messages, imap_job, worker_init
-from libratom.lib.database import db_session
 from libratom.lib.pff import PffArchive
-from libratom.models.entity import Base, Entity
+from libratom.models.entity import Entity
 
 logger = logging.getLogger(__name__)
 
@@ -118,7 +116,7 @@ def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
 
 def extract_entities(
     files: Iterable[Path],
-    destination: Path,
+    session: Session,
     spacy_model: Language,
     jobs: int = None,
     **kwargs,
@@ -134,19 +132,10 @@ def extract_entities(
         if key.startswith("RATOM_"):
             logger.debug(f"{key}: {value}")
 
-    # Make DB file's parents if needed
-    destination.parent.mkdir(parents=True, exist_ok=True)
-
-    # DB setup
-    logger.info(f"Creating database file: {destination}")
-    engine = create_engine(f"sqlite:///{destination}")
-    Session = sessionmaker(bind=engine)
-    Base.metadata.create_all(engine)
-
     # Start of multiprocessing
     with multiprocessing.Pool(
         processes=jobs, initializer=worker_init
-    ) as pool, db_session(Session) as session:
+    ) as pool:
 
         logger.info(f"Starting pool with {pool._processes} processes")
 
@@ -183,7 +172,7 @@ def extract_entities(
 
         except KeyboardInterrupt:
             logger.warning("Cancelling running task")
-            logger.info(f"Partial results written to {destination}")
+            logger.info("Partial results written to database")
             logger.info("Terminating workers")
 
             # Clean up process pool
