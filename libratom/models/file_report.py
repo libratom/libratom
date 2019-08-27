@@ -1,6 +1,7 @@
 # pylint: disable=too-few-public-methods,missing-docstring,invalid-name
 
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 
 from libratom.lib.database import Base
 
@@ -14,6 +15,9 @@ class FileReport(Base):
     size = Column(Integer)
     md5 = Column(String)
     sha256 = Column(String)
+    messages = relationship(
+        "Message", backref="file", order_by="Message.processing_start_time"
+    )
 
     @property
     def message_count(self):
