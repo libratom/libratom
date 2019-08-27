@@ -3,8 +3,10 @@
 Set of utility functions to generate job related reports
 """
 
+import hashlib
 import logging
 import multiprocessing
+from functools import partial
 from pathlib import Path
 from typing import Callable, Iterable, Tuple
 
@@ -23,10 +25,19 @@ def get_file_info(path: Path) -> Tuple:
 
     try:
         size = path.stat().st_size
-    except Exception as exc:
-        return None, str(exc)
 
-    return size, None
+        md5 = hashlib.md5()
+        with open(str(path), "rb") as f:
+            for block in iter(partial(f.read, 128), b''):
+                md5.update(block)
+
+        md5 = md5.hexdigest()
+
+
+    except Exception as exc:
+        return None, None, str(exc)
+
+    return size, md5, None
 
 
 def store_file_reports_in_db(
@@ -45,8 +56,8 @@ def store_file_reports_in_db(
         print(f"Starting pool with {pool._processes} processes")
 
         try:
-            for file_size, _error in pool.imap(get_file_info, ({'path': file} for file in files), chunksize=100):
-                print(file_size)
+            for file_size, md5, _error in pool.imap(get_file_info, ({'path': file} for file in files), chunksize=100):
+                print(file_size, md5)
 
         except KeyboardInterrupt:
 
