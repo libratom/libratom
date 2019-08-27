@@ -52,7 +52,7 @@ def test_ratom(cli_runner, params, expected):
     [
         ([], Expected(status=0, tokens=["nothing to do"])),
         (["-h"], Expected(status=0, tokens=["Usage"])),
-        (["-v"], Expected(status=0, tokens=["nothing to do", "All done"])),
+        (["-v"], Expected(status=0, tokens=["nothing to do"])),
         (
             ["-o", Path(__file__)],
             Expected(status=2, tokens=["Invalid value", "already exists"]),
