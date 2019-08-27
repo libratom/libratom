@@ -18,7 +18,7 @@ from sqlalchemy.orm.session import Session
 
 from libratom.lib.concurrency import get_messages, imap_job, worker_init
 from libratom.lib.pff import PffArchive
-from libratom.models.entity import Entity
+from libratom.models import Entity
 
 logger = logging.getLogger(__name__)
 

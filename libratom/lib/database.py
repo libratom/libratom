@@ -5,7 +5,11 @@ Database related utilities
 import logging
 from contextlib import contextmanager
 
+from sqlalchemy.ext.declarative import declarative_base
+
 logger = logging.getLogger(__name__)
+
+Base = declarative_base()
 
 
 @contextmanager
