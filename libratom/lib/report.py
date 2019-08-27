@@ -14,7 +14,7 @@ from typing import Callable, Dict, Iterable, Optional, Tuple
 from sqlalchemy.orm.session import Session
 
 from libratom.lib.concurrency import imap_job, worker_init
-from libratom.models import FileReport
+from libratom.models.file_report import FileReport
 
 logger = logging.getLogger(__name__)
 
@@ -25,8 +25,8 @@ def get_file_info(path: Path) -> Tuple[Dict, Optional[str]]:
     For a given file path, returns the size, md5 and sha256 checksums
     """
 
-    path = str(path)
-    res = {"path": path}
+    path, name = str(path), path.name
+    res = {"path": path, "name": name}
 
     try:
         size = os.stat(path).st_size
