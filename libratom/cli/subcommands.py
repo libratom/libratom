@@ -8,11 +8,9 @@ from datetime import datetime
 from pathlib import Path
 
 import enlighten
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 from libratom.cli.utils import MockContext
-from libratom.lib.database import Base, db_session
+from libratom.lib.database import db_init, db_session
 from libratom.lib.entities import (
     OUTPUT_FILENAME_TEMPLATE,
     count_messages_in_files,
@@ -75,10 +73,7 @@ def entities(
     out.parent.mkdir(parents=True, exist_ok=True)
 
     # DB setup
-    logger.info(f"Creating database file: {out}")
-    engine = create_engine(f"sqlite:///{out}")
-    Session = sessionmaker(bind=engine)
-    Base.metadata.create_all(engine)
+    Session = db_init(out)
 
     # Get messages and extract entities
     with progress_bar_context(

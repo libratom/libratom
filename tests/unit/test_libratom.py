@@ -11,6 +11,7 @@ import pytest
 
 import libratom
 from libratom.lib.concurrency import get_messages
+from libratom.lib.database import db_init, db_session
 from libratom.lib.entities import SPACY_MODELS, extract_entities, load_spacy_model
 from libratom.lib.pff import PffArchive
 
@@ -149,10 +150,16 @@ def test_extract_entities_with_bad_messages(enron_dataset_part012):
     tmp_filename = "test.sqlite3"
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        status = extract_entities(
-            files=enron_dataset_part012.glob("*.pst"),
-            destination=Path(tmpdir) / tmp_filename,
-            spacy_model=load_spacy_model(SPACY_MODELS.en_core_web_sm),
-        )
+
+        destination = Path(tmpdir) / tmp_filename
+        Session = db_init(destination)
+
+        with db_session(Session) as session:
+
+            status = extract_entities(
+                files=enron_dataset_part012.glob("*.pst"),
+                session=session,
+                spacy_model=load_spacy_model(SPACY_MODELS.en_core_web_sm),
+            )
 
         assert status == 0
