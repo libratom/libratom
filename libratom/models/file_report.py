@@ -1,9 +1,8 @@
 # pylint: disable=too-few-public-methods,missing-docstring,invalid-name
 
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+from libratom.lib.database import Base
 
 
 class FileReport(Base):
@@ -11,6 +10,7 @@ class FileReport(Base):
 
     id = Column(Integer, primary_key=True)
     path = Column(String)
+    name = Column(String)
     size = Column(Integer)
     md5 = Column(String)
     sha256 = Column(String)

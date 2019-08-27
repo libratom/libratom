@@ -12,14 +12,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from libratom.cli.utils import MockContext
-from libratom.lib.database import db_session
+from libratom.lib.database import Base, db_session
 from libratom.lib.entities import (
     OUTPUT_FILENAME_TEMPLATE,
     count_messages_in_files,
     extract_entities,
     load_spacy_model,
 )
-from libratom.models.entity import Base
 
 logger = logging.getLogger(__name__)
 
@@ -30,8 +29,6 @@ def entities(
     """
     Click sub command function called by `ratom entities`
     """
-
-    status = 0
 
     # Make or fake our progress bar context objects
     if progress:
