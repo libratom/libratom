@@ -1,6 +1,6 @@
 # pylint: disable=too-few-public-methods,missing-docstring,invalid-name
 
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, DateTime, Integer
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()

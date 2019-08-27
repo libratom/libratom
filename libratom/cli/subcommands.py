@@ -8,7 +8,6 @@ from datetime import datetime
 from pathlib import Path
 
 import enlighten
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
