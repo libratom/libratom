@@ -11,7 +11,7 @@ class FileReport(Base):
 
     id = Column(Integer, primary_key=True)
     path = Column(String)
-    name = Column(String)
+    name = Column(String)  # for convenience
     size = Column(Integer)
     md5 = Column(String)
     sha256 = Column(String)
