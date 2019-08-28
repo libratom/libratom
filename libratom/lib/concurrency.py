@@ -43,7 +43,7 @@ def get_messages(
                     try:
                         # Keyword arguments for process_message()
                         res = {
-                            "filename": pst_file.name,
+                            "filepath": str(pst_file),
                             "message_id": message.identifier,
                             "message": archive.format_message(
                                 message, with_headers=False

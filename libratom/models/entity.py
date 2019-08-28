@@ -12,7 +12,7 @@ class Entity(Base):
     id = Column(Integer, primary_key=True)
     text = Column(String)
     label_ = Column(String)
-    filename = Column(String)
+    filepath = Column(String)
     message_id = Column(Integer, ForeignKey(Message.id))
 
     def __str__(self):

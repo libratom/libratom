@@ -19,6 +19,7 @@ from sqlalchemy.orm.session import Session
 from libratom.lib.concurrency import get_messages, imap_job, worker_init
 from libratom.lib.pff import PffArchive
 from libratom.models.entity import Entity
+from libratom.models.file_report import FileReport
 from libratom.models.message import Message
 
 logger = logging.getLogger(__name__)
@@ -133,6 +134,10 @@ def extract_entities(
         if key.startswith("RATOM_"):
             logger.debug(f"{key}: {value}")
 
+    # Load the file_report table for local lookup
+    # pylint: disable=unused-variable
+    file_reports = session.query(FileReport).all()
+
     # Start of multiprocessing
     with multiprocessing.Pool(processes=jobs, initializer=worker_init) as pool:
 
@@ -140,19 +145,31 @@ def extract_entities(
 
         try:
 
-            for ents, filename, message_id, error in pool.imap(
+            for ents, filepath, message_id, error in pool.imap(
                 process_message,
                 get_messages(files, spacy_model=spacy_model, **kwargs),
                 chunksize=RATOM_MSG_BATCH_SIZE,
             ):
                 if error:
                     logger.warning(
-                        f"Skipping message {message_id} from file {filename}"
+                        f"Skipping message {message_id} from file {filepath}"
                     )
-                    logger.debug(f"File: {filename}, message ID: {message_id}, {error}")
+                    logger.debug(f"File: {filepath}, message ID: {message_id}, {error}")
 
-                # Record message info
+                # Create new message instance
                 message = Message(pff_identifier=message_id)
+
+                # Link message to a file_report
+                try:
+                    file_report = (
+                        session.query(FileReport).filter_by(path=filepath).one()
+                    )
+                    message.file_report_id = file_report.id
+                except Exception as exc:
+                    logger.warning(
+                        f"Unable to link message id {message_id} to a file. Error: {exc}"
+                    )
+
                 session.add(message)
 
                 # Record entities info
@@ -161,7 +178,7 @@ def extract_entities(
                         Entity(
                             text=entity[0],
                             label_=entity[1],
-                            filename=filename,
+                            filepath=filepath,
                             message_id=message.id,
                         )
                     )
