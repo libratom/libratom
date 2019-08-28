@@ -1,4 +1,4 @@
-# pylint: disable=broad-except,logging-fstring-interpolation,invalid-name,protected-access,consider-using-ternary
+# pylint: disable=broad-except,logging-fstring-interpolation,invalid-name,protected-access,consider-using-ternary,logging-format-interpolation
 """
 Set of utility functions that use spaCy to perform named entity recognition
 """
@@ -7,9 +7,10 @@ import logging
 import multiprocessing
 import os
 from collections import namedtuple
+from datetime import datetime
 from importlib import reload
 from pathlib import Path
-from typing import Callable, Iterable, List, Optional, Set, Tuple
+from typing import Callable, Dict, Iterable, Optional, Set, Tuple
 
 import pkg_resources
 import spacy
@@ -56,22 +57,29 @@ SPACY_MODELS = namedtuple("SpacyModels", SPACY_MODEL_NAMES)(*SPACY_MODEL_NAMES)
 @imap_job
 def process_message(
     filepath: str, message_id: int, message: str, spacy_model: Language
-) -> Tuple[List, str, int, Optional[str]]:
+) -> Tuple[Dict, Optional[str]]:
     """
     Job function for the worker processes
     """
 
     # Return basic types to avoid serialization issues
+    res = {
+        "filepath": filepath,
+        "message_id": message_id,
+        "processing_start_time": datetime.utcnow(),
+    }
 
     try:
         # Extract entities from the message
         doc = spacy_model(message)
-        entities = [(ent.text, ent.label_) for ent in doc.ents]
+        res["entities"] = [(ent.text, ent.label_) for ent in doc.ents]
 
-        return entities, filepath, message_id, None
+        res["processing_end_time"] = datetime.utcnow()
+
+        return res, None
 
     except Exception as exc:
-        return [], filepath, message_id, str(exc)
+        return res, str(exc)
 
 
 def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
@@ -144,19 +152,32 @@ def extract_entities(
 
         try:
 
-            for ents, filepath, message_id, error in pool.imap(
+            for res, error in pool.imap(
                 process_message,
                 get_messages(files, spacy_model=spacy_model, **kwargs),
                 chunksize=RATOM_MSG_BATCH_SIZE,
             ):
                 if error:
                     logger.warning(
-                        f"Skipping message {message_id} from file {filepath}"
+                        "Skipping message {message_id} from file {filepath}".format(
+                            **res
+                        )
                     )
-                    logger.debug(f"File: {filepath}, message ID: {message_id}, {error}")
+                    logger.debug(
+                        "File: {filepath}, message ID: {message_id}, {error}".format(
+                            **res, error=error
+                        )
+                    )
+
+                    continue
+
+                # Extract results
+                entities = res.pop("entities")
+                message_id = res.pop("message_id")
+                filepath = res.pop("filepath")
 
                 # Create new message instance
-                message = Message(pff_identifier=message_id)
+                message = Message(pff_identifier=message_id, **res)
 
                 # Link message to a file_report
                 try:
@@ -172,13 +193,14 @@ def extract_entities(
                 session.add(message)
 
                 # Record entities info
-                for entity in ents:
+                for entity in entities:
                     session.add(
                         Entity(
                             text=entity[0],
                             label_=entity[1],
                             filepath=filepath,
                             message_id=message.id,
+                            file_report_id=message.file_report_id,
                         )
                     )
 
