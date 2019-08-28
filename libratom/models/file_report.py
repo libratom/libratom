@@ -16,7 +16,7 @@ class FileReport(Base):
     md5 = Column(String)
     sha256 = Column(String)
     messages = relationship(
-        "Message", backref="file", order_by="Message.processing_start_time"
+        "Message", backref="file_report", order_by="Message.processing_start_time"
     )
 
     @property

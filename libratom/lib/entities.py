@@ -19,6 +19,7 @@ from sqlalchemy.orm.session import Session
 from libratom.lib.concurrency import get_messages, imap_job, worker_init
 from libratom.lib.pff import PffArchive
 from libratom.models.entity import Entity
+from libratom.models.message import Message
 
 logger = logging.getLogger(__name__)
 
@@ -150,13 +151,18 @@ def extract_entities(
                     )
                     logger.debug(f"File: {filename}, message ID: {message_id}, {error}")
 
+                # Record message info
+                message = Message(pff_identifier=message_id)
+                session.add(message)
+
+                # Record entities info
                 for entity in ents:
                     session.add(
                         Entity(
                             text=entity[0],
                             label_=entity[1],
                             filename=filename,
-                            message_id=message_id,
+                            message_id=message.id,
                         )
                     )
 
