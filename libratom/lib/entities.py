@@ -55,7 +55,7 @@ SPACY_MODELS = namedtuple("SpacyModels", SPACY_MODEL_NAMES)(*SPACY_MODEL_NAMES)
 
 @imap_job
 def process_message(
-    filename: str, message_id: int, message: str, spacy_model: Language
+    filepath: str, message_id: int, message: str, spacy_model: Language
 ) -> Tuple[List, str, int, Optional[str]]:
     """
     Job function for the worker processes
@@ -68,10 +68,10 @@ def process_message(
         doc = spacy_model(message)
         entities = [(ent.text, ent.label_) for ent in doc.ents]
 
-        return entities, filename, message_id, None
+        return entities, filepath, message_id, None
 
     except Exception as exc:
-        return [], filename, message_id, str(exc)
+        return [], filepath, message_id, str(exc)
 
 
 def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
@@ -135,8 +135,7 @@ def extract_entities(
             logger.debug(f"{key}: {value}")
 
     # Load the file_report table for local lookup
-    # pylint: disable=unused-variable
-    file_reports = session.query(FileReport).all()
+    _file_reports = session.query(FileReport).all()  # noqa: F841
 
     # Start of multiprocessing
     with multiprocessing.Pool(processes=jobs, initializer=worker_init) as pool:
