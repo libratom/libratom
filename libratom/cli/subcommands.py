@@ -17,6 +17,7 @@ from libratom.lib.entities import (
     extract_entities,
     load_spacy_model,
 )
+from libratom.lib.report import store_file_reports_in_db
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +42,9 @@ def entities(
             src.name, datetime.now().isoformat(timespec="seconds")
         )
 
+    # DB setup
+    Session = db_init(out)
+
     # Get list of PST files from the source
     if src.is_dir():
         files = set(src.glob("**/*.pst"))
@@ -51,10 +55,20 @@ def entities(
         logger.warning(f"No PST file found in {src}; nothing to do")
         return 0
 
+    # Compute and store file information
+    with progress_bar_context(
+        total=len(files),
+        desc="Retrieving file information",
+        unit="files",
+        color="green",
+        leave=False,
+    ) as file_bar, db_session(Session) as session:
+        store_file_reports_in_db(files, session, progress_callback=file_bar.update)
+
     # Get the total number of messages
     with progress_bar_context(
         total=len(files),
-        desc="Initial file scan",
+        desc="Retrieving total message count",
         unit="files",
         color="green",
         leave=False,
@@ -71,9 +85,6 @@ def entities(
 
     # Make DB file's parents if needed
     out.parent.mkdir(parents=True, exist_ok=True)
-
-    # DB setup
-    Session = db_init(out)
 
     # Get messages and extract entities
     with progress_bar_context(

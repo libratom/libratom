@@ -203,18 +203,18 @@ def test_entities_with_bad_model(enron_dataset_part001):
 
 
 def test_process_message():
-    filename_in, message_id_in = "/foo/bar", 1234
-    entities, filename, message_id, error = process_message(
+    filepath_in, message_id_in = "/foo/bar", 1234
+    entities, filepath, message_id, error = process_message(
         # Must use dictionary form if function is called explicitly
         {
-            "filename": filename_in,
+            "filepath": filepath_in,
             "message_id": message_id_in,
             "message": "hello",
             "spacy_model": None,
         }
     )
 
-    assert filename == filename_in
+    assert filepath == filepath_in
     assert message_id == message_id_in
     assert entities == []
     assert error
