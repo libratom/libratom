@@ -1,5 +1,6 @@
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods,misplaced-comparison-constant,no-value-for-parameter
 
+import datetime
 import os
 import tempfile
 from pathlib import Path
@@ -14,11 +15,13 @@ import libratom.cli.subcommands as subcommands
 from libratom.cli.cli import ratom
 from libratom.lib.database import db_session
 from libratom.lib.entities import (
+    SPACY_MODELS,
     count_messages_in_files,
     load_spacy_model,
     process_message,
 )
 from libratom.models.entity import Entity
+from libratom.models.file_report import FileReport
 
 
 class Expected:
@@ -200,6 +203,56 @@ def test_entities_with_bad_model(enron_dataset_part001):
         )
 
     assert not load_spacy_model(spacy_model_name="no_such_model")
+
+
+def test_file_report(enron_dataset_part012):
+    file = sorted(enron_dataset_part012.glob("*.pst"))[1]
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+
+        out = Path(tmpdir) / "entities.sqlite3"
+
+        # Extract entities
+        assert 0 == subcommands.entities(
+            out=out,
+            spacy_model_name=SPACY_MODELS.en_core_web_sm,
+            jobs=None,
+            src=file,
+            progress=False,
+        )
+
+        # Connect to DB file
+        engine = create_engine(f"sqlite:////{out}")
+        session = sessionmaker(bind=engine)()
+
+        # There should be one FileReport instance fir this run
+        file_report = session.query(FileReport).one()
+
+        # Path
+        assert file_report.path == str(file)
+
+        # Name
+        assert file_report.name == file.name
+
+        # Size
+        assert file_report.size == file.stat().st_size
+
+        # Checksums
+        assert file_report.md5 == "ac62843cff3232120bba30aa02a9fe86"
+        assert (
+            file_report.sha256
+            == "1afa29342c6bf5f774e03b3acad677febd5b0d59ec05eb22dee2481c8dfd6b88"
+        )
+
+        # Processing times
+        assert file_report.processing_end_time > file_report.processing_start_time
+        assert file_report.processing_wall_time > datetime.timedelta(0)
+
+        # Message count
+        assert len(file_report.messages) == 4131
+
+        # Entity count
+        assert len(file_report.entities) == 25309
 
 
 def test_process_message():
