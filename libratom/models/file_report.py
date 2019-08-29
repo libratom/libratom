@@ -1,5 +1,7 @@
 # pylint: disable=too-few-public-methods,missing-docstring,invalid-name
 
+from operator import attrgetter
+
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -21,17 +23,15 @@ class FileReport(Base):
     entities = relationship("Entity", backref="file_report")
 
     @property
-    def message_count(self):
-        pass
-
-    @property
     def processing_start_time(self):
-        pass
+        return self.messages[0].processing_start_time
 
     @property
     def processing_end_time(self):
-        pass
+        return max(
+            self.messages, key=attrgetter("processing_end_time")
+        ).processing_end_time
 
     @property
     def processing_wall_time(self):
-        pass
+        return self.processing_end_time - self.processing_start_time
