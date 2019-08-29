@@ -14,6 +14,7 @@ from libratom.lib.concurrency import get_messages
 from libratom.lib.database import db_init, db_session
 from libratom.lib.entities import SPACY_MODELS, extract_entities, load_spacy_model
 from libratom.lib.pff import PffArchive
+from libratom.models.file_report import FileReport
 
 logger = logging.getLogger(__name__)
 
@@ -163,3 +164,11 @@ def test_extract_entities_with_bad_messages(enron_dataset_part012):
             )
 
         assert status == 0
+
+
+def test_file_report_with_empty_relationship():
+    file_report = FileReport()
+
+    assert file_report.processing_start_time is None
+    assert file_report.processing_end_time is None
+    assert file_report.processing_wall_time is None

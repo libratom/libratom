@@ -24,14 +24,23 @@ class FileReport(Base):
 
     @property
     def processing_start_time(self):
-        return self.messages[0].processing_start_time
+        try:
+            return self.messages[0].processing_start_time
+        except IndexError:
+            return None
 
     @property
     def processing_end_time(self):
-        return max(
-            self.messages, key=attrgetter("processing_end_time")
-        ).processing_end_time
+        try:
+            return max(
+                self.messages, key=attrgetter("processing_end_time")
+            ).processing_end_time
+        except ValueError:
+            return None
 
     @property
     def processing_wall_time(self):
-        return self.processing_end_time - self.processing_start_time
+        try:
+            return self.processing_end_time - self.processing_start_time
+        except TypeError:
+            return None
