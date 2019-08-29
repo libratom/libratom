@@ -148,7 +148,7 @@ def extract_entities(
     # Start of multiprocessing
     with multiprocessing.Pool(processes=jobs, initializer=worker_init) as pool:
 
-        logger.info(f"Starting pool with {pool._processes} processes")
+        logger.debug(f"Starting pool with {pool._processes} processes")
 
         try:
 

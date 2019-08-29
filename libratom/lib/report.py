@@ -65,7 +65,7 @@ def store_file_reports_in_db(
 
     with multiprocessing.Pool(processes=jobs, initializer=worker_init) as pool:
 
-        print(f"Starting pool with {pool._processes} processes")
+        logger.debug(f"Starting pool with {pool._processes} processes")
 
         try:
             for values, error in pool.imap(
