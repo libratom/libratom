@@ -150,6 +150,8 @@ def extract_entities(
 
         logger.debug(f"Starting pool with {pool._processes} processes")
 
+        new_entities = []
+
         try:
 
             for res, error in pool.imap(
@@ -194,7 +196,7 @@ def extract_entities(
 
                 # Record entities info
                 for entity in entities:
-                    session.add(
+                    new_entities.append(
                         Entity(
                             text=entity[0],
                             label_=entity[1],
@@ -204,13 +206,18 @@ def extract_entities(
                         )
                     )
 
-                # Commit if we reach a certain amount of pending new entities
-                if len(session.new) >= RATOM_DB_COMMIT_BATCH_SIZE:
+                # Commit if we reach a certain amount of new entities
+                if len(new_entities) >= RATOM_DB_COMMIT_BATCH_SIZE:
+                    session.add_all(new_entities)
+                    new_entities = []
                     try:
                         session.commit()
                     except Exception as exc:
                         logger.exception(exc)
                         session.rollback()
+
+            # Add remaining new entities
+            session.add_all(new_entities)
 
         except KeyboardInterrupt:
             logger.warning("Cancelling running task")
