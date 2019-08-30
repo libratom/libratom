@@ -177,11 +177,13 @@ def test_ratom_entities_enron_001_from_file(
     [(["-vp"], Expected(status=0, tokens=["Creating database file", "All done"]))],
 )
 def test_ratom_entities_enron_012_from_file(
-    isolated_cli_runner, enron_dataset_part012, params, expected
+    monkeypatch, isolated_cli_runner, enron_dataset_part012, params, expected
 ):
 
     subcommand = ["entities"]
     subcommand.extend(params)
+
+    monkeypatch.setenv("RATOM_DB_COMMIT_BATCH_SIZE", "100")
 
     # Use file name as source
     files = list(enron_dataset_part012.glob("*.pst"))
