@@ -186,12 +186,12 @@ def extract_entities(
                     file_report = (
                         session.query(FileReport).filter_by(path=filepath).one()
                     )
-                    message.file_report_id = file_report.id
                 except Exception as exc:
+                    file_report = None
                     logger.warning(
                         f"Unable to link message id {message_id} to a file. Error: {exc}"
                     )
-
+                message.file_report = file_report
                 session.add(message)
 
                 # Record entities info
@@ -201,8 +201,8 @@ def extract_entities(
                             text=entity[0],
                             label_=entity[1],
                             filepath=filepath,
-                            message_id=message.id,
-                            file_report_id=message.file_report_id,
+                            message=message,
+                            file_report=file_report,
                         )
                     )
 
