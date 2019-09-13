@@ -62,7 +62,7 @@ To run the extractor with default settings over a PST file or directory of PST f
 
 Progress is displayed in a bar at the bottom of the window. To terminate a job early and shut down all workers, type Ctrl-C.
 
-By default, the tool will use the spaCy en\_core\_web\_sm model, and will start as many concurrent jobs as there are virtual cores available. Entities are written to a sqlite3 file automatically named using the existing file or directory name and current datetime stamp, and with the following single-table schema:
+By default, the tool will use the spaCy en\_core\_web\_sm model, and will start as many concurrent jobs as there are virtual cores available. Entities are written to a sqlite3 file automatically named using the existing file or directory name and current datetime stamp, and with the following schema:
 
 ```shell
 sqlite> .schema
