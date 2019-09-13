@@ -101,6 +101,8 @@ The schema contains 3 tables representing file information, message information 
 
 In the entity table, text is the entity instance, label\_ is the entity type, filepath is the PST file associated with this entity. Full message and file information for each entity are also available through message_id and file_report_id respectively.
 
+The notebooks linked below contain examples of how to query the information in these tables.
+
 ## Additional libratom use cases
 
 More usage documentation will appear here as the project matures. For now, you can try out some of the functionality in Jupyter notebooks we've prepared at:
