@@ -1,24 +1,31 @@
+"""
+mbox parsing utilities
+"""
+
 import mailbox
+
+from email.message import Message
+from pathlib import Path
 from typing import Union
 
+
 class MboxArchive:
-    def __init__(self):
-        pass
+    """Wrapper class around mailbox.mbox for use in libratom code alongside other email formats.
+    """
+
+    def __init__(self, file: Union[Path, str]):
+        self.mailbox = mailbox.mbox(file)
 
     def __enter__(self):
-        pass
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+        self.mailbox.close()
 
-    def load(self, file: Union[Path, IOBase, str]) -> None:
-
-        if isinstance(file, IOBase):
-            self.data.open_file_object(file)
-        elif isinstance(file, (Path, str)):
-            self.data.open(str(file), "rb")
-        else:
-            raise TypeError(f"Unable to load {file} of type {type(file)}")
+    def messages(self):
+        """
+        """
+        return self.mailbox.itervalues()
 
     @property
     def message_count(self) -> int:
@@ -27,3 +34,9 @@ class MboxArchive:
         """
 
         return len(self.mailbox)
+
+    @staticmethod
+    def format_message(message: Message, with_headers: bool = True) -> str:
+        """
+        """
+        return message.as_string()
