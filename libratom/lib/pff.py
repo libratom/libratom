@@ -13,10 +13,12 @@ from typing import Generator, Union
 import pypff
 from treelib import Tree
 
+from libratom.lib.base import Archive
+
 logger = logging.getLogger(__name__)
 
 
-class PffArchive:
+class PffArchive(Archive):
     """Wrapper class around pypff.file
 
     Provides methods for manipulating a PFF archive
@@ -116,7 +118,8 @@ class PffArchive:
             else:
                 folders.extend(folder.sub_folders)
 
-    def messages(self, bfs: bool = True) -> Generator[pypff.message, None, None]:
+    # fmt: off
+    def messages(self, bfs: bool = True) -> Generator[pypff.message, None, None]:  # pylint: disable=arguments-differ
         """Generator function to iterate over the archive's messages
 
         Args:
@@ -129,6 +132,7 @@ class PffArchive:
         for folder in self.folders(bfs):
             for message in folder.sub_messages:
                 yield message
+    # fmt: on
 
     def get_message_by_id(self, message_id: int) -> pypff.message:
         """Gets a message by its ID

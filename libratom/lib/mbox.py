@@ -3,13 +3,14 @@ mbox parsing utilities
 """
 
 import mailbox
-
 from email.message import Message
 from pathlib import Path
-from typing import Union
+from typing import Generator, Union
+
+from libratom.lib.base import Archive
 
 
-class MboxArchive:
+class MboxArchive(Archive):
     """Wrapper class around mailbox.mbox for use in libratom code alongside other email formats.
     """
 
@@ -19,13 +20,14 @@ class MboxArchive:
     def __enter__(self):
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, *_):
         self.mailbox.close()
 
-    def messages(self):
+    def messages(self) -> Generator[Message, None, None]:
         """
+        Generator function to iterate over the archive's messages
         """
-        return self.mailbox.itervalues()
+        return self.mailbox.itervalues()  # noqa: B301
 
     @property
     def message_count(self) -> int:
@@ -38,5 +40,6 @@ class MboxArchive:
     @staticmethod
     def format_message(message: Message, with_headers: bool = True) -> str:
         """
+        ...
         """
         return message.as_string()
