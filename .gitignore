@@ -15,6 +15,7 @@ downloads/
 eggs/
 .eggs/
 lib/
+!libratom/lib/
 lib64/
 parts/
 sdist/

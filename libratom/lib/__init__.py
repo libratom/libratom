@@ -1,13 +1,15 @@
 # pylint: disable=missing-docstring,broad-except
 
 from pathlib import Path
-from typing import Union, Optional
+from typing import Optional, Union
 
 from libratom.lib.mbox import MboxArchive
 from libratom.lib.pff import PffArchive
 
 
-def open_mail_archive(file: Union[Path, str]) -> Optional[Union[PffArchive, MboxArchive]]:
+def open_mail_archive(
+    file: Union[Path, str]
+) -> Optional[Union[PffArchive, MboxArchive]]:
 
     try:
         return PffArchive(file)
@@ -19,4 +21,4 @@ def open_mail_archive(file: Union[Path, str]) -> Optional[Union[PffArchive, Mbox
     except Exception:
         pass
 
-    raise RuntimeError(f'Unable to open {file} as either pst or mbox archive.')
+    raise RuntimeError(f"Unable to open {file} as either pst or mbox archive.")
