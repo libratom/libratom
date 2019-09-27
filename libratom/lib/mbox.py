@@ -11,7 +11,8 @@ from libratom.lib.base import Archive
 
 
 class MboxArchive(Archive):
-    """Wrapper class around mailbox.mbox for use in libratom code alongside other email formats.
+    """
+    Wrapper class around mailbox.mbox for use in libratom code alongside other email formats.
     """
 
     def __init__(self, file: Union[Path, str]):
@@ -27,6 +28,7 @@ class MboxArchive(Archive):
         """
         Generator function to iterate over the archive's messages
         """
+
         return self.mailbox.itervalues()  # noqa: B301
 
     @property
@@ -40,6 +42,10 @@ class MboxArchive(Archive):
     @staticmethod
     def format_message(message: Message, with_headers: bool = True) -> str:
         """
-        ...
+        Returns an RFC822 compliant string with or without headers
         """
-        return message.as_string()
+
+        if with_headers:
+            return message.as_string()
+
+        return message.get_payload()

@@ -10,6 +10,7 @@ from pathlib import Path
 import enlighten
 
 from libratom.cli.utils import MockContext
+from libratom.lib.core import get_set_of_files
 from libratom.lib.database import db_init, db_session
 from libratom.lib.entities import (
     OUTPUT_FILENAME_TEMPLATE,
@@ -45,11 +46,8 @@ def entities(
     # DB setup
     Session = db_init(out)
 
-    # Get list of PST files from the source
-    if src.is_dir():
-        files = set(src.glob("**/*.pst"))
-    else:
-        files = {src}
+    # Get set of PST files from the source
+    files = get_set_of_files(src)
 
     if not files:
         logger.warning(f"No PST file found in {src}; nothing to do")

@@ -10,7 +10,7 @@ import signal
 from pathlib import Path
 from typing import Callable, Dict, Iterable
 
-from libratom.lib.pff import PffArchive
+from libratom.lib.core import open_mail_archive
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ def get_messages(
     # Iterate over files
     for pst_file in files:
         try:
-            with PffArchive(pst_file) as archive:
+            with open_mail_archive(pst_file) as archive:
                 # Iterate over messages
                 for msg_count, message in enumerate(
                     archive.messages(), start=1 + remainder
