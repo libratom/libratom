@@ -232,16 +232,18 @@ def directory_of_mbox_files() -> Path:
 
     """
 
-    url_template = "http://mail-archives.apache.org/mod_mbox/httpd-users/20190{month}.mbox"
+    url_template = (
+        "http://mail-archives.apache.org/mod_mbox/httpd-users/20190{month}.mbox"
+    )
 
     # path is our destination directory
     path = CACHED_HTTPD_USERS_MAIL_DIR
     path.mkdir(parents=True, exist_ok=True)
 
     # Download 6 monthly mailing list digests
-    for i in range(1,7):
+    for i in range(1, 7):
         url = url_template.format(month=i)
-        target = path / url.rsplit('/', 1).pop()
+        target = path / url.rsplit("/", 1).pop()
 
         if not target.exists():
             # Fetch the mbox file
