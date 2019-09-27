@@ -11,6 +11,7 @@ import pytest
 
 import libratom
 from libratom.lib.concurrency import get_messages
+from libratom.lib.core import get_set_of_files
 from libratom.lib.database import db_init, db_session
 from libratom.lib.entities import SPACY_MODELS, extract_entities, load_spacy_model
 from libratom.lib.pff import PffArchive
@@ -172,3 +173,23 @@ def test_file_report_with_empty_relationship():
     assert file_report.processing_start_time is None
     assert file_report.processing_end_time is None
     assert file_report.processing_wall_time is None
+
+
+def test_extract_entities_from_mbox_files(directory_of_mbox_files):
+
+    tmp_filename = "test.sqlite3"
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+
+        destination = Path(tmpdir) / tmp_filename
+        Session = db_init(destination)
+
+        with db_session(Session) as session:
+
+            status = extract_entities(
+                files=get_set_of_files(directory_of_mbox_files),
+                session=session,
+                spacy_model=load_spacy_model(SPACY_MODELS.en_core_web_sm),
+            )
+
+        assert status == 0
