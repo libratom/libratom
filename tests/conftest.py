@@ -13,6 +13,7 @@ if not os.getenv("LIBRATOM_LOAD_TESTING"):
 
 
 CACHED_ENRON_DATA_DIR = Path("/tmp/libratom/test_data/RevisedEDRMv1_Complete")
+CACHED_HTTPD_USERS_MAIL_DIR = Path("/tmp/libratom/test_data/httpd-users")
 
 
 def fetch_enron_dataset(name: str, files: List[str], url: str) -> Path:
@@ -222,3 +223,29 @@ def empty_message(mocker):
         setattr(message, attr, "")
 
     yield message
+
+
+@pytest.fixture
+def directory_of_mbox_files() -> Path:
+    """
+    Returns:
+
+    """
+
+    url_template = "http://mail-archives.apache.org/mod_mbox/httpd-users/20190{month}.mbox"
+
+    # path is our destination directory
+    path = CACHED_HTTPD_USERS_MAIL_DIR
+    path.mkdir(parents=True, exist_ok=True)
+
+    # Download 6 monthly mailing list digests
+    for i in range(1,7):
+        url = url_template.format(month=i)
+        target = path / url.rsplit('/', 1).pop()
+
+        if not target.exists():
+            # Fetch the mbox file
+            response = requests.get(url)
+            target.write_bytes(response.content)
+
+    yield path
