@@ -18,7 +18,7 @@ from spacy.language import Language
 from sqlalchemy.orm.session import Session
 
 from libratom.lib.concurrency import get_messages, imap_job, worker_init
-from libratom.lib.pff import PffArchive
+from libratom.lib.core import open_mail_archive
 from libratom.models.entity import Entity
 from libratom.models.file_report import FileReport
 from libratom.models.message import Message
@@ -251,8 +251,8 @@ def count_messages_in_files(
 
     for file in files:
         try:
-            with PffArchive(file) as pst_file:
-                msg_count += pst_file.message_count
+            with open_mail_archive(file) as archive:
+                msg_count += archive.message_count
 
             good_files.add(file)
 

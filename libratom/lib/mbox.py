@@ -46,6 +46,11 @@ class MboxArchive(Archive):
         """
 
         if with_headers:
-            return message.as_string()
+            pass  # placeholder
 
-        return message.get_payload()
+        for part in message.walk():
+            content_type = part.get_content_type()
+            if content_type in {"text/plain", "message/rfc822"}:
+                return part.as_string()
+
+        return ""
