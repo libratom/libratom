@@ -4,9 +4,10 @@ import datetime
 import os
 import tempfile
 from pathlib import Path
-from typing import List
+from typing import List, Optional, Union
 
 import pytest
+from click.testing import CliRunner, Result
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
 
@@ -32,6 +33,33 @@ class Expected:
     def __init__(self, status: int, tokens: List[str]):
         self.status = status
         self.tokens = tokens
+
+
+def extract_entities(
+    options: List,
+    args: Union[Path, str, None],
+    runner: CliRunner,
+    expected: Optional[Expected],
+) -> Result:
+    """
+    Block of code to run an entity extraction job as part of a test
+    """
+
+    subcommand = ["entities"]
+    subcommand.extend(options)
+
+    if args:
+        subcommand.append(str(args))
+
+    result = runner.invoke(ratom, subcommand)
+
+    if expected:
+        assert result.exit_code == expected.status
+
+        for token in expected.tokens:
+            assert token in result.output
+
+    return result
 
 
 @pytest.mark.parametrize(
@@ -67,15 +95,7 @@ def test_ratom(cli_runner, params, expected):
     ],
 )
 def test_ratom_entities(cli_runner, params, expected):
-
-    subcommand = ["entities"]
-    subcommand.extend(params)
-
-    result = cli_runner.invoke(ratom, subcommand)
-    assert result.exit_code == expected.status
-
-    for token in expected.tokens:
-        assert token in result.output
+    extract_entities(params, None, cli_runner, expected)
 
 
 @pytest.mark.parametrize(
@@ -85,39 +105,23 @@ def test_ratom_entities(cli_runner, params, expected):
 def test_ratom_entities_enron_001(
     isolated_cli_runner, enron_dataset_part001, params, expected
 ):
-
-    subcommand = ["entities"]
-    subcommand.extend(params)
-    subcommand.append(str(enron_dataset_part001))
-
-    result = isolated_cli_runner.invoke(ratom, subcommand)
-    assert result.exit_code == expected.status
-
-    for token in expected.tokens:
-        assert token in result.output
+    extract_entities(params, enron_dataset_part001, isolated_cli_runner, expected)
 
 
+@pytest.mark.skipif(
+    not os.getenv("CONTINUOUS_INTEGRATION", None),
+    reason="Keep local test runs reasonably short",
+)
 @pytest.mark.parametrize(
     "params, expected",
     [(["-v"], Expected(status=0, tokens=["Creating database file", "All done"]))],
 )
-def test_ratom_entities_enron_001_from_file(
-    isolated_cli_runner, enron_dataset_part001, params, expected
+def test_ratom_entities_enron_004(
+    isolated_cli_runner, enron_dataset_part004, params, expected
 ):
-
-    subcommand = ["entities"]
-    subcommand.extend(params)
-
-    # Use file name as source
-    files = list(enron_dataset_part001.glob("*.pst"))
-
-    subcommand.append(str(files[0]))
-
-    result = isolated_cli_runner.invoke(ratom, subcommand)
-    assert result.exit_code == expected.status
-
-    for token in expected.tokens:
-        assert token in result.output
+    result = extract_entities(
+        params, enron_dataset_part004, isolated_cli_runner, expected
+    )
 
     # Validate output file
     db_file = None
@@ -132,12 +136,13 @@ def test_ratom_entities_enron_001_from_file(
     Session = sessionmaker(bind=engine)
 
     with db_session(Session) as session:
+
         # Sanity check
         for entity in session.query(Entity)[:10]:
             assert str(entity)
 
         # Verify total entity count
-        assert session.query(Entity).count() == 14283
+        assert session.query(Entity).count() == 174881
 
         # Verify count per entity type
         results = (
@@ -145,24 +150,28 @@ def test_ratom_entities_enron_001_from_file(
             .group_by(Entity.label_)
             .all()
         )
+
+        assert results
+
         expected_counts = {
-            "CARDINAL": 1937,
-            "DATE": 552,
-            "EVENT": 8,
-            "FAC": 45,
-            "GPE": 315,
-            "LAW": 18,
-            "LOC": 20,
-            "MONEY": 183,
-            "NORP": 55,
-            "ORDINAL": 56,
-            "ORG": 8802,
-            "PERCENT": 13,
-            "PERSON": 1116,
-            "PRODUCT": 39,
-            "QUANTITY": 3,
-            "TIME": 1098,
-            "WORK_OF_ART": 23,
+            "CARDINAL": 40630,
+            "DATE": 7998,
+            "EVENT": 87,
+            "FAC": 391,
+            "GPE": 5687,
+            "LANGUAGE": 3,
+            "LAW": 277,
+            "LOC": 379,
+            "MONEY": 1476,
+            "NORP": 553,
+            "ORDINAL": 589,
+            "ORG": 93806,
+            "PERCENT": 875,
+            "PERSON": 17916,
+            "PRODUCT": 376,
+            "QUANTITY": 71,
+            "TIME": 2819,
+            "WORK_OF_ART": 948,
         }
         for entity_type, count in results:
             assert expected_counts[entity_type] == count
