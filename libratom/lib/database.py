@@ -7,6 +7,7 @@ from contextlib import contextmanager
 from typing import ContextManager
 
 from sqlalchemy import create_engine
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
@@ -41,7 +42,7 @@ def db_session(session_factory: sessionmaker) -> ContextManager[Session]:
         if session.new or session.dirty or session.deleted:
             session.commit()
 
-    except Exception as exc:
+    except SQLAlchemyError as exc:
         logger.exception(exc)
         session.rollback()
 
