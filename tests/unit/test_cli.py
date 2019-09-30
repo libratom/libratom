@@ -108,6 +108,16 @@ def test_ratom_entities_enron_001(
     extract_entities(params, enron_dataset_part001, isolated_cli_runner, expected)
 
 
+@pytest.mark.parametrize(
+    "params, expected",
+    [(["-vvp"], Expected(status=0, tokens=["Creating database file", "All done"]))],
+)
+def test_ratom_entities_from_mbox_files(
+    isolated_cli_runner, directory_of_mbox_files, params, expected
+):
+    extract_entities(params, directory_of_mbox_files, isolated_cli_runner, expected)
+
+
 @pytest.mark.skipif(
     not os.getenv("CONTINUOUS_INTEGRATION", None),
     reason="Keep local test runs reasonably short",
