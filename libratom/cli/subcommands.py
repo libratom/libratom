@@ -6,6 +6,7 @@ The functions in this module are entry points for ratom sub-commands, e.g. `rato
 import logging
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 import enlighten
 
@@ -24,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 def entities(
-    out: Path, spacy_model_name: str, jobs: int, src: Path, progress: bool
+    out: Path, spacy_model_name: str, jobs: Optional[int], src: Path, progress: bool
 ) -> int:
     """
     Click sub command function called by `ratom entities`
