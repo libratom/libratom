@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Generator
 
 
-class Archive(ABC):
+class Archive(ABC):  # pragma: no cover
     """
     Base class for various email archive formats
     """
