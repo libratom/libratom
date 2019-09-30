@@ -33,9 +33,9 @@ def get_messages(
     msg_count = 0
 
     # Iterate over files
-    for pst_file in files:
+    for file in files:
         try:
-            with open_mail_archive(pst_file) as archive:
+            with open_mail_archive(file) as archive:
                 # Iterate over messages
                 for msg_count, message in enumerate(
                     archive.messages(), start=1 + remainder
@@ -43,8 +43,8 @@ def get_messages(
                     try:
                         # Keyword arguments for process_message()
                         res = {
-                            "filepath": str(pst_file),
-                            "message_id": message.identifier,
+                            "filepath": str(file),
+                            "message_id": getattr(message, "identifier", None),
                             "message": archive.format_message(
                                 message, with_headers=False
                             ),
