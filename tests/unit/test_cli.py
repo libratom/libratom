@@ -299,4 +299,4 @@ def test_count_messages_in_files(enron_dataset_part044):
     count, good_files = count_messages_in_files(files)
 
     assert count == 558
-    assert len(good_files) == 2
+    assert len(good_files) == 1
