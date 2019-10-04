@@ -240,14 +240,16 @@ def directory_of_mbox_files() -> Path:
     path = CACHED_HTTPD_USERS_MAIL_DIR
     path.mkdir(parents=True, exist_ok=True)
 
-    # Download 6 monthly mailing list digests
-    for i in range(1, 7):
-        url = url_template.format(month=i)
-        target = path / url.rsplit("/", 1).pop()
+    with requests.Session() as session:
 
-        if not target.exists():
-            # Fetch the mbox file
-            response = requests.get(url)
-            target.write_bytes(response.content)
+        # Download 6 monthly mailing list digests
+        for i in range(1, 7):
+            url = url_template.format(month=i)
+            target = path / url.rsplit("/", 1).pop()
+
+            if not target.exists():
+                # Fetch the mbox file
+                response = session.get(url)
+                target.write_bytes(response.content)
 
     yield path
