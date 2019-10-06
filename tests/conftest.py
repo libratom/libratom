@@ -225,11 +225,11 @@ def empty_message(mocker):
     yield message
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def directory_of_mbox_files() -> Path:
     """
     Returns:
-
+        A directory with multiple mbox files
     """
 
     url_template = (
