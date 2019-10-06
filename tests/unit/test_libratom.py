@@ -11,9 +11,10 @@ import pytest
 
 import libratom
 from libratom.lib.concurrency import get_messages
-from libratom.lib.core import get_set_of_files
+from libratom.lib.core import get_set_of_files, open_mail_archive
 from libratom.lib.database import db_init, db_session
 from libratom.lib.entities import SPACY_MODELS, extract_entities, load_spacy_model
+from libratom.lib.exceptions import FileTypeError
 from libratom.lib.pff import PffArchive
 from libratom.models.file_report import FileReport
 
@@ -38,6 +39,12 @@ def test_pffarchive_load_from_invalid_type():
 
     with pytest.raises(TypeError):
         _ = PffArchive(1)
+
+
+def test_open_mail_archive_with_unsupported_type():
+
+    with pytest.raises(FileTypeError):
+        _ = open_mail_archive(Path("bad_path"))
 
 
 @pytest.mark.parametrize("bfs", [False, True])
