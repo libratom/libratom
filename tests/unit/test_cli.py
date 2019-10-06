@@ -273,7 +273,7 @@ def test_file_report(enron_dataset_part012):
         assert len(file_report.messages) == 4131
 
         # Entity count
-        assert len(file_report.entities) == 25309
+        assert len(file_report.entities) == 29477
 
 
 def test_process_message():
