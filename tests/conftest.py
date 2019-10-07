@@ -7,6 +7,8 @@ from zipfile import ZipFile
 import pytest
 import requests
 
+from libratom.lib.download import download_files
+
 # Skip load tests
 if not os.getenv("LIBRATOM_LOAD_TESTING"):
     collect_ignore_glob = ["load/*"]
@@ -238,18 +240,9 @@ def directory_of_mbox_files() -> Path:
 
     # path is our destination directory
     path = CACHED_HTTPD_USERS_MAIL_DIR
-    path.mkdir(parents=True, exist_ok=True)
 
-    with requests.Session() as session:
-
-        # Download 6 monthly mailing list digests
-        for i in range(1, 7):
-            url = url_template.format(month=i)
-            target = path / url.rsplit("/", 1).pop()
-
-            if not target.exists():
-                # Fetch the mbox file
-                response = session.get(url)
-                target.write_bytes(response.content)
+    # Download 6 monthly mailing list digests
+    urls = [url_template.format(month=i) for i in range(1, 7)]
+    download_files(urls, path)
 
     yield path
