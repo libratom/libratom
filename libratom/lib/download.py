@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Iterable
 
 import requests
+from requests.adapters import HTTPAdapter
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -23,6 +24,10 @@ def get_session() -> requests.Session:
         return thread_local.session
     except AttributeError:
         thread_local.session = requests.Session()
+
+        adapter = HTTPAdapter(max_retries=10)
+        thread_local.session.mount("https://", adapter)
+
         return thread_local.session
 
 
@@ -46,7 +51,8 @@ def download_file(
 
     logger.info(f"{thread_id}: Downloading {url}")
 
-    with session.get(url) as response:
+    # https://requests.readthedocs.io/en/master/user/advanced/#timeouts
+    with session.get(url, timeout=(6.05, 30)) as response:
         http_status = response.status_code
         if http_status == 200:
             written = path.write_bytes(requests.get(url).content)

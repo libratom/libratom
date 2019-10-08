@@ -235,7 +235,7 @@ def directory_of_mbox_files() -> Path:
     """
 
     url_template = (
-        "http://mail-archives.apache.org/mod_mbox/httpd-users/20190{month}.mbox"
+        "https://mail-archives.apache.org/mod_mbox/httpd-users/20190{month}.mbox"
     )
 
     # path is our destination directory
