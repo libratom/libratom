@@ -5,7 +5,7 @@ git:
 install:
   - pip3 install --upgrade pip
   - pip3 install tox-travis codecov
-script: tox
+script: travis_wait 60 tox
 after_success: codecov
 
 stages:
