@@ -2,6 +2,7 @@
 import email
 import hashlib
 import logging
+import os
 import tempfile
 from email import policy
 from pathlib import Path
@@ -155,7 +156,11 @@ def test_get_messages_with_bad_messages(enron_dataset_part012):
     assert _count == 11262
 
 
-@pytest.mark.skipif(True, reason="Keep local test runs reasonably short")
+@pytest.mark.skipif(
+    not os.getenv("CONTINUOUS_INTEGRATION", None)
+    or os.getenv("TRAVIS_OS_NAME", None) == "osx",
+    reason="Keep local test runs and OSX travis runs reasonably short",
+)
 def test_extract_entities_with_bad_messages(enron_dataset_part012):
 
     tmp_filename = "test.sqlite3"
