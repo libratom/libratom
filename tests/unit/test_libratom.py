@@ -13,6 +13,7 @@ import libratom
 from libratom.lib.concurrency import get_messages
 from libratom.lib.core import get_set_of_files, open_mail_archive
 from libratom.lib.database import db_init, db_session
+from libratom.lib.download import download_files
 from libratom.lib.entities import SPACY_MODELS, extract_entities, load_spacy_model
 from libratom.lib.exceptions import FileTypeError
 from libratom.lib.pff import PffArchive
@@ -154,6 +155,7 @@ def test_get_messages_with_bad_messages(enron_dataset_part012):
     assert _count == 11262
 
 
+@pytest.mark.skipif(True, reason="Keep local test runs reasonably short")
 def test_extract_entities_with_bad_messages(enron_dataset_part012):
 
     tmp_filename = "test.sqlite3"
@@ -200,3 +202,26 @@ def test_extract_entities_from_mbox_files(directory_of_mbox_files):
             )
 
         assert status == 0
+
+
+@pytest.mark.parametrize("dry_run", [False, True])
+def test_download_files(directory_of_mbox_files, dry_run):
+
+    assert directory_of_mbox_files  # so that the files are already present
+
+    # Try to re-download files already downloaded by the fixture
+    url_template = (
+        "https://mail-archives.apache.org/mod_mbox/httpd-users/20190{month}.mbox"
+    )
+    path = Path("/tmp/libratom/test_data/httpd-users")
+    urls = [url_template.format(month=i) for i in range(1, 7)]
+    download_files(urls, path, dry_run=dry_run)
+
+
+def test_download_files_with_bad_urls():
+
+    bad_urls = ["http://httpstat.us/404"] * 6
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        with pytest.raises(RuntimeError):
+            download_files(bad_urls, Path(tmpdir))

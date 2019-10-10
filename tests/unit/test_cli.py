@@ -118,10 +118,11 @@ def test_ratom_entities_from_mbox_files(
     extract_entities(params, directory_of_mbox_files, isolated_cli_runner, expected)
 
 
-@pytest.mark.skipif(
-    not os.getenv("CONTINUOUS_INTEGRATION", None),
-    reason="Keep local test runs reasonably short",
-)
+# @pytest.mark.skipif(
+#     not os.getenv("CONTINUOUS_INTEGRATION", None),
+#     reason="Keep local test runs reasonably short",
+# )
+@pytest.mark.skipif(True, reason="Keep local test runs reasonably short")
 @pytest.mark.parametrize(
     "params, expected",
     [(["-v"], Expected(status=0, tokens=["Creating database file", "All done"]))],
