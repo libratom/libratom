@@ -167,7 +167,7 @@ def test_ratom_entities_enron_004(
             assert str(entity)
 
         # Verify total entity count
-        assert session.query(Entity).count() == 174886
+        assert session.query(Entity).count() == 197032
 
         # Verify count per entity type
         results = (
@@ -179,24 +179,24 @@ def test_ratom_entities_enron_004(
         assert results
 
         expected_counts = {
-            "CARDINAL": 40622,
-            "DATE": 8016,
-            "EVENT": 87,
-            "FAC": 388,
-            "GPE": 5687,
-            "LANGUAGE": 3,
-            "LAW": 278,
-            "LOC": 379,
-            "MONEY": 1474,
-            "NORP": 553,
-            "ORDINAL": 589,
-            "ORG": 93805,
-            "PERCENT": 875,
-            "PERSON": 17914,
-            "PRODUCT": 376,
-            "QUANTITY": 45,
-            "TIME": 2850,
-            "WORK_OF_ART": 945,
+            "CARDINAL": 49515,
+            "DATE": 8939,
+            "EVENT": 91,
+            "FAC": 710,
+            "GPE": 7171,
+            "LANGUAGE": 4,
+            "LAW": 384,
+            "LOC": 563,
+            "MONEY": 9138,
+            "NORP": 561,
+            "ORDINAL": 633,
+            "ORG": 97846,
+            "PERCENT": 690,
+            "PERSON": 15438,
+            "PRODUCT": 1728,
+            "QUANTITY": 368,
+            "TIME": 2319,
+            "WORK_OF_ART": 934,
         }
         for entity_type, count in results:
             assert expected_counts[entity_type] == count
