@@ -6,6 +6,7 @@
 [![Build Status](https://travis-ci.org/libratom/libratom.svg?branch=master)](https://travis-ci.org/libratom/libratom)
 [![codecov](https://codecov.io/gh/libratom/libratom/branch/master/graph/badge.svg)](https://codecov.io/gh/libratom/libratom)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e432a64a5b2d45c4b4747a82cc1c291c)](https://app.codacy.com/app/ratom/libratom?utm_source=github.com&utm_medium=referral&utm_content=libratom/libratom&utm_campaign=Badge_Grade_Dashboard)
+[![Twitter Follow](https://img.shields.io/twitter/follow/RATOM_project.svg?style=social&label=Follow)](https://twitter.com/RATOM_Project)
 
 Python library and supporting utilities to parse and process PST and MBOX email sources.
 
@@ -40,7 +41,7 @@ pip install libratom
 
 ## Entity extraction
 
-Libratom provides a CLI with planned support for a range of email processing tasks. Currently, the CLI supports entity extraction from individual PST files and directories of PST files. 
+Libratom provides a CLI with planned support for a range of email processing tasks. Currently, the CLI supports entity extraction from individual PST and mbox files, or directories containing one or more PST and mbox files. 
 
 To see available commands, type:
 
@@ -54,10 +55,10 @@ To see detailed help for the entity extraction command, type:
 (venv) user@host:~$ ratom entities -h
 ```
 
-To run the extractor with default settings over a PST file or directory of PST files, type the following:
+To run the extractor with default settings over a PST or mbox file, or a directory containing one or more PST and/or mbox files, type the following:
 
 ```shell
-(venv) user@host:~$ ratom entities -p /path/to/PST-file-or-directory
+(venv) user@host:~$ ratom entities -p /path/to/PST-or-mbox-file-or-directory
 ```
 
 Progress is displayed in a bar at the bottom of the window. To terminate a job early and shut down all workers, type Ctrl-C.
