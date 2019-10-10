@@ -100,7 +100,12 @@ def test_ratom_entities(cli_runner, params, expected):
 
 @pytest.mark.parametrize(
     "params, expected",
-    [(["-vvp"], Expected(status=0, tokens=["Creating database file", "All done"]))],
+    [
+        (
+            ["-vvp", "-j2"],
+            Expected(status=0, tokens=["Creating database file", "All done"]),
+        )
+    ],
 )
 def test_ratom_entities_enron_001(
     isolated_cli_runner, enron_dataset_part001, params, expected
@@ -110,7 +115,12 @@ def test_ratom_entities_enron_001(
 
 @pytest.mark.parametrize(
     "params, expected",
-    [(["-vvp"], Expected(status=0, tokens=["Creating database file", "All done"]))],
+    [
+        (
+            ["-vvp", "-j2"],
+            Expected(status=0, tokens=["Creating database file", "All done"]),
+        )
+    ],
 )
 def test_ratom_entities_from_mbox_files(
     isolated_cli_runner, directory_of_mbox_files, params, expected
@@ -124,7 +134,12 @@ def test_ratom_entities_from_mbox_files(
 )
 @pytest.mark.parametrize(
     "params, expected",
-    [(["-v"], Expected(status=0, tokens=["Creating database file", "All done"]))],
+    [
+        (
+            ["-v", "-j2"],
+            Expected(status=0, tokens=["Creating database file", "All done"]),
+        )
+    ],
 )
 def test_ratom_entities_enron_004(
     isolated_cli_runner, enron_dataset_part004, params, expected
@@ -194,7 +209,12 @@ def test_ratom_entities_enron_004(
 )
 @pytest.mark.parametrize(
     "params, expected",
-    [(["-vp"], Expected(status=0, tokens=["Creating database file", "All done"]))],
+    [
+        (
+            ["-vp", "-j2"],
+            Expected(status=0, tokens=["Creating database file", "All done"]),
+        )
+    ],
 )
 def test_ratom_entities_enron_012_from_file(
     monkeypatch, isolated_cli_runner, enron_dataset_part012, params, expected
@@ -238,7 +258,7 @@ def test_file_report(enron_dataset_part012):
         assert 0 == subcommands.entities(
             out=out,
             spacy_model_name=SPACY_MODELS.en_core_web_sm,
-            jobs=None,
+            jobs=2,
             src=file,
             progress=False,
         )

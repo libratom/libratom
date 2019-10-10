@@ -176,6 +176,7 @@ def test_extract_entities_with_bad_messages(enron_dataset_part012):
                 files=enron_dataset_part012.glob("*.pst"),
                 session=session,
                 spacy_model=load_spacy_model(SPACY_MODELS.en_core_web_sm),
+                jobs=2,
             )
 
         assert status == 0
@@ -204,6 +205,7 @@ def test_extract_entities_from_mbox_files(directory_of_mbox_files):
                 files=get_set_of_files(directory_of_mbox_files),
                 session=session,
                 spacy_model=load_spacy_model(SPACY_MODELS.en_core_web_sm),
+                jobs=2,
             )
 
         assert status == 0
