@@ -118,11 +118,10 @@ def test_ratom_entities_from_mbox_files(
     extract_entities(params, directory_of_mbox_files, isolated_cli_runner, expected)
 
 
-# @pytest.mark.skipif(
-#     not os.getenv("CONTINUOUS_INTEGRATION", None),
-#     reason="Keep local test runs reasonably short",
-# )
-@pytest.mark.skipif(True, reason="Keep local test runs reasonably short")
+@pytest.mark.skipif(
+    not os.getenv("CONTINUOUS_INTEGRATION", None),
+    reason="Keep local test runs reasonably short",
+)
 @pytest.mark.parametrize(
     "params, expected",
     [(["-v"], Expected(status=0, tokens=["Creating database file", "All done"]))],
@@ -153,7 +152,7 @@ def test_ratom_entities_enron_004(
             assert str(entity)
 
         # Verify total entity count
-        assert session.query(Entity).count() == 174881
+        assert session.query(Entity).count() == 174886
 
         # Verify count per entity type
         results = (
@@ -165,24 +164,24 @@ def test_ratom_entities_enron_004(
         assert results
 
         expected_counts = {
-            "CARDINAL": 40630,
-            "DATE": 7998,
+            "CARDINAL": 40622,
+            "DATE": 8016,
             "EVENT": 87,
-            "FAC": 391,
+            "FAC": 388,
             "GPE": 5687,
             "LANGUAGE": 3,
-            "LAW": 277,
+            "LAW": 278,
             "LOC": 379,
-            "MONEY": 1476,
+            "MONEY": 1474,
             "NORP": 553,
             "ORDINAL": 589,
-            "ORG": 93806,
+            "ORG": 93805,
             "PERCENT": 875,
-            "PERSON": 17916,
+            "PERSON": 17914,
             "PRODUCT": 376,
-            "QUANTITY": 71,
-            "TIME": 2819,
-            "WORK_OF_ART": 948,
+            "QUANTITY": 45,
+            "TIME": 2850,
+            "WORK_OF_ART": 945,
         }
         for entity_type, count in results:
             assert expected_counts[entity_type] == count
