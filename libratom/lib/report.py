@@ -69,7 +69,7 @@ def store_file_reports_in_db(
 
         try:
             for values, error in pool.imap(
-                get_file_info, ({"path": file} for file in files), chunksize=100
+                get_file_info, ({"path": file} for file in files), chunksize=1
             ):
                 if not error:
                     session.add(FileReport(**values))
