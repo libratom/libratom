@@ -85,9 +85,9 @@ def ratom():
 @click.option("-p", "--progress", is_flag=True, help="Show progress.")
 def entities(out, spacy_model, jobs, src, progress):
     """
-    Extract named entities from a PST file or a directory of PST files.
+    Extract named entities from a PST or mbox file, or a directory of one or more PST and mbox files.
 
-    If SOURCE is a directory it will be walked recursively. Any non-PST file will be skipped.
+    If SOURCE is a directory it will be walked recursively. Non-PST and non-mbox files will be skipped.
 
     If SOURCE is not provided the current working directory is used.
 
