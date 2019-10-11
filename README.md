@@ -65,8 +65,7 @@ Progress is displayed in a bar at the bottom of the window. To terminate a job e
 
 By default, the tool will use the spaCy en\_core\_web\_sm model, and will start as many concurrent jobs as there are virtual cores available. Entities are written to a sqlite3 file automatically named using the existing file or directory name and current datetime stamp, and with the following schema:
 
-![Alt text](https://libratom.github.io/ratom-db-schema.svg)
-<img src="https://libratom.github.io/ratom-db-schema.svg">
+![RATOM database schema](https://libratom.github.io/ratom-db-schema.svg)
 
 The schema contains 3 tables representing file information, message information and entity information.
 
