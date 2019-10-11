@@ -55,7 +55,7 @@ To see detailed help for the entity extraction command, type:
 (venv) user@host:~$ ratom entities -h
 ```
 
-To run the extractor with default settings over a PST or mbox file, or a directory containing one or more PST and/or mbox files, type the following:
+To run the extractor with default settings over a PST or mbox file, or a directory containing one or more PST and mbox files, type the following:
 
 ```shell
 (venv) user@host:~$ ratom entities -p /path/to/PST-or-mbox-file-or-directory
@@ -100,11 +100,37 @@ CREATE TABLE entity (
 
 The schema contains 3 tables representing file information, message information and entity information.
 
-In the entity table, text is the entity instance, label\_ is the entity type, filepath is the PST file associated with this entity. Full message and file information for each entity are also available through message_id and file_report_id respectively.
+In the entity table, text is the entity instance, label\_ is the entity type, filepath is the PST or mbox file associated with this entity. Full message and file information for each entity are also available through message_id and file_report_id respectively. Note that pff_identifier (a message ID specific to PST files) will not be populated for messages located in mbox files. Examples of how to query these tables can be found in the **Interactive examples** section near the end of this README.
 
-The notebooks linked below contain examples of how to query the information in these tables.
+## Advanced CLI uses
 
-## Additional libratom use cases
+The CLI provides additional flags to tune performance, output location, and verbosity of the tool. Some example use case are provided below.
+
+To use a different entity model, use the --space-model flag. The following example directs the tool to use the multi-language model:
+
+```shell
+(venv) user@host:~$ ratom entities -p --spacy-model xx_ent_wiki_sm /path/to/PST-or-mbox-file-or-directory
+```
+
+To specify the number of jobs that may be run concurrently, use the -j flag. The following example limits the number of concurrent jobs to 2:
+
+```shell
+(venv) user@host:~$ ratom entities -p -j 2 /path/to/PST-or-mbox-file-or-directory
+```
+
+To change the name or location used for the sqlite3 output file, use the -o flag. Specifying a directory will result in the automatically named file being written to that path. Specifying a path that includes a filename will force the use of that filename. In the following example, the sqlite3 databse will be named filename.db:
+
+```shell
+(venv) user@host:~$ ratom entities -p -o /path/to/directory/filename.db /path/to/PST-or-mbox-file-or-directory
+```
+
+If a job appears is terminating unexpectedly (or failing to terminate), or if you simply wish to view more detailed output during the run, you can increase the level of output verbosity with the -v flag. Additional v's increase verbosity. In the following example, we have increased verbosity to level 2:
+
+```shell
+(venv) user@host:~$ ratom entities -p -vv /path/to/PST-or-mbox-file-or-directory
+```
+
+## Interactive examples
 
 More usage documentation will appear here as the project matures. For now, you can try out some of the functionality in Jupyter notebooks we've prepared at:
 
