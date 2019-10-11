@@ -65,38 +65,8 @@ Progress is displayed in a bar at the bottom of the window. To terminate a job e
 
 By default, the tool will use the spaCy en\_core\_web\_sm model, and will start as many concurrent jobs as there are virtual cores available. Entities are written to a sqlite3 file automatically named using the existing file or directory name and current datetime stamp, and with the following schema:
 
-```shell
-sqlite> .schema
-CREATE TABLE file_report (
-	id INTEGER NOT NULL,
-	path VARCHAR,
-	name VARCHAR,
-	size INTEGER,
-	md5 VARCHAR,
-	sha256 VARCHAR,
-	PRIMARY KEY (id)
-);
-CREATE TABLE message (
-	id INTEGER NOT NULL,
-	pff_identifier INTEGER,
-	processing_start_time DATETIME,
-	processing_end_time DATETIME,
-	file_report_id INTEGER,
-	PRIMARY KEY (id),
-	FOREIGN KEY(file_report_id) REFERENCES file_report (id)
-);
-CREATE TABLE entity (
-	id INTEGER NOT NULL,
-	text VARCHAR,
-	label_ VARCHAR,
-	filepath VARCHAR,
-	message_id INTEGER,
-	file_report_id INTEGER,
-	PRIMARY KEY (id),
-	FOREIGN KEY(message_id) REFERENCES message (id),
-	FOREIGN KEY(file_report_id) REFERENCES file_report (id)
-);
-```
+![Alt text](https://libratom.github.io/ratom-db-schema.svg)
+<img src="https://libratom.github.io/ratom-db-schema.svg">
 
 The schema contains 3 tables representing file information, message information and entity information.
 
