@@ -73,27 +73,27 @@ In the entity table, text is the entity instance, label\_ is the entity type, fi
 
 ## Advanced CLI uses
 
-The CLI provides additional flags to tune performance, output location, and verbosity of the tool. Some example use case are provided below.
+The CLI provides additional flags to tune performance, output location, and verbosity of the tool. Some example use cases are provided below.
 
-To use a different entity model, use the --space-model flag. The following example directs the tool to use the multi-language model:
+To use a different entity model, use the --spacy-model flag. The following example directs the tool to use the multi-language model:
 
 ```shell
 (venv) user@host:~$ ratom entities -p --spacy-model xx_ent_wiki_sm /path/to/PST-or-mbox-file-or-directory
 ```
 
-To specify the number of jobs that may be run concurrently, use the -j flag. The following example limits the number of concurrent jobs to 2:
+To specify the number of jobs that may be run concurrently, use the -j flag. The following example sets the number of concurrent jobs to 2:
 
 ```shell
 (venv) user@host:~$ ratom entities -p -j 2 /path/to/PST-or-mbox-file-or-directory
 ```
 
-To change the name or location used for the sqlite3 output file, use the -o flag. Specifying a directory will result in the automatically named file being written to that path. Specifying a path that includes a filename will force the use of that filename. In the following example, the sqlite3 databse will be named filename.db:
+To change the name or location used for the sqlite3 output file, use the -o flag. Specifying a directory will result in the automatically named file being written to that path. Specifying a path that includes a filename will force the use of that filename. In the following example, the sqlite3 database will be named filename.db:
 
 ```shell
 (venv) user@host:~$ ratom entities -p -o /path/to/directory/filename.db /path/to/PST-or-mbox-file-or-directory
 ```
 
-If a job appears is terminating unexpectedly (or failing to terminate), or if you simply wish to view more detailed output during the run, you can increase the level of output verbosity with the -v flag. Additional v's increase verbosity. In the following example, we have increased verbosity to level 2:
+To view more detailed output during the job (for example, if you encounter unexpected failures), you can increase the level of output verbosity with the -v flag. Additional v's increase verbosity. In the following example, we have increased verbosity to level 2:
 
 ```shell
 (venv) user@host:~$ ratom entities -p -vv /path/to/PST-or-mbox-file-or-directory
