@@ -85,8 +85,6 @@ class PffArchive(Archive):
         else:
             raise TypeError(f"Unable to load {file} of type {type(file)}")
 
-        self._build_tree()
-
     def folders(self, bfs: bool = True) -> Generator[pypff.folder, None, None]:
         """Generator function to iterate over the archive's folders
 
