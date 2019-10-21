@@ -1,7 +1,6 @@
 # pylint: disable=missing-docstring,invalid-name,no-member
 import email
 import hashlib
-import itertools
 import logging
 import os
 import tempfile
@@ -28,14 +27,10 @@ def test_version():
     assert libratom.__version__
 
 
-@pytest.mark.parametrize("skip_tree, expected", [(False, True), (True, False)])
-def test_pffarchive_load_from_file_object(sample_pst_file, skip_tree, expected):
+def test_pffarchive_load_from_file_object(sample_pst_file):
 
-    with sample_pst_file.open(mode="rb") as f, PffArchive(
-        f, skip_tree=skip_tree
-    ) as archive:
+    with sample_pst_file.open(mode="rb") as f, PffArchive(f) as archive:
         assert len([message for message in archive.messages()]) == 2668
-        assert bool(archive.tree) is expected
 
 
 def test_pffarchive_load_from_invalid_type():
@@ -134,10 +129,9 @@ def test_get_messages_with_bad_files(enron_dataset_part044):
     assert _count == 558
 
 
-@pytest.mark.parametrize("skip_tree", [False, True])
-def test_get_message_by_id(sample_pst_file, skip_tree):
-    with PffArchive(sample_pst_file, skip_tree=skip_tree) as archive:
-        for message in itertools.islice(archive.messages(), 10):
+def test_get_message_by_id(sample_pst_file):
+    with PffArchive(sample_pst_file) as archive:
+        for message in archive.messages():
             msg = archive.get_message_by_id(message.identifier)
             assert msg.identifier == message.identifier
             assert archive.format_message(msg) == archive.format_message(message)
@@ -145,8 +139,7 @@ def test_get_message_by_id(sample_pst_file, skip_tree):
 
 def test_get_message_by_id_with_bad_id(sample_pst_file):
     with PffArchive(sample_pst_file) as archive:
-        with pytest.raises(ValueError):
-            assert archive.get_message_by_id(1234)
+        assert archive.get_message_by_id(1234) is None
 
 
 def test_get_messages_with_bad_messages(enron_dataset_part012):

@@ -1,14 +1,13 @@
-# pylint: disable=consider-using-ternary
+# pylint: disable=consider-using-ternary,attribute-defined-outside-init
 """
 PFF parsing utilities. Requires libpff.
 """
 
 import logging
-from bisect import bisect_left
 from collections import deque
 from io import IOBase
 from pathlib import Path
-from typing import Generator, Union
+from typing import Generator, Optional, Union
 
 import pypff
 from treelib import Tree
@@ -27,12 +26,8 @@ class PffArchive(Archive):
         tree: A tree representation of the folders/messages hierarchy
     """
 
-    def __init__(
-        self, file: Union[Path, IOBase, str] = None, skip_tree: bool = False
-    ) -> None:
-        self._skip_tree = skip_tree
+    def __init__(self, file: Union[Path, IOBase, str] = None) -> None:
         self.data = pypff.file()
-        self.tree = None
 
         if file:
             self.load(file)
@@ -46,26 +41,22 @@ class PffArchive(Archive):
     def _build_tree(self) -> None:
         """Builds the internal tree structure
 
-        Builds the internal tree structure, unless self.skip_tree is truthy
+        Builds the internal tree structure
 
         Returns:
             None
         """
 
-        if self._skip_tree:
-            logger.info("Skipping tree representation")
-            return
-
-        self.tree = Tree()
+        self._tree = Tree()
 
         # Set up root node
         root = next(self.folders())
-        self.tree.create_node("root", root.identifier)
+        self._tree.create_node("root", root.identifier)
 
         # Set up children
         for folder in self.folders():
             for message in folder.sub_messages:
-                self.tree.create_node(
+                self._tree.create_node(
                     f"Message ID: {message.identifier}",
                     message.identifier,
                     parent=folder.identifier,
@@ -73,7 +64,7 @@ class PffArchive(Archive):
                 )
 
             for sub_folder in folder.sub_folders:
-                self.tree.create_node(
+                self._tree.create_node(
                     sub_folder.name, sub_folder.identifier, parent=folder.identifier
                 )
 
@@ -134,33 +125,32 @@ class PffArchive(Archive):
                 yield message
     # fmt: on
 
-    def get_message_by_id(self, message_id: int) -> pypff.message:
-        """Gets a message by its ID
+    def get_message_by_id(self, message_id: int) -> Optional[pypff.message]:
+        """Gets a message by its internal pff identifier.
+        If no message was found for the given identifier, None is returned.
 
         Args:
             message_id: The target message's identifier attribute
 
         Returns:
-            A pypff.message object
+            A pypff.message object or None
         """
 
         try:
-            # Use internal tree if present
             return self.tree.get_node(message_id).data
         except AttributeError:
-            pass
+            return None
 
-        # fmt: off
-        for folder in self.folders():
-            messages = folder.sub_messages
-            # Use the fact that message IDs are stored sequentially in a given folder
-            if messages and messages[0].identifier <= message_id <= messages[-1].identifier:
-                i = bisect_left([message.identifier for message in messages], message_id)
-                if i != len(messages) and messages[i].identifier == message_id:
-                    return messages[i]
+    @property
+    def tree(self) -> Tree:
+        """Returns the object's internal tree structure
+        """
 
-        raise ValueError(f"No message found with identifier: {message_id}")
-        # fmt: on
+        try:
+            return self._tree
+        except AttributeError:
+            self._build_tree()
+            return self._tree
 
     @property
     def message_count(self) -> int:

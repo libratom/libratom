@@ -7,7 +7,7 @@ from libratom.lib import MboxArchive, PffArchive
 from libratom.lib.exceptions import FileTypeError
 
 
-def open_mail_archive(path: Path) -> Optional[Union[PffArchive, MboxArchive]]:
+def open_mail_archive(path: Path, **kwargs) -> Optional[Union[PffArchive, MboxArchive]]:
 
     extension_type_mapping = {".pst": PffArchive, ".mbox": MboxArchive}
 
@@ -16,7 +16,7 @@ def open_mail_archive(path: Path) -> Optional[Union[PffArchive, MboxArchive]]:
     except KeyError:
         raise FileTypeError(f"Unable to open {path}. Unsupported file type.")
 
-    return archive_class(path)
+    return archive_class(path, **kwargs)
 
 
 def get_set_of_files(path: Path) -> Set[Path]:
