@@ -1,4 +1,4 @@
-# pylint: disable=logging-fstring-interpolation,broad-except,too-few-public-methods
+# pylint: disable=broad-except,too-few-public-methods
 """
 Set of utilities for parallel execution of libratom code
 """

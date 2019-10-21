@@ -143,6 +143,13 @@ class PffArchive(Archive):
         Returns:
             A pypff.message object
         """
+
+        try:
+            # Use internal tree if present
+            return self.tree.get_node(message_id).data
+        except AttributeError:
+            pass
+
         # fmt: off
         for folder in self.folders():
             messages = folder.sub_messages

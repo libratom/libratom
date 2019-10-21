@@ -1,4 +1,4 @@
-# pylint: disable=broad-except,logging-fstring-interpolation,invalid-name,protected-access,consider-using-ternary,logging-format-interpolation
+# pylint: disable=broad-except,invalid-name,protected-access,consider-using-ternary
 """
 Set of utility functions that use spaCy to perform named entity recognition
 """

@@ -1,6 +1,7 @@
 # pylint: disable=missing-docstring,invalid-name,no-member
 import email
 import hashlib
+import itertools
 import logging
 import os
 import tempfile
@@ -133,10 +134,13 @@ def test_get_messages_with_bad_files(enron_dataset_part044):
     assert _count == 558
 
 
-def test_get_message_by_id(sample_pst_file):
-    with PffArchive(sample_pst_file) as archive:
-        for message in archive.messages():
-            assert archive.get_message_by_id(message.identifier)
+@pytest.mark.parametrize("skip_tree", [False, True])
+def test_get_message_by_id(sample_pst_file, skip_tree):
+    with PffArchive(sample_pst_file, skip_tree=skip_tree) as archive:
+        for message in itertools.islice(archive.messages(), 10):
+            msg = archive.get_message_by_id(message.identifier)
+            assert msg.identifier == message.identifier
+            assert archive.format_message(msg) == archive.format_message(message)
 
 
 def test_get_message_by_id_with_bad_id(sample_pst_file):

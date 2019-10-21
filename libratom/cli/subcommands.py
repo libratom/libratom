@@ -1,4 +1,4 @@
-# pylint: disable=logging-fstring-interpolation,invalid-name
+# pylint: disable=invalid-name
 """
 The functions in this module are entry points for ratom sub-commands, e.g. `ratom entities ...`
 """

@@ -1,4 +1,4 @@
-# pylint: disable=unused-argument,logging-fstring-interpolation
+# pylint: disable=unused-argument
 """
 Command-line interface for libratom
 """
