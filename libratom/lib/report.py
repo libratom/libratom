@@ -1,4 +1,4 @@
-# pylint: disable=broad-except,logging-fstring-interpolation,protected-access
+# pylint: disable=broad-except,protected-access
 """
 Set of utility functions to generate job related reports
 """
