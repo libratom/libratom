@@ -13,8 +13,9 @@ from typing import Callable, Dict, Iterable, Optional, Tuple
 
 from sqlalchemy.orm.session import Session
 
+import libratom
 from libratom.lib.concurrency import imap_job, worker_init
-from libratom.models.file_report import FileReport
+from libratom.models import Configuration, FileReport
 
 logger = logging.getLogger(__name__)
 
@@ -89,3 +90,25 @@ def store_file_reports_in_db(
             return 1
 
     return 0
+
+
+def store_configuration_in_db(
+    session: Session, spacy_model: str, spacy_model_version: int
+) -> None:
+    """
+    Store configuration / environment information in the database output during a ratom command execution
+    """
+
+    configuration = {
+        "cpu_count": multiprocessing.cpu_count(),
+        "libratom_version": libratom.__version__,
+        "spacy_model_name": spacy_model,
+        "spacy_model_version": spacy_model_version,
+    }
+
+    session.add_all(
+        [
+            Configuration(name=name, value=str(value))
+            for name, value in configuration.items()
+        ]
+    )

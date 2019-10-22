@@ -3,8 +3,6 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 
 from libratom.lib.database import Base
-from libratom.models.file_report import FileReport
-from libratom.models.message import Message
 
 
 class Entity(Base):
@@ -14,8 +12,8 @@ class Entity(Base):
     text = Column(String)
     label_ = Column(String)
     filepath = Column(String)
-    message_id = Column(Integer, ForeignKey(Message.id))
-    file_report_id = Column(Integer, ForeignKey(FileReport.id))
+    message_id = Column(Integer, ForeignKey("message.id"))
+    file_report_id = Column(Integer, ForeignKey("file_report.id"))
 
     def __str__(self):
         column_names = [col.key for col in self.__table__.columns]

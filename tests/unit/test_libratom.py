@@ -18,7 +18,7 @@ from libratom.lib.download import download_files
 from libratom.lib.entities import SPACY_MODELS, extract_entities, load_spacy_model
 from libratom.lib.exceptions import FileTypeError
 from libratom.lib.pff import PffArchive
-from libratom.models.file_report import FileReport
+from libratom.models import FileReport
 
 logger = logging.getLogger(__name__)
 
