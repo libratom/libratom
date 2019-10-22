@@ -16,18 +16,13 @@ Python library and supporting utilities to parse and process PST and MBOX email 
 
 Libratom requires Python 3.6 or newer, and can be installed via the Python Package Index (PyPI). Installing via **pip** will automatically install all required dependencies.
 
-To install and test this software in a new Python virtual environment in Ubuntu 16.04LTS or newer:
+Libratom should install and run in Ubuntu 16.04LTS (or newer), macOS 10.13 with Xcode 9.4.1 (or newer), and Windows 10 with VSCode. We **strongly recommend** you create a Python virtual environment prior to installing libratom. Need help setting up an environment on your platform? Navigate to one of the linked sections below before continuing.
 
-Make sure Python 3.6 or newer, python3-pip, and python3-venv are installed:
-```shell
-sudo apt install python3 python3-pip python3-venv
-```
+#windows-environment-setup
+#macos-environment-setup
+#ubuntu-environment-setup
 
-Create and activate a Python virtual environment:
-```shell
-python3 -m venv venv
-source venv/bin/activate
-```
+Once your environment is configured, and you have created and activated a Python virtual environment, run the following commands.
 
 Make sure pip is upgraded to the latest version:
 ```shell
@@ -104,6 +99,104 @@ To view more detailed output during the job (for example, if you encounter unexp
 More usage documentation will appear here as the project matures. For now, you can try out some of the functionality in Jupyter notebooks we've prepared at:
 
 [https://github.com/libratom/ratom-notebooks](https://github.com/libratom/ratom-notebooks)
+
+## Environment Setups for Windows, macOS, and Ubuntu
+
+[Windows Environment Setup](#windows-environment-setup)
+
+Visit https://code.visualstudio.com/download to download and install the 64-bit User Installer for Windows 10 by following the prompts.
+
+Install the Build Tools for Visual Studio 2019 from https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019, following the prompts until you see the dialog window for selecting which components to install. 
+
+In the Workloads tab, check the box for "C++ build tools". Click the Install button at the bottom right of the window. Once you see the "Installation Succeeded!" window, you can close the window.
+
+Visit https://www.anaconda.com/distribution/ to download and install the 64-bit Python 3.7 Anaconda distribution.
+
+Open the start menu, select Anaconda3 (64-bit) and click "Anaconda Prompt (Anaconda3)".
+
+At the prompt, create a new virtual environment in which to install libratom:
+
+```shell
+(base) C:\Users\name>conda create --name ratomenv
+```
+
+Type Y to confirm any prompts and proceed. Activate the environment:
+
+```shell
+(base) C:\Users\name>conda activate ratomenv
+```
+
+Type Y to confirm and proceed. At the next prompt, install pip:
+
+```shell
+(ratomenv) C:\Users\name>conda install pip
+```
+
+Type Y to confirm and proceed. At the next prompt, install libratom:
+
+```shell
+(ratomenv) C:\Users\name>pip install libratom
+```
+
+Libratom should now be ready to run.
+
+Python virtual environments can be deactivated and reactivated as needed. To deactivate the environment, type:
+
+```shell
+(ratomenv) C:\Users\name>conda deactivate
+```
+
+To remove the environment completely, type:
+
+```shell
+(base) C:\Users\name>conda env remove -n ratomenv
+```
+
+[macOS Environment Setup](#macos-environment-setup)
+
+Install the latest version of XCode from the App Store. Once XCode is installed, open a terminal (you can find the terminal app by clicking the Spotlight magnifying glass and typing term).
+
+Run the following to install/update the XCode command line tools:
+
+```shell
+user-macbook:~ user$ xcode-select --install
+```
+
+You may need to run the following to agree to the Xcode/iOS licence (requires admin privileges):
+
+```shell
+user-macbook:~ user$ sudo xcodebuild -license
+```
+
+Depending on your macOS version and other tools you have installed, Python 3 may or may not be available on your system. Follow the instructions at the link below to check your system and install Python 3 if needed:
+
+https://wsvincent.com/install-python3-mac/
+
+Next, open a terminal and either follow the instructions from the link above to create a new Python 3 virtual environment, or simply create and activate one in your home directory with the following command:
+
+```shell
+user-macbook:~ user$ python3 -m venv venv
+user-macbook:~ user$ source venv/bin/activate
+```
+
+Follow the remaining instructions in the Installation section at the top of this README to upgrade pip and install libratom.
+
+[Ubuntu Environment Setup](#ubuntu-environment-setup)
+
+To install and test this software in a new Python virtual environment in Ubuntu 16.04LTS or newer:
+
+Make sure Python 3.6 or newer, python3-pip, and python3-venv are installed:
+```shell
+sudo apt install python3 python3-pip python3-venv
+```
+
+Create and activate a Python virtual environment:
+```shell
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Follow the remaining instructions in the Installation section at the top of this README to upgrade pip and install libratom.
 
 ## License(s)
 
