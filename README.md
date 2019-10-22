@@ -18,9 +18,9 @@ Libratom requires Python 3.6 or newer, and can be installed via the Python Packa
 
 Libratom should install and run in Ubuntu 16.04LTS (or newer), macOS 10.13 with Xcode 9.4.1 (or newer), and Windows 10 with VSCode. We **strongly recommend** you create a Python virtual environment prior to installing libratom. Need help setting up an environment on your platform? Navigate to one of the linked sections below before continuing.
 
-[Windows Environment Setup](###windows-environment-setup)
-[macOS Environment Setup](###macos-environment-setup)
-[Ubuntu Environment Setup](###ubuntu-environment-setup)
+* [Windows Environment Setup](#windows-environment-setup)
+* [macOS Environment Setup](#macos-environment-setup)
+* [Ubuntu Environment Setup](#ubuntu-environment-setup)
 
 Once your environment is configured, and you have created and activated a Python virtual environment, run the following commands.
 
