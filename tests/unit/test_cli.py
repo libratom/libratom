@@ -21,8 +21,7 @@ from libratom.lib.entities import (
     load_spacy_model,
     process_message,
 )
-from libratom.models.entity import Entity
-from libratom.models.file_report import FileReport
+from libratom.models import Entity, FileReport
 
 
 class Expected:
@@ -244,7 +243,7 @@ def test_entities_with_bad_model(enron_dataset_part001):
             progress=False,
         )
 
-    assert not load_spacy_model(spacy_model_name="no_such_model")
+    assert not any(load_spacy_model(spacy_model_name="no_such_model"))
 
 
 def test_file_report(enron_dataset_part012):

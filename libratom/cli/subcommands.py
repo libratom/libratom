@@ -19,7 +19,7 @@ from libratom.lib.entities import (
     extract_entities,
     load_spacy_model,
 )
-from libratom.lib.report import store_file_reports_in_db
+from libratom.lib.report import store_configuration_in_db, store_file_reports_in_db
 
 logger = logging.getLogger(__name__)
 
@@ -78,7 +78,7 @@ def entities(
 
     # Get spaCy model
     logger.info(f"Loading spacy model: {spacy_model_name}")
-    spacy_model = load_spacy_model(spacy_model_name)
+    spacy_model, spacy_model_version = load_spacy_model(spacy_model_name)
     if not spacy_model:
         return 1
 
@@ -89,6 +89,10 @@ def entities(
     with progress_bar_context(
         total=msg_count, desc="Processing messages", unit="msg", color="green"
     ) as msg_bar, db_session(Session) as session:
+
+        # Record configuration info
+        store_configuration_in_db(session, spacy_model_name, spacy_model_version)
+
         status = extract_entities(
             files=files,
             session=session,

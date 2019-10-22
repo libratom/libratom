@@ -19,9 +19,7 @@ from sqlalchemy.orm.session import Session
 
 from libratom.lib.concurrency import get_messages, imap_job, worker_init
 from libratom.lib.core import open_mail_archive
-from libratom.models.entity import Entity
-from libratom.models.file_report import FileReport
-from libratom.models.message import Message
+from libratom.models import Entity, FileReport, Message
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +80,7 @@ def process_message(
         return res, str(exc)
 
 
-def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
+def load_spacy_model(spacy_model_name: str) -> Tuple[Optional[Language], Optional[int]]:
     """
     Loads and returns a given spaCy model
 
@@ -108,7 +106,7 @@ def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
                 spacy.cli.download(spacy_model_name, False, "--quiet")
             except SystemExit:
                 logger.error(f"Unable to install spacy model {spacy_model_name}")
-                return None
+                return None, None
 
             # Now try loading it again
             reload(pkg_resources)
@@ -116,12 +114,21 @@ def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
 
         else:
             logger.exception(exc)
-            return None
+            return None, None
+
+    # Try to get spaCy model version
+    try:
+        spacy_model_version = pkg_resources.get_distribution(spacy_model_name).version
+    except Exception as exc:
+        spacy_model_version = None
+        logger.info(
+            f"Unable to get spaCy model version for {spacy_model_name}, error: {exc}"
+        )
 
     # Set text length limit for model
     spacy_model.max_length = RATOM_SPACY_MODEL_MAX_LENGTH
 
-    return spacy_model
+    return spacy_model, spacy_model_version
 
 
 def extract_entities(

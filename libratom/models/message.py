@@ -4,7 +4,6 @@ from sqlalchemy import Column, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
 from libratom.lib.database import Base
-from libratom.models.file_report import FileReport
 
 
 class Message(Base):
@@ -14,5 +13,5 @@ class Message(Base):
     pff_identifier = Column(Integer)
     processing_start_time = Column(DateTime)
     processing_end_time = Column(DateTime)
-    file_report_id = Column(Integer, ForeignKey(FileReport.id))
+    file_report_id = Column(Integer, ForeignKey("file_report.id"))
     entities = relationship("Entity", backref="message")
