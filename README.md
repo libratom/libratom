@@ -18,9 +18,9 @@ Libratom requires Python 3.6 or newer, and can be installed via the Python Packa
 
 Libratom should install and run in Ubuntu 16.04LTS (or newer), macOS 10.13 with Xcode 9.4.1 (or newer), and Windows 10 with Visual Studio Code. We **strongly recommend** you create a Python virtual environment prior to installing libratom. Need help setting up an environment on your platform? Navigate to one of the linked sections below before continuing.
 
-* [Windows Environment Setup](#windows-environment-setup)
-* [macOS Environment Setup](#macos-environment-setup)
-* [Ubuntu Environment Setup](#ubuntu-environment-setup)
+  * [Windows Environment Setup](#windows-environment-setup)
+  * [macOS Environment Setup](#macos-environment-setup)
+  * [Ubuntu Environment Setup](#ubuntu-environment-setup)
 
 Once your environment is configured and you have created and activated a Python virtual environment, run the following commands.
 
@@ -104,13 +104,13 @@ More usage documentation will appear here as the project matures. For now, you c
 
 ### Windows Environment Setup
 
-First, install Visual Studio Code. Visit https://code.visualstudio.com/download to download and run the 64-bit User Installer for Windows 10. Follow the prompts, accepting all default selections.
+First, install Visual Studio Code. Visit <https://code.visualstudio.com/download> to download and run the 64-bit User Installer for Windows 10. Follow the prompts, accepting all default selections.
 
-Download and run the Build Tools for Visual Studio 2019 installer from https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019. Follow the prompts until you see a window with a Workloads tab in the top left hand corner.
+Download and run the Build Tools for Visual Studio 2019 installer from <https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019>. Follow the prompts until you see a window with a Workloads tab in the top left hand corner.
 
 In the Workloads tab, check the box for "C++ build tools". Click the Install button at the bottom right of the window. Once you see "Installation Succeeded!", close the window.
 
-Visit https://www.anaconda.com/distribution/ to download and install the 64-bit Python 3.7 Anaconda distribution. Follow the prompts, accepting all default selections.
+Visit <https://www.anaconda.com/distribution/> to download and install the 64-bit Python 3.7 Anaconda distribution. Follow the prompts, accepting all default selections.
 
 Open the Windows Start Menu, select Anaconda3 (64-bit) and click "Anaconda Prompt (Anaconda3)".
 
@@ -170,7 +170,7 @@ user-macbook:~ user$ sudo xcodebuild -license
 
 Depending on your macOS version and other tools you have installed, Python 3 may or may not be available on your system. Follow the instructions at the link below to check your system and install Python 3 if needed:
 
-https://wsvincent.com/install-python3-mac/
+<https://wsvincent.com/install-python3-mac/>
 
 Next, open a terminal and either follow the instructions from the link above to create a new Python 3 virtual environment, or simply create and activate one in your home directory with the following commands:
 
