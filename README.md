@@ -14,15 +14,21 @@ Python library and supporting utilities to parse and process PST and MBOX email 
 
 ## Installation
 
-Libratom requires Python 3.6 or newer, and can be installed via the Python Package Index (PyPI). Installing via **pip** will automatically install all required dependencies.
+Libratom requires Python 3.6 or newer, and can be installed via the Python Package Index. Installing via **pip** will automatically install all required dependencies. These dependencies include a version of **libpff** that will be compiled automatically with C++ tooling during install. This may require obtaining additional development tools in your environment before installing libratom.
 
-Libratom should install and run in Ubuntu 16.04LTS (or newer), macOS 10.13 with Xcode 9.4.1 (or newer), and Windows 10 with Visual Studio Code. We **strongly recommend** you create a Python virtual environment prior to installing libratom. Need help setting up an environment on your platform? Navigate to one of the linked sections below before continuing.
+We've tested installing and running libratom in the following following environments:
+
+*   Ubuntu 16.04LTS, 18.04LTS, and newer releases with build-essential and python3 packages
+*   macOS 10.13 (and newer) releases with Xcode 9.4.1 (and newer), Xcode CLI tools, and brew-installed Python 3
+*   Windows 10 with Visual Studio Code, Build Tools for Visual Studio, and Anaconda 3
+
+Need help setting up an environment on your platform? Navigate to one of the linked sections below before continuing.
 
 *   [Windows Environment Setup](#windows-environment-setup)
 *   [macOS Environment Setup](#macos-environment-setup)
 *   [Ubuntu Environment Setup](#ubuntu-environment-setup)
 
-Once your environment is configured and you have created and activated a Python virtual environment, run the following commands.
+We **strongly recommend** you create a Python virtual environment prior to installing libratom. If you followed one of the guides above, you should already have one activated. With the environment configured and a Python virtual environment created and activated, run the following commands.
 
 Make sure pip is upgraded to the latest version:
 ```shell
