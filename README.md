@@ -24,9 +24,9 @@ We've tested installing and running libratom in the following following environm
 
 Need help setting up an environment on your platform? Navigate to one of the linked sections below before continuing.
 
-*   [Windows Environment Setup](#windows-environment-setup)
-*   [macOS Environment Setup](#macos-environment-setup)
-*   [Ubuntu Environment Setup](#ubuntu-environment-setup)
+*   [Windows environment setup](#windows-environment-setup)
+*   [macOS environment setup](#macos-environment-setup)
+*   [Ubuntu environment setup](#ubuntu-environment-setup)
 
 We **strongly recommend** you create a Python virtual environment prior to installing libratom. If you followed one of the guides above, you should already have one activated. With the environment configured and a Python virtual environment created and activated, run the following commands.
 
@@ -108,7 +108,7 @@ More usage documentation will appear here as the project matures. For now, you c
 
 ## Environment Setups for Windows, macOS, and Ubuntu
 
-### Windows Environment Setup
+### Windows environment setup
 
 First, install Visual Studio Code. Visit <https://code.visualstudio.com/download> to download and run the 64-bit User Installer for Windows 10. Follow the prompts, accepting all default selections.
 
@@ -158,7 +158,7 @@ To remove the environment completely, type:
 (base) C:\Users\name>conda env remove -n ratomenv
 ```
 
-### macOS Environment Setup
+### macOS environment setup
 
 Install the latest version of XCode from the App Store. Once XCode is installed, open a terminal (you can find the terminal app by clicking the Spotlight magnifying glass and typing term).
 
@@ -187,7 +187,7 @@ user-macbook:~ user$ source venv/bin/activate
 
 Follow the remaining instructions in the Installation section at the top of this README to upgrade pip and install libratom.
 
-### Ubuntu Environment Setup
+### Ubuntu environment setup
 
 To install and test this software in a new Python virtual environment in Ubuntu 16.04LTS or newer:
 
