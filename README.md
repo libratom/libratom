@@ -8,7 +8,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e432a64a5b2d45c4b4747a82cc1c291c)](https://app.codacy.com/app/ratom/libratom?utm_source=github.com&utm_medium=referral&utm_content=libratom/libratom&utm_campaign=Badge_Grade_Dashboard)
 [![Twitter Follow](https://img.shields.io/twitter/follow/RATOM_project.svg?style=social&label=Follow)](https://twitter.com/RATOM_Project)
 
-Python library and supporting utilities to parse and process PST and MBOX email sources.
+Python library and supporting utilities to parse and process PST and mbox email sources.
 
 ***This project is under development***
 
@@ -72,31 +72,34 @@ In the entity table, text is the entity instance, label\_ is the entity type, fi
 
 ## Advanced CLI uses
 
-The CLI provides additional flags to tune performance, output location, and verbosity of the tool. Some example use cases are provided below.
+The CLI provides additional flags to tune performance, output location, and verbosity of the tool. Flags that do not take a value may be chained. For example, "-p -v" is equivalent to "-pv" Some example use cases are provided below.
+
+The CLI is "quiet" and produces minimal output by default. A single -v flag enables some basic output about job status. To view more detailed output (for example, if you encounter unexpected failures), you can increase the level of output verbosity with -vv (verbosity level 2):
+
+```shell
+(venv) user@host:~$ ratom entities -p -vv /path/to/PST-or-mbox-file-or-directory
+```
+
+All remaining examples are presented with verbosity level 1 enabled.
 
 To use a different entity model, use the --spacy-model flag. The following example directs the tool to use the multi-language model:
 
 ```shell
-(venv) user@host:~$ ratom entities -p --spacy-model xx_ent_wiki_sm /path/to/PST-or-mbox-file-or-directory
+(venv) user@host:~$ ratom entities -pv --spacy-model xx_ent_wiki_sm /path/to/PST-or-mbox-file-or-directory
 ```
 
 To specify the number of jobs that may be run concurrently, use the -j flag. The following example sets the number of concurrent jobs to 2:
 
 ```shell
-(venv) user@host:~$ ratom entities -p -j 2 /path/to/PST-or-mbox-file-or-directory
+(venv) user@host:~$ ratom entities -pv -j 2 /path/to/PST-or-mbox-file-or-directory
 ```
 
 To change the name or location used for the sqlite3 output file, use the -o flag. Specifying a directory will result in the automatically named file being written to that path. Specifying a path that includes a filename will force the use of that filename. In the following example, the sqlite3 database will be named filename.db:
 
 ```shell
-(venv) user@host:~$ ratom entities -p -o /path/to/directory/filename.db /path/to/PST-or-mbox-file-or-directory
+(venv) user@host:~$ ratom entities -pv -o /path/to/directory/filename.db /path/to/PST-or-mbox-file-or-directory
 ```
 
-To view more detailed output during the job (for example, if you encounter unexpected failures), you can increase the level of output verbosity with the -v flag. Additional v's increase verbosity. In the following example, we have increased verbosity to level 2:
-
-```shell
-(venv) user@host:~$ ratom entities -p -vv /path/to/PST-or-mbox-file-or-directory
-```
 
 ## Interactive examples
 
@@ -158,9 +161,9 @@ To remove the environment completely, type:
 
 ### macOS environment setup
 
-Install the latest version of XCode from the App Store. Once XCode is installed, open a terminal (you can find the terminal app by clicking the Spotlight magnifying glass and typing term).
+Install the latest version of Xcode from the App Store. Once Xcode is installed, open a terminal (you can find the terminal app by clicking the Spotlight magnifying glass and typing term).
 
-Run the following to install/update the XCode command line tools:
+Run the following to install/update the Xcode command line tools:
 
 ```shell
 user-macbook:~ user$ xcode-select --install
