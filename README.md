@@ -172,11 +172,11 @@ You may need to run the following to agree to the Xcode/iOS licence (requires ad
 user-macbook:~ user$ sudo xcodebuild -license
 ```
 
-Depending on your macOS version and other tools you have installed, Python 3 may or may not be available on your system. Follow the instructions at the link below to check your system and install Python 3 if needed:
+Follow the instructions at the link below to check your system and install Python 3 if needed:
 
 <https://wsvincent.com/install-python3-mac/>
 
-Next, open a terminal and either follow the instructions from the link above to create a new Python 3 virtual environment, or simply create and activate one in your home directory with the following commands:
+Next, create a new Python 3 virtual environment. Use the instructions in the previous link or create and activate one in your home directory with the following commands:
 
 ```shell
 user-macbook:~ user$ python3 -m venv venv
