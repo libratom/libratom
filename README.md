@@ -88,7 +88,7 @@ To use a different entity model, use the --spacy-model flag. The following examp
 (venv) user@host:~$ ratom entities -pv --spacy-model xx_ent_wiki_sm /path/to/PST-or-mbox-file-or-directory
 ```
 
-The tool will optimize the number of jobs that may be run concurrently on your system by default, using all available processor cores. To limit the number of jobs that may be run concurrently, use the -j flag. The following example sets the number of concurrent jobs to 2:
+The tool will optimize the number of jobs that may be run concurrently on your system by default, using all available processor cores. To manually set the number of jobs that may be run concurrently, use the -j flag. The following example sets the number of concurrent jobs to 2:
 
 ```shell
 (venv) user@host:~$ ratom entities -pv -j 2 /path/to/PST-or-mbox-file-or-directory
