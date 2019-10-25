@@ -61,6 +61,7 @@ def get_messages(
 
                     except Exception as exc:
                         # Log and move on to the next message
+                        logger.error(f"Error processing file {file}")
                         logger.exception(exc)
 
                 # Number of messages not counted towards progress is carried over
@@ -68,6 +69,7 @@ def get_messages(
 
         except Exception as exc:
             # Log and move on to the next file
+            logger.error(f"Error processing file {file}")
             logger.exception(exc)
 
     # Update progress with what's left
