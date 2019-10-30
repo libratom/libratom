@@ -3,7 +3,6 @@ import email
 import hashlib
 import logging
 import os
-import tempfile
 from email import policy
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -17,6 +16,7 @@ from libratom.lib.database import db_init, db_session
 from libratom.lib.download import download_files
 from libratom.lib.entities import SPACY_MODELS, extract_entities, load_spacy_model
 from libratom.lib.exceptions import FileTypeError
+from libratom.lib.mbox import MboxArchive
 from libratom.lib.pff import PffArchive
 from libratom.models import FileReport
 
@@ -162,7 +162,7 @@ def test_extract_entities_with_bad_messages(enron_dataset_part012):
 
     tmp_filename = "test.sqlite3"
 
-    with tempfile.TemporaryDirectory() as tmpdir:
+    with TemporaryDirectory() as tmpdir:
 
         destination = Path(tmpdir) / tmp_filename
         Session = db_init(destination)
@@ -191,7 +191,7 @@ def test_extract_entities_from_mbox_files(directory_of_mbox_files):
 
     tmp_filename = "test.sqlite3"
 
-    with tempfile.TemporaryDirectory() as tmpdir:
+    with TemporaryDirectory() as tmpdir:
 
         destination = Path(tmpdir) / tmp_filename
         Session = db_init(destination)
@@ -226,6 +226,10 @@ def test_download_files_with_bad_urls():
 
     bad_urls = ["http://httpstat.us/404"] * 6
 
-    with tempfile.TemporaryDirectory() as tmpdir:
+    with TemporaryDirectory() as tmpdir:
         with pytest.raises(RuntimeError):
             download_files(bad_urls, Path(tmpdir))
+
+
+def test_message_with_no_cte_header_as_string(message_with_no_cte_header):
+    assert MboxArchive.format_message(message_with_no_cte_header)

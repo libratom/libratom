@@ -1,18 +1,20 @@
 # pylint: disable=invalid-name,missing-docstring,redefined-outer-name,stop-iteration-return
 import os
+from email import message_from_binary_file
+from email.message import Message
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import List
 from zipfile import ZipFile
 
 import pytest
 import requests
 
-from libratom.lib.download import download_files
+from libratom.lib.download import download_file, download_files
 
 # Skip load tests
 if not os.getenv("LIBRATOM_LOAD_TESTING"):
     collect_ignore_glob = ["load/*"]
-
 
 CACHED_ENRON_DATA_DIR = Path("/tmp/libratom/test_data/RevisedEDRMv1_Complete")
 CACHED_HTTPD_USERS_MAIL_DIR = Path("/tmp/libratom/test_data/httpd-users")
@@ -246,3 +248,23 @@ def directory_of_mbox_files() -> Path:
     download_files(urls, path)
 
     yield path
+
+
+@pytest.fixture(scope="session")
+def message_with_no_cte_header() -> Message:
+    """
+    Returns:
+        A message with no CTE header
+    """
+
+    url = "https://raw.githubusercontent.com/kyrias/cpython/9a510426522e1d714cd0ea238b14de0fc76862b2/Lib/test/test_email/data/msg_47.txt"
+
+    with TemporaryDirectory() as tmpdir:
+
+        download_dir = Path(tmpdir)
+        file_path = download_dir / url.rsplit("/", 1)[1]
+
+        assert download_file(url=url, download_dir=download_dir) == 318
+
+        with file_path.open("rb") as fp:
+            yield message_from_binary_file(fp)
