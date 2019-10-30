@@ -100,7 +100,6 @@ To change the name or location used for the sqlite3 output file, use the -o flag
 (venv) user@host:~$ ratom entities -pv -o /path/to/directory/filename.db /path/to/PST-or-mbox-file-or-directory
 ```
 
-
 ## Interactive examples
 
 More usage documentation will appear here as the project matures. For now, you can try out some of the functionality in Jupyter notebooks we've prepared at:
