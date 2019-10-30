@@ -231,5 +231,5 @@ def test_download_files_with_bad_urls():
             download_files(bad_urls, Path(tmpdir))
 
 
-def test_message_with_no_cte_header_as_string(message_with_no_cte_header):
-    assert MboxArchive.format_message(message_with_no_cte_header)
+def test_utf8_message_with_no_cte_header_as_string(utf8_message_with_no_cte_header):
+    assert MboxArchive.format_message(utf8_message_with_no_cte_header)

@@ -251,10 +251,10 @@ def directory_of_mbox_files() -> Path:
 
 
 @pytest.fixture(scope="session")
-def message_with_no_cte_header() -> Message:
+def utf8_message_with_no_cte_header() -> Message:
     """
     Returns:
-        A message with no CTE header
+        A message with non-ascii characters and no CTE header, encoded as UTF-8
     """
 
     url = "https://raw.githubusercontent.com/kyrias/cpython/9a510426522e1d714cd0ea238b14de0fc76862b2/Lib/test/test_email/data/msg_47.txt"
