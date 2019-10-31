@@ -6,6 +6,7 @@ import os
 from email import policy
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -206,6 +207,30 @@ def test_extract_entities_from_mbox_files(directory_of_mbox_files):
             )
 
         assert status == 0
+
+
+def test_extract_entities_with_interrupt(directory_of_mbox_files):
+
+    tmp_filename = "test.sqlite3"
+
+    with TemporaryDirectory() as tmpdir:
+
+        destination = Path(tmpdir) / tmp_filename
+        Session = db_init(destination)
+
+        with db_session(Session) as session, patch(
+            "libratom.lib.entities.Message",
+            new=MagicMock(side_effect=KeyboardInterrupt),
+        ):
+
+            status = extract_entities(
+                files=get_set_of_files(directory_of_mbox_files),
+                session=session,
+                spacy_model=load_spacy_model(SPACY_MODELS.en_core_web_sm)[0],
+                jobs=2,
+            )
+
+        assert status == 1
 
 
 @pytest.mark.parametrize("dry_run", [False, True])
