@@ -19,6 +19,7 @@ from libratom.lib.entities import SPACY_MODELS, extract_entities, load_spacy_mod
 from libratom.lib.exceptions import FileTypeError
 from libratom.lib.mbox import MboxArchive
 from libratom.lib.pff import PffArchive
+from libratom.lib.report import store_file_reports_in_db
 from libratom.models import FileReport
 
 logger = logging.getLogger(__name__)
@@ -228,6 +229,27 @@ def test_extract_entities_with_interrupt(directory_of_mbox_files):
                 session=session,
                 spacy_model=load_spacy_model(SPACY_MODELS.en_core_web_sm)[0],
                 jobs=2,
+            )
+
+        assert status == 1
+
+
+def test_store_file_reports_in_db_with_interrupt(directory_of_mbox_files):
+
+    tmp_filename = "test.sqlite3"
+
+    with TemporaryDirectory() as tmpdir:
+
+        destination = Path(tmpdir) / tmp_filename
+        Session = db_init(destination)
+
+        with db_session(Session) as session, patch(
+            "libratom.lib.report.FileReport",
+            new=MagicMock(side_effect=KeyboardInterrupt),
+        ):
+
+            status = store_file_reports_in_db(
+                files=get_set_of_files(directory_of_mbox_files), session=session, jobs=2
             )
 
         assert status == 1
