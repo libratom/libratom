@@ -15,3 +15,4 @@ class Message(Base):
     processing_end_time = Column(DateTime)
     file_report_id = Column(Integer, ForeignKey("file_report.id"))
     entities = relationship("Entity", backref="message")
+    attachments = relationship("Attachment", backref="message")

@@ -7,12 +7,12 @@ import logging
 from collections import deque
 from io import IOBase
 from pathlib import Path
-from typing import Generator, Optional, Union
+from typing import Generator, Optional, Union, List
 
 import pypff
 from treelib import Tree
 
-from libratom.lib.base import Archive
+from libratom.lib.base import Archive, AttachmentMetadata
 
 logger = logging.getLogger(__name__)
 
@@ -182,3 +182,9 @@ class PffArchive(Archive):
             body = str(body, encoding="utf-8", errors="replace")
 
         return f"{message.transport_headers if with_headers else ''}Body-Type: plain-text\r\n\r\n{body.strip()}"
+
+    @staticmethod
+    def get_attachment_metadata(message: pypff.message) -> List[AttachmentMetadata]:
+        """
+
+        """

@@ -1,7 +1,10 @@
 # pylint: disable=missing-docstring
 
 from abc import ABC, abstractmethod
-from typing import Any, Generator
+from collections import namedtuple
+from typing import Any, Generator, Iterable
+
+AttachmentMetadata = namedtuple('AttachmentMetadata', ['name', 'mime_type', 'size'])
 
 
 class Archive(ABC):  # pragma: no cover
@@ -29,4 +32,9 @@ class Archive(ABC):  # pragma: no cover
     @staticmethod
     @abstractmethod
     def format_message(message: Any, with_headers: bool) -> str:
+        ...
+
+    @staticmethod
+    @abstractmethod
+    def get_attachment_metadata(message: Any) -> Iterable[AttachmentMetadata]:
         ...
