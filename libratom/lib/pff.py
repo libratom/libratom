@@ -186,5 +186,8 @@ class PffArchive(Archive):
     @staticmethod
     def get_attachment_metadata(message: pypff.message) -> List[AttachmentMetadata]:
         """
-
+        Returns the metadata of all attachments in a given message
         """
+
+        return [AttachmentMetadata(name=attachment.name, mime_type='', size=attachment.size) for attachment in message.attachments]
+
