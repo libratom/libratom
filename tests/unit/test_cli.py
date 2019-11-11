@@ -186,7 +186,7 @@ def test_ratom_entities_enron_004(
             "LANGUAGE": 4,
             "LAW": 384,
             "LOC": 563,
-            "MONEY": 9138,
+            "MONEY": 9137,
             "NORP": 561,
             "ORDINAL": 633,
             "ORG": 97846,
@@ -194,7 +194,7 @@ def test_ratom_entities_enron_004(
             "PERSON": 15438,
             "PRODUCT": 1728,
             "QUANTITY": 368,
-            "TIME": 2319,
+            "TIME": 2320,
             "WORK_OF_ART": 934,
         }
         for entity_type, count in results:
