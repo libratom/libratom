@@ -62,3 +62,10 @@ class MboxArchive(Archive):
                 return part.as_string()
 
         return ""
+
+    @staticmethod
+    def get_attachment_metadata() -> None:
+        """
+        Returns the metadata of all attachments in a given message
+        """
+        ...
