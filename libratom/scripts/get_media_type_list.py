@@ -72,9 +72,10 @@ def download_media_type_files(out) -> None:
                 reader = csv.reader(csvfile)
 
                 # Use the first token (Name) in each row, skip headers
+                # The split is to strip DEPRECATED/OBSOLETED/... mentions appended to the name
                 for [name, *_] in reader:
                     if name != 'Name':
-                        media_types.append(f'{file.stem}/{name}')
+                        media_types.append(f'{file.stem}/{name.split(maxsplit=1)[0]}')
 
     with out.open(mode='w') as f:
         json.dump(media_types, f, indent=4)
