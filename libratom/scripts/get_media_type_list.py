@@ -2,6 +2,7 @@
 # pylint: disable=missing-docstring
 
 import csv
+import json
 import logging
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -10,7 +11,9 @@ import click
 import click_log
 
 from libratom.lib.download import download_files
+from libratom.cli import PATH_METAVAR
 from libratom.cli.cli import set_log_level_from_verbose
+from libratom.cli.utils import PathPath, validate_out_path
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
@@ -28,9 +31,20 @@ click_log.basic_config(logging.getLogger())
     help="Increase verbosity (can be repeated).",
     expose_value=False,
 )
-def download_media_type_files() -> str:
-    """Download media type files from https://www.iana.org/ and return a JSON list of all media types.
+@click.option(
+    "-o",
+    "--out",
+    metavar=PATH_METAVAR,
+    default=Path('media_types.json'),
+    callback=validate_out_path,
+    type=PathPath(resolve_path=True),
+    help=f"Write the output to {PATH_METAVAR}.",
+)
+def download_media_type_files(out) -> None:
+    """Download media type files from https://www.iana.org/ and write a JSON file of all media types.
     """
+
+    media_types = []
 
     media_type_registries = [
         "application",
@@ -55,9 +69,15 @@ def download_media_type_files() -> str:
 
         for file in directory.glob('*.csv'):
             with file.open(newline='') as csvfile:
-                reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
-                for row in reader:
-                    print(', '.join(row))
+                reader = csv.reader(csvfile)
+
+                # Use the first token (Name) in each row, skip headers
+                for [name, *_] in reader:
+                    if name != 'Name':
+                        media_types.append(f'{file.stem}/{name}')
+
+    with out.open(mode='w') as f:
+        json.dump(media_types, f, indent=4)
 
 
 if __name__ == "__main__":
