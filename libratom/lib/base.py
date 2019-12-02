@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from collections import namedtuple
 from typing import Any, Generator, Iterable
 
-AttachmentMetadata = namedtuple('AttachmentMetadata', ['name', 'mime_type', 'size'])
+AttachmentMetadata = namedtuple("AttachmentMetadata", ["name", "mime_type", "size"])
 
 
 class Archive(ABC):  # pragma: no cover

@@ -7,7 +7,7 @@ import logging
 from collections import deque
 from io import IOBase
 from pathlib import Path
-from typing import Generator, Optional, Union, List
+from typing import Generator, List, Optional, Union
 
 import pypff
 from treelib import Tree
@@ -189,5 +189,23 @@ class PffArchive(Archive):
         Returns the metadata of all attachments in a given message
         """
 
-        return [AttachmentMetadata(name=attachment.name, mime_type='', size=attachment.size) for attachment in message.attachments]
+        def get_mime_type(attachment):
+            # pylint: disable=broad-except
+            try:
+                return (
+                    attachment.record_sets[0]
+                    .entries[14]
+                    .data.decode("utf-16")
+                    .rstrip("\0")
+                )
+            except Exception:
+                return ""
 
+        return [
+            AttachmentMetadata(
+                name=attachment.name,
+                mime_type=get_mime_type(attachment),
+                size=attachment.size,
+            )
+            for attachment in message.attachments
+        ]

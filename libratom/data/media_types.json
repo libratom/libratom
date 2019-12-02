@@ -696,6 +696,7 @@
     "application/vnd.futoin+json",
     "application/vnd.fuzzysheet",
     "application/vnd.genomatix.tuxedo",
+    "application/vnd.gentics.grd+json",
     "application/vnd.geo+json",
     "application/vnd.geocube+xml",
     "application/vnd.geogebra.file",
