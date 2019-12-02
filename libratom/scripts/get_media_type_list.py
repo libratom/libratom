@@ -10,12 +10,12 @@ from tempfile import TemporaryDirectory
 import click
 import click_log
 
-from libratom.lib.download import download_files
 from libratom.cli import PATH_METAVAR
 from libratom.cli.cli import set_log_level_from_verbose
 from libratom.cli.utils import PathPath, validate_out_path
+from libratom.lib.download import download_files
 
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 
 # Set configuration on the root logger
@@ -35,7 +35,7 @@ click_log.basic_config(logging.getLogger())
     "-o",
     "--out",
     metavar=PATH_METAVAR,
-    default=Path('media_types.json'),
+    default=Path("media_types.json"),
     callback=validate_out_path,
     type=PathPath(resolve_path=True),
     help=f"Write the output to {PATH_METAVAR}.",
@@ -60,24 +60,25 @@ def download_media_type_files(out) -> None:
 
     # CSV files to download
     urls = [
-        f"https://www.iana.org/assignments/media-types/{registry}.csv" for registry in media_type_registries
+        f"https://www.iana.org/assignments/media-types/{registry}.csv"
+        for registry in media_type_registries
     ]
 
     with TemporaryDirectory() as tmpdir:
         directory = Path(tmpdir)
         download_files(urls, directory, dry_run=False)
 
-        for file in directory.glob('*.csv'):
-            with file.open(newline='') as csvfile:
+        for file in directory.glob("*.csv"):
+            with file.open(newline="") as csvfile:
                 reader = csv.reader(csvfile)
 
                 # Use the first token (Name) in each row, skip headers
                 # The split is to strip DEPRECATED/OBSOLETED/... mentions appended to the name
                 for [name, *_] in reader:
-                    if name != 'Name':
-                        media_types.append(f'{file.stem}/{name.split(maxsplit=1)[0]}')
+                    if name != "Name":
+                        media_types.append(f"{file.stem}/{name.split(maxsplit=1)[0]}")
 
-    with out.open(mode='w') as f:
+    with out.open(mode="w") as f:
         json.dump(media_types, f, indent=4)
 
 
