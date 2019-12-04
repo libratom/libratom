@@ -17,6 +17,7 @@ class FileReport(Base):
     size = Column(Integer)
     md5 = Column(String)
     sha256 = Column(String)
+    error = Column(String)
     messages = relationship(
         "Message", backref="file_report", order_by="Message.processing_start_time"
     )
