@@ -9,12 +9,13 @@ import multiprocessing
 import os
 from functools import partial
 from pathlib import Path
-from typing import Callable, Dict, Iterable, Optional, Tuple
+from typing import Callable, Dict, Iterable, Optional, Tuple, Set
 
 from sqlalchemy.orm.session import Session
 
 import libratom
 from libratom.lib.concurrency import imap_job, worker_init
+from libratom.lib.core import open_mail_archive
 from libratom.models import Configuration, FileReport
 
 logger = logging.getLogger(__name__)
@@ -26,17 +27,17 @@ def get_file_info(path: Path) -> Tuple[Dict, Optional[str]]:
     For a given file path, returns the size, md5 and sha256 checksums
     """
 
-    path, name = str(path), path.name
-    res = {"path": path, "name": name}
+    path_str, name = str(path), path.name
+    res = {"path": path_str, "name": name}
 
     try:
-        size = os.stat(path).st_size
+        size = os.stat(path_str).st_size
 
         md5 = hashlib.md5()
         sha256 = hashlib.sha256()
 
-        # Read file one block at a time and update digests
-        with open(path, "rb") as f:
+        # First we read the file one block at a time and update digests
+        with open(path_str, "rb") as f:
             for block in iter(partial(f.read, 128), b""):
                 md5.update(block)
                 sha256.update(block)
@@ -44,6 +45,14 @@ def get_file_info(path: Path) -> Tuple[Dict, Optional[str]]:
         md5, sha256 = md5.hexdigest(), sha256.hexdigest()
 
         res.update({"size": size, "md5": md5, "sha256": sha256})
+
+        # Then we try to get a message count
+        try:
+            with open_mail_archive(path) as archive:
+                res['msg_count'] = archive.message_count
+
+        except Exception as exc:
+            res['error'] = str(exc)
 
     except Exception as exc:
         return res, str(exc)
@@ -56,7 +65,7 @@ def scan_files(
     session: Session,
     jobs=None,
     progress_callback: Callable = None,
-) -> int:
+) -> Tuple[int, Set[Path]]:
     """
     Computes checksums from a list of files and record them in a database via an ORM session object
     """
@@ -64,19 +73,31 @@ def scan_files(
     # Default progress callback to no-op
     update_progress = progress_callback or (lambda *_, **__: None)
 
+    # Output values
+    msg_count, good_files = 0, set()
+
     with multiprocessing.Pool(processes=jobs, initializer=worker_init) as pool:
 
         logger.debug(f"Starting pool with {pool._processes} processes")
 
         try:
-            for values, error in pool.imap(
+            for values, exc in pool.imap(
                 get_file_info, ({"path": file} for file in files), chunksize=1
             ):
-                if not error:
+                if not exc:
+                    # Increment our overall message counter
+                    msg_count += values.pop('msg_count', 0)
+
+                    # Make a new FileReport object with the results
                     session.add(FileReport(**values))
+
+                    # Add the path to our set of valid archive files
+                    if not values.get('error'):
+                        good_files.add(Path(values['path']))
+
                 else:
                     logger.warning(
-                        f"Unable to retrieve file information for {values['path']}, error: {error}"
+                        f"Unable to retrieve file information for {values['path']}, error: {exc}"
                     )
 
                 update_progress()
@@ -87,9 +108,7 @@ def scan_files(
             pool.terminate()
             pool.join()
 
-            return 1
-
-    return 0
+    return msg_count, good_files
 
 
 def store_configuration_in_db(
