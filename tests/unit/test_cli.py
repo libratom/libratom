@@ -17,7 +17,6 @@ from libratom.cli.cli import ratom
 from libratom.lib.database import db_session
 from libratom.lib.entities import (
     SPACY_MODELS,
-    count_messages_in_files,
     load_spacy_model,
     process_message,
 )
@@ -314,9 +313,9 @@ def test_process_message():
     assert error
 
 
-def test_count_messages_in_files(enron_dataset_part044):
-    files = enron_dataset_part044.glob("*.pst")
-    count, good_files = count_messages_in_files(files)
-
-    assert count == 558
-    assert len(good_files) == 1
+# def test_count_messages_in_files(enron_dataset_part044):
+#     files = enron_dataset_part044.glob("*.pst")
+#     count, good_files = count_messages_in_files(files)
+#
+#     assert count == 558
+#     assert len(good_files) == 1
