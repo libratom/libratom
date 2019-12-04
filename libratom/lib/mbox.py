@@ -69,4 +69,11 @@ class MboxArchive(Archive):
         Returns the metadata of all attachments in a given message
         """
 
-        return []
+        return [
+            AttachmentMetadata(
+                name=part.get_filename(),
+                mime_type=part.get_content_type(),
+                size=0,
+            )
+            for part in message.walk() if part.get_content_disposition() == 'attachment'
+        ]
