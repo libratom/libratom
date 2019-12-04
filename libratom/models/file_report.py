@@ -21,7 +21,7 @@ class FileReport(Base):
         "Message", backref="file_report", order_by="Message.processing_start_time"
     )
     entities = relationship("Entity", backref="file_report")
-    attachments = relationship("Attachment", backref="message")
+    attachments = relationship("Attachment", backref="file_report")
 
     @property
     def processing_start_time(self):
