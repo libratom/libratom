@@ -15,7 +15,6 @@ from libratom.lib.core import get_set_of_files
 from libratom.lib.database import db_init, db_session
 from libratom.lib.entities import (
     OUTPUT_FILENAME_TEMPLATE,
-    count_messages_in_files,
     extract_entities,
     load_spacy_model,
 )
@@ -57,24 +56,12 @@ def entities(
     # Compute and store file information
     with progress_bar_context(
         total=len(files),
-        desc="Retrieving file information",
+        desc="Initial file scan",
         unit="files",
         color="green",
         leave=False,
     ) as file_bar, db_session(Session) as session:
-        scan_files(files, session, progress_callback=file_bar.update)
-
-    # Get the total number of messages
-    with progress_bar_context(
-        total=len(files),
-        desc="Retrieving total message count",
-        unit="files",
-        color="green",
-        leave=False,
-    ) as file_bar:
-        msg_count, files = count_messages_in_files(
-            files, progress_callback=file_bar.update
-        )
+        msg_count, files = scan_files(files, session, progress_callback=file_bar.update)
 
     # Get spaCy model
     logger.info(f"Loading spacy model: {spacy_model_name}")
