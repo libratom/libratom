@@ -6,9 +6,9 @@ import mailbox
 from copy import deepcopy
 from email.message import Message
 from pathlib import Path
-from typing import Generator, Union
+from typing import Generator, List, Union
 
-from libratom.lib.base import Archive
+from libratom.lib.base import Archive, AttachmentMetadata
 
 
 class MboxArchive(Archive):
@@ -64,8 +64,9 @@ class MboxArchive(Archive):
         return ""
 
     @staticmethod
-    def get_attachment_metadata() -> None:
+    def get_attachment_metadata(message: Message) -> List[AttachmentMetadata]:
         """
         Returns the metadata of all attachments in a given message
         """
-        ...
+
+        return []

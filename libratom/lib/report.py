@@ -51,7 +51,7 @@ def get_file_info(path: Path) -> Tuple[Dict, Optional[str]]:
     return res, None
 
 
-def store_file_reports_in_db(
+def scan_files(
     files: Iterable[Path],
     session: Session,
     jobs=None,

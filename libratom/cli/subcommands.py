@@ -19,7 +19,7 @@ from libratom.lib.entities import (
     extract_entities,
     load_spacy_model,
 )
-from libratom.lib.report import store_configuration_in_db, store_file_reports_in_db
+from libratom.lib.report import scan_files, store_configuration_in_db
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +62,7 @@ def entities(
         color="green",
         leave=False,
     ) as file_bar, db_session(Session) as session:
-        store_file_reports_in_db(files, session, progress_callback=file_bar.update)
+        scan_files(files, session, progress_callback=file_bar.update)
 
     # Get the total number of messages
     with progress_bar_context(
