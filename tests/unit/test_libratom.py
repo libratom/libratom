@@ -32,7 +32,7 @@ def test_version():
 def test_pffarchive_load_from_file_object(sample_pst_file):
 
     with sample_pst_file.open(mode="rb") as f, PffArchive(f) as archive:
-        assert len([message for message in archive.messages()]) == 2668
+        assert len(list(archive.messages())) == 2668
 
 
 def test_pffarchive_load_from_invalid_type():

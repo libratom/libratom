@@ -9,7 +9,7 @@ import multiprocessing
 import os
 from functools import partial
 from pathlib import Path
-from typing import Callable, Dict, Iterable, Optional, Tuple, Set
+from typing import Callable, Dict, Iterable, Optional, Set, Tuple
 
 from sqlalchemy.orm.session import Session
 
@@ -49,10 +49,10 @@ def get_file_info(path: Path) -> Tuple[Dict, Optional[str]]:
         # Then we try to get a message count
         try:
             with open_mail_archive(path) as archive:
-                res['msg_count'] = archive.message_count
+                res["msg_count"] = archive.message_count
 
         except Exception as exc:
-            res['error'] = str(exc)
+            res["error"] = str(exc)
 
     except Exception as exc:
         return res, str(exc)
@@ -86,14 +86,14 @@ def scan_files(
             ):
                 if not exc:
                     # Increment our overall message counter
-                    msg_count += values.pop('msg_count', 0)
+                    msg_count += values.pop("msg_count", 0)
 
                     # Make a new FileReport object with the results
                     session.add(FileReport(**values))
 
                     # Add the path to our set of valid archive files
-                    if not values.get('error'):
-                        good_files.add(Path(values['path']))
+                    if not values.get("error"):
+                        good_files.add(Path(values["path"]))
 
                 else:
                     logger.warning(

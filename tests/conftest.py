@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name,missing-docstring,redefined-outer-name,stop-iteration-return
+# pylint: disable=invalid-name,missing-docstring,redefined-outer-name,stop-iteration-return,line-too-long
 import os
 from email import message_from_binary_file
 from email.message import Message
