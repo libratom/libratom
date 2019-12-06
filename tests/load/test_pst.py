@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring,logging-fstring-interpolation,invalid-name
+# pylint: disable=missing-docstring,invalid-name
 import logging
 
 import humanfriendly

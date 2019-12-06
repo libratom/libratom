@@ -71,9 +71,8 @@ class MboxArchive(Archive):
 
         return [
             AttachmentMetadata(
-                name=part.get_filename(),
-                mime_type=part.get_content_type(),
-                size=0,
+                name=part.get_filename(), mime_type=part.get_content_type(), size=0,
             )
-            for part in message.walk() if part.get_content_disposition() == 'attachment'
+            for part in message.walk()
+            if part.get_content_disposition() == "attachment"
         ]
