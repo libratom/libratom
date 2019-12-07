@@ -161,7 +161,7 @@ def test_ratom_entities_enron_004(
             assert str(entity)
 
         # Verify total entity count
-        assert session.query(Entity).count() == 197032
+        assert session.query(Entity).count() == 161855
 
         # Verify count per entity type
         results = (
@@ -173,24 +173,24 @@ def test_ratom_entities_enron_004(
         assert results
 
         expected_counts = {
-            "CARDINAL": 49515,
-            "DATE": 8939,
-            "EVENT": 91,
-            "FAC": 710,
-            "GPE": 7171,
-            "LANGUAGE": 4,
-            "LAW": 384,
-            "LOC": 563,
-            "MONEY": 9137,
-            "NORP": 561,
-            "ORDINAL": 633,
-            "ORG": 97846,
-            "PERCENT": 690,
-            "PERSON": 15438,
-            "PRODUCT": 1728,
-            "QUANTITY": 368,
-            "TIME": 2320,
-            "WORK_OF_ART": 934,
+            "CARDINAL": 29652,
+            "DATE": 8811,
+            "EVENT": 195,
+            "FAC": 399,
+            "GPE": 6239,
+            "LANGUAGE": 24,
+            "LAW": 12532,
+            "LOC": 372,
+            "MONEY": 1644,
+            "NORP": 534,
+            "ORDINAL": 610,
+            "ORG": 78170,
+            "PERCENT": 658,
+            "PERSON": 15989,
+            "PRODUCT": 1361,
+            "QUANTITY": 276,
+            "TIME": 2836,
+            "WORK_OF_ART": 1553,
         }
         for entity_type, count in results:
             assert expected_counts[entity_type] == count
@@ -288,7 +288,7 @@ def test_file_report(enron_dataset_part012):
         assert len(file_report.messages) == 4131
 
         # Entity count
-        assert len(file_report.entities) == 29477
+        assert len(file_report.entities) == 25359
 
 
 def test_process_message():
