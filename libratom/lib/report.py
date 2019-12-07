@@ -108,6 +108,9 @@ def scan_files(
             pool.terminate()
             pool.join()
 
+            # Re-raise so the whole command aborts
+            raise
+
     return msg_count, good_files
 
 
