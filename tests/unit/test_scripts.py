@@ -3,24 +3,20 @@ import filecmp
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+import pytest
+
+from libratom import data
+from libratom.scripts.get_media_type_list import download_media_type_files
+
 try:
     from importlib import resources
 except ImportError:
     # backport version for Python 3.6
     import importlib_resources as resources
 
-import pytest
-
-from libratom import data
-from libratom.scripts.get_media_type_list import download_media_type_files
-
 
 @pytest.mark.parametrize(
-    "params, expected",
-    [
-        (["-h"], "Usage"),
-        (["--help"], "Usage"),
-    ],
+    "params, expected", [(["-h"], "Usage"), (["--help"], "Usage"),],
 )
 def test_get_media_type_list_cli(cli_runner, params, expected):
 
@@ -29,9 +25,16 @@ def test_get_media_type_list_cli(cli_runner, params, expected):
 
 
 def test_validate_media_type_list(cli_runner):
+    """
+    This test will fail if the media types file is out of date
+    """
 
-    with TemporaryDirectory() as tmp_dir, resources.path(data, 'media_types.json') as existing_path:
-        new_path = Path(tmp_dir) / "media_types.json"
+    with TemporaryDirectory() as tmp_dir, resources.path(
+        data, "media_types.json"
+    ) as existing_media_types_file:
+        new_media_types_file = Path(tmp_dir) / "media_types.json"
 
-        cli_runner.invoke(download_media_type_files, args=['-o', str(new_path)])
-        assert filecmp.cmp(existing_path, new_path)
+        cli_runner.invoke(
+            download_media_type_files, args=["-o", str(new_media_types_file)]
+        )
+        assert filecmp.cmp(existing_media_types_file, new_media_types_file)
