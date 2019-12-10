@@ -243,13 +243,18 @@ def test_scan_files_with_interrupt(directory_of_mbox_files):
         destination = Path(tmpdir) / tmp_filename
         Session = db_init(destination)
 
-        with db_session(Session) as session, pytest.raises(KeyboardInterrupt), patch(
+        with db_session(Session) as session, patch(
             "libratom.lib.report.FileReport",
             new=MagicMock(side_effect=KeyboardInterrupt),
         ):
 
-            scan_files(
-                files=get_set_of_files(directory_of_mbox_files), session=session, jobs=2
+            assert (
+                scan_files(
+                    files=get_set_of_files(directory_of_mbox_files),
+                    session=session,
+                    jobs=2,
+                )
+                == 1
             )
 
 

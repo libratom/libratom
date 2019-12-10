@@ -18,7 +18,9 @@ class FileReport(Base):
     md5 = Column(String)
     sha256 = Column(String)
     error = Column(String)
-    msg_count = Column(Integer)  # should be equal to len(self.messages) after processing if the file had no issues
+    msg_count = Column(
+        Integer
+    )  # should be equal to len(self.messages) after processing if the file had no issues
     messages = relationship(
         "Message", backref="file_report", order_by="Message.processing_start_time"
     )
