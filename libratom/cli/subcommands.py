@@ -82,11 +82,13 @@ def entities(
     with db_session(Session) as session:
 
         # Get total message count
-        msg_count = session.query(func.sum(FileReport.msg_count)).all()
+        msg_count = session.query(func.sum(FileReport.msg_count)).scalar()
 
         # Get list of good files
-
-
+        good_files = [
+            Path(file.path)
+            for file in session.query(FileReport).filter(FileReport.error.is_(None))
+        ]
 
         with progress_bar_context(
             total=msg_count, desc="Processing messages", unit="msg", color="green"
@@ -96,7 +98,7 @@ def entities(
             store_configuration_in_db(session, spacy_model_name, spacy_model_version)
 
             status = extract_entities(
-                files=files,
+                files=good_files,
                 session=session,
                 spacy_model=spacy_model,
                 jobs=jobs,
