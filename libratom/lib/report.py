@@ -9,7 +9,7 @@ import multiprocessing
 import os
 from functools import partial
 from pathlib import Path
-from typing import Callable, Dict, Iterable, Optional, Set, Tuple
+from typing import Callable, Dict, Iterable, Optional, Tuple
 
 from sqlalchemy.orm.session import Session
 
@@ -65,16 +65,13 @@ def scan_files(
     session: Session,
     jobs=None,
     progress_callback: Callable = None,
-) -> Tuple[int, Set[Path]]:
+) -> int:
     """
-    Computes checksums from a list of files and record them in a database via an ORM session object
+    Extracts information from a list of email files and stores it in a database via an ORM session object
     """
 
     # Default progress callback to no-op
     update_progress = progress_callback or (lambda *_, **__: None)
-
-    # Output values
-    msg_count, good_files = 0, set()
 
     with multiprocessing.Pool(processes=jobs, initializer=worker_init) as pool:
 
@@ -85,16 +82,8 @@ def scan_files(
                 get_file_info, ({"path": file} for file in files), chunksize=1
             ):
                 if not exc:
-                    # Increment our overall message counter
-                    msg_count += values.pop("msg_count", 0)
-
                     # Make a new FileReport object with the results
                     session.add(FileReport(**values))
-
-                    # Add the path to our set of valid archive files
-                    if not values.get("error"):
-                        good_files.add(Path(values["path"]))
-
                 else:
                     logger.warning(
                         f"Unable to retrieve file information for {values['path']}, error: {exc}"
@@ -108,10 +97,9 @@ def scan_files(
             pool.terminate()
             pool.join()
 
-            # Re-raise so the whole command aborts
-            raise
+            return 1
 
-    return msg_count, good_files
+    return 0
 
 
 def store_configuration_in_db(

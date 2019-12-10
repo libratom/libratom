@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Optional
 
 import enlighten
+from sqlalchemy import func
 
 from libratom.cli.utils import MockContext
 from libratom.lib.core import get_set_of_files
@@ -19,6 +20,7 @@ from libratom.lib.entities import (
     load_spacy_model,
 )
 from libratom.lib.report import scan_files, store_configuration_in_db
+from libratom.models import FileReport
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +45,9 @@ def entities(
             src.name, datetime.now().isoformat(timespec="seconds")
         )
 
+    # Make DB file's parents if needed
+    out.parent.mkdir(parents=True, exist_ok=True)
+
     # DB setup
     Session = db_init(out)
 
@@ -61,7 +66,11 @@ def entities(
         color="green",
         leave=False,
     ) as file_bar, db_session(Session) as session:
-        msg_count, files = scan_files(files, session, progress_callback=file_bar.update)
+        status = scan_files(files, session, progress_callback=file_bar.update)
+
+    if status == 1:
+        logger.warning("Aborting")
+        return status
 
     # Get spaCy model
     logger.info(f"Loading spacy model: {spacy_model_name}")
@@ -69,24 +78,30 @@ def entities(
     if not spacy_model:
         return 1
 
-    # Make DB file's parents if needed
-    out.parent.mkdir(parents=True, exist_ok=True)
-
     # Get messages and extract entities
-    with progress_bar_context(
-        total=msg_count, desc="Processing messages", unit="msg", color="green"
-    ) as msg_bar, db_session(Session) as session:
+    with db_session(Session) as session:
 
-        # Record configuration info
-        store_configuration_in_db(session, spacy_model_name, spacy_model_version)
+        # Get total message count
+        msg_count = session.query(func.sum(FileReport.msg_count)).all()
 
-        status = extract_entities(
-            files=files,
-            session=session,
-            spacy_model=spacy_model,
-            jobs=jobs,
-            progress_callback=msg_bar.update,
-        )
+        # Get list of good files
+
+
+
+        with progress_bar_context(
+            total=msg_count, desc="Processing messages", unit="msg", color="green"
+        ) as msg_bar:
+
+            # Record configuration info
+            store_configuration_in_db(session, spacy_model_name, spacy_model_version)
+
+            status = extract_entities(
+                files=files,
+                session=session,
+                spacy_model=spacy_model,
+                jobs=jobs,
+                progress_callback=msg_bar.update,
+            )
 
     logger.info("All done")
 
