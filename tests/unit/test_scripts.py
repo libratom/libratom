@@ -15,9 +15,7 @@ except ImportError:
     import importlib_resources as resources
 
 
-@pytest.mark.parametrize(
-    "params, expected", [(["-h"], "Usage"), (["--help"], "Usage"),],
-)
+@pytest.mark.parametrize("params, expected", [(["-h"], "Usage"), (["--help"], "Usage")])
 def test_get_media_type_list_cli(cli_runner, params, expected):
 
     result = cli_runner.invoke(download_media_type_files, args=params)
