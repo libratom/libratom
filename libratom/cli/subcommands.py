@@ -42,7 +42,7 @@ def entities(
     # Resolve output file based on src parameter
     if out.is_dir():
         out = out / OUTPUT_FILENAME_TEMPLATE.format(
-            src.name, datetime.now().isoformat(timespec="seconds")
+            src.name, datetime.now().isoformat(timespec="seconds").translate(str.maketrans({'-': '', ':': ''}))
         )
 
     # Make DB file's parents if needed
