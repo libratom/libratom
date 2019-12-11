@@ -79,7 +79,7 @@ def download_media_type_files(out) -> None:
                         media_types.append(f"{file.stem}/{name.split(maxsplit=1)[0]}")
 
     with out.open(mode="w") as f:
-        json.dump(media_types, f, indent=4)
+        json.dump(sorted(media_types), f, indent=4)
 
 
 if __name__ == "__main__":
