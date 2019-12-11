@@ -48,6 +48,7 @@ def get_messages(
                             "message": archive.format_message(
                                 message, with_headers=False
                             ),
+                            "attachments": archive.get_attachment_metadata(message),
                         }
 
                         # Add any optional arguments
