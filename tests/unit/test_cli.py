@@ -300,6 +300,7 @@ def test_process_message():
             "message_id": message_id,
             "message": "hello",
             "spacy_model": None,
+            "attachments": None,
         }
     )
 
