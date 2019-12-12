@@ -10,7 +10,7 @@ from collections import namedtuple
 from datetime import datetime
 from importlib import reload
 from pathlib import Path
-from typing import Callable, Dict, Iterable, List, Optional, Set, Tuple
+from typing import Dict, Iterable, List, Optional, Tuple
 
 import pkg_resources
 import spacy
@@ -19,7 +19,6 @@ from sqlalchemy.orm.session import Session
 
 from libratom.lib.base import AttachmentMetadata
 from libratom.lib.concurrency import get_messages, imap_job, worker_init
-from libratom.lib.core import open_mail_archive
 from libratom.models import Attachment, Entity, FileReport, Message
 
 logger = logging.getLogger(__name__)
