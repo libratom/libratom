@@ -19,7 +19,7 @@ from libratom.lib.entities import SPACY_MODELS, extract_entities, load_spacy_mod
 from libratom.lib.exceptions import FileTypeError
 from libratom.lib.mbox import MboxArchive
 from libratom.lib.pff import PffArchive
-from libratom.lib.report import scan_files
+from libratom.lib.report import get_file_info, scan_files
 from libratom.models import FileReport
 
 logger = logging.getLogger(__name__)
@@ -283,3 +283,22 @@ def test_download_files_with_bad_urls():
 
 def test_utf8_message_with_no_cte_header_as_string(utf8_message_with_no_cte_header):
     assert MboxArchive.format_message(utf8_message_with_no_cte_header)
+
+
+def test_get_file_info(sample_pst_file):
+
+    res, error = get_file_info(
+        # Must use dictionary form if function is called explicitly
+        {"path": sample_pst_file}
+    )
+
+    assert res.get("path") == str(sample_pst_file)
+    assert res.get("name") == sample_pst_file.name
+    assert res.get("size") == 172450816
+    assert res.get("md5") == "1038b99c2c323ca563da79dbbee3876f"
+    assert (
+        res.get("sha256")
+        == "12c10d46f3935680f5c849a66737cf442fc171a2a20dce32c5efcc668366be96"
+    )
+    assert res.get("msg_count") == 2668
+    assert not error
