@@ -308,11 +308,3 @@ def test_process_message():
     assert res.get("message_id") == message_id
     assert res.get("entities") is None
     assert error
-
-
-# def test_count_messages_in_files(enron_dataset_part044):
-#     files = enron_dataset_part044.glob("*.pst")
-#     count, good_files = count_messages_in_files(files)
-#
-#     assert count == 558
-#     assert len(good_files) == 1

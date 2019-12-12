@@ -257,35 +257,3 @@ def extract_entities(
             return 1
 
     return 0
-
-
-def count_messages_in_files(
-    files: Iterable[Path], progress_callback: Callable = None
-) -> Tuple[int, Set[Path]]:
-    """
-    Get the number of messages in a set of PST files
-
-    Return the total message count and a set of the valid files
-
-    Used by the main entity extraction function to perform an initial scan
-    """
-
-    # Default progress callback to no-op
-    update_progress = progress_callback or (lambda *_, **__: None)
-
-    msg_count, good_files = 0, set()
-
-    for file in files:
-        try:
-            with open_mail_archive(file) as archive:
-                msg_count += archive.message_count
-
-            good_files.add(file)
-
-        except Exception as exc:
-            logger.warning(f"Skipping file {file.name}")
-            logger.debug(exc, exc_info=True)
-
-        update_progress()
-
-    return msg_count, good_files
