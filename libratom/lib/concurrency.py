@@ -14,9 +14,7 @@ from libratom.lib.core import open_mail_archive
 logger = logging.getLogger(__name__)
 
 
-def get_messages(
-    files: Iterable[Path], **kwargs
-) -> Dict:
+def get_messages(files: Iterable[Path], **kwargs) -> Dict:
     """
     Message generator to feed a pool of processes from a directory of PST files
     """
