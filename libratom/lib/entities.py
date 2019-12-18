@@ -187,7 +187,7 @@ def extract_entities(
                 res, error = worker_output
 
                 if error:
-                    logger.warning(
+                    logger.info(
                         "Skipping message {message_id} from file {filepath}".format(
                             **res
                         )
@@ -216,7 +216,7 @@ def extract_entities(
                     )
                 except Exception as exc:
                     file_report = None
-                    logger.warning(
+                    logger.info(
                         f"Unable to link message id {message_id} to a file. Error: {exc}"
                     )
 

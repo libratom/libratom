@@ -85,13 +85,14 @@ def scan_files(
                     # Make a new FileReport object with the results
                     session.add(FileReport(**values))
                 else:
-                    logger.warning(
+                    logger.info(
                         f"Unable to retrieve file information for {values['path']}, error: {exc}"
                     )
 
                 update_progress()
 
         except KeyboardInterrupt:
+            logger.warning("Aborting")
 
             # Politely terminate workers
             pool.terminate()
