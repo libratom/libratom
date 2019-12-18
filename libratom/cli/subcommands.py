@@ -58,7 +58,7 @@ def entities(
     files = get_set_of_files(src)
 
     if not files:
-        logger.warning(f"No PST file found in {src}; nothing to do")
+        logger.info(f"No PST file found in {src}; nothing to do")
         return 0
 
     # Compute and store file information

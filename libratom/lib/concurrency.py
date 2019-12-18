@@ -43,12 +43,12 @@ def get_messages(files: Iterable[Path], **kwargs) -> Dict:
 
                     except Exception as exc:
                         # Log and move on to the next message
-                        logger.warning(f"Invalid message in file {file}")
+                        logger.info(f"Invalid message in file {file}")
                         logger.debug(exc, exc_info=True)
 
         except Exception as exc:
             # Log and move on to the next file
-            logger.warning(f"Skipping file {file}")
+            logger.info(f"Skipping file {file}")
             logger.debug(exc, exc_info=True)
 
 
