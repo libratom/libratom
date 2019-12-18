@@ -219,6 +219,7 @@ def extract_entities(
                     logger.warning(
                         f"Unable to link message id {message_id} to a file. Error: {exc}"
                     )
+
                 message.file_report = file_report
                 session.add(message)
 
