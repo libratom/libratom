@@ -75,7 +75,7 @@ def test_ratom(cli_runner, params, expected):
 @pytest.mark.parametrize(
     "params, expected",
     [
-        ([], Expected(status=0, tokens=["nothing to do"])),
+        ([], Expected(status=0, tokens=[""])),
         (["-h"], Expected(status=0, tokens=["Usage"])),
         (["-v"], Expected(status=0, tokens=["nothing to do"])),
         (
