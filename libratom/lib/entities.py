@@ -1,4 +1,4 @@
-# pylint: disable=broad-except,invalid-name,protected-access,consider-using-ternary,import-outside-toplevel
+# pylint: disable=broad-except,invalid-name,protected-access,consider-using-ternary,import-outside-toplevel,too-many-locals
 """
 Set of utility functions that use spaCy to perform named entity recognition
 """
@@ -10,7 +10,7 @@ from collections import namedtuple
 from datetime import datetime
 from importlib import reload
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
 import pkg_resources
 import spacy
@@ -28,6 +28,9 @@ OUTPUT_FILENAME_TEMPLATE = "{}_entities_{}.sqlite3"
 # Allow these to be set through the environment
 RATOM_MSG_BATCH_SIZE = int(os.environ.get("RATOM_MSG_BATCH_SIZE", 100))
 RATOM_DB_COMMIT_BATCH_SIZE = int(os.environ.get("RATOM_DB_COMMIT_BATCH_SIZE", 10_000))
+
+# Interval between progress updates in the message generator
+MSG_PROGRESS_STEP = int(os.environ.get("RATOM_MSG_PROGRESS_STEP", 10))
 
 # Use the same default as spacy: https://github.com/explosion/spaCy/blob/v2.1.6/spacy/language.py#L130-L149
 RATOM_SPACY_MODEL_MAX_LENGTH = int(
@@ -141,6 +144,7 @@ def extract_entities(
     session: Session,
     spacy_model: Language,
     jobs: int = None,
+    progress_callback: Callable = None,
     **kwargs,
 ) -> int:
     """
@@ -154,6 +158,9 @@ def extract_entities(
         if key.startswith("RATOM_"):
             logger.debug(f"{key}: {value}")
 
+    # Default progress callback to no-op
+    update_progress = progress_callback or (lambda *_, **__: None)
+
     # Load the file_report table for local lookup
     _file_reports = session.query(FileReport).all()  # noqa: F841
 
@@ -163,14 +170,22 @@ def extract_entities(
         logger.debug(f"Starting pool with {pool._processes} processes")
 
         new_entities = []
+        msg_count = 0
 
         try:
 
-            for res, error in pool.imap(
-                process_message,
-                get_messages(files, spacy_model=spacy_model, **kwargs),
-                chunksize=RATOM_MSG_BATCH_SIZE,
+            for msg_count, worker_output in enumerate(
+                pool.imap(
+                    process_message,
+                    get_messages(files, spacy_model=spacy_model, **kwargs),
+                    chunksize=RATOM_MSG_BATCH_SIZE,
+                ),
+                start=1,
             ):
+
+                # Unpack worker job output
+                res, error = worker_output
+
                 if error:
                     logger.warning(
                         "Skipping message {message_id} from file {filepath}".format(
@@ -241,8 +256,15 @@ def extract_entities(
                         logger.exception(exc)
                         session.rollback()
 
+                # Update progress every N messages
+                if not msg_count % MSG_PROGRESS_STEP:
+                    update_progress(MSG_PROGRESS_STEP)
+
             # Add remaining new entities
             session.add_all(new_entities)
+
+            # Update progress with remaining message count
+            update_progress(msg_count % MSG_PROGRESS_STEP)
 
         except KeyboardInterrupt:
             logger.warning("Cancelling running task")

@@ -69,7 +69,9 @@ def entities(
         color="green",
         leave=False,
     ) as file_bar, db_session(Session) as session:
-        status = scan_files(files, session, jobs=jobs, progress_callback=file_bar.update)
+        status = scan_files(
+            files, session, jobs=jobs, progress_callback=file_bar.update
+        )
 
     if status == 1:
         logger.warning("Aborting")
