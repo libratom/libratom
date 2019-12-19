@@ -1,6 +1,7 @@
 # pylint: disable=missing-docstring,invalid-name,no-member
 import email
 import hashlib
+import json
 import logging
 import os
 from email import policy
@@ -11,6 +12,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 import libratom
+from libratom import data
 from libratom.lib.concurrency import get_messages
 from libratom.lib.core import get_set_of_files, open_mail_archive
 from libratom.lib.database import db_init, db_session
@@ -21,6 +23,13 @@ from libratom.lib.mbox import MboxArchive
 from libratom.lib.pff import PffArchive
 from libratom.lib.report import get_file_info, scan_files
 from libratom.models import FileReport
+
+try:
+    from importlib import resources
+except ImportError:
+    # backport version for Python 3.6
+    import importlib_resources as resources
+
 
 logger = logging.getLogger(__name__)
 
@@ -302,3 +311,23 @@ def test_get_file_info(sample_pst_file):
     )
     assert res.get("msg_count") == 2668
     assert not error
+
+
+def test_attachments_mime_type_validation(enron_dataset):
+
+    # Load media types
+    with resources.path(data, "media_types.json") as media_types_file, open(
+        media_types_file, "r"
+    ) as f:
+        media_types = json.load(f)
+
+    # Some enron files have these non-official attachment types
+    media_types.extend(["application/msexcell", "application/mspowerpoint"])
+
+    files = get_set_of_files(enron_dataset)
+
+    for res in get_messages(files):
+        attachments = res.get("attachments")
+        if attachments:
+            for attachment in attachments:
+                assert attachment.mime_type in media_types
