@@ -38,4 +38,7 @@ zipp==0.6.0               # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
+
+
+# PY36
 importlib_resources; python_version < '3.7'
