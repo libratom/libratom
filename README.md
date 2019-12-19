@@ -65,7 +65,7 @@ By default, the tool will use the spaCy en\_core\_web\_sm model, and will start 
 
 ![RATOM database schema](https://libratom.github.io/ratom-db-schema.svg)
 
-The schema contains 4 tables. Three tables are used to represent file information, message information and entity information. A fourth table is used to store configuration and environment details relevant to a specific run.
+The schema contains five tables. Four tables are used to represent files, messages, attachments, and entities. A fifth table is used to store configuration and environment details relevant to a specific run.
 
 In the entity table, text is the entity instance, label\_ is the entity type, filepath is the PST or mbox file associated with this entity. Full message and file information for each entity are also available through message_id and file_report_id respectively. Note that pff_identifier (a message ID specific to PST files) will not be populated for messages located in mbox files. Examples of how to query these tables can be found in the **Interactive examples** section near the end of this README.
 
