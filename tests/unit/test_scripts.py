@@ -1,5 +1,6 @@
 # pylint: disable=missing-docstring
 import filecmp
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -22,6 +23,10 @@ def test_get_media_type_list_cli(cli_runner, params, expected):
     assert expected in result.output
 
 
+@pytest.mark.skipif(
+    os.getenv("CONTINUOUS_INTEGRATION", None),
+    reason="Prevent a IANA media types update from failing a CI run",
+)
 def test_validate_media_type_list(cli_runner):
     """
     This test will fail if the media types file is out of date
