@@ -24,7 +24,7 @@ def test_get_media_type_list_cli(cli_runner, params, expected):
 
 
 @pytest.mark.skipif(
-    os.getenv("CONTINUOUS_INTEGRATION", None),
+    str(os.getenv("CONTINUOUS_INTEGRATION", None)).lower() == 'true',
     reason="Prevent a IANA media types update from failing a CI run",
 )
 def test_validate_media_type_list(cli_runner):
