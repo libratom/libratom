@@ -23,10 +23,6 @@ def test_get_media_type_list_cli(cli_runner, params, expected):
     assert expected in result.output
 
 
-@pytest.mark.skipif(
-    str(os.getenv("CONTINUOUS_INTEGRATION", None)).lower() == "true",
-    reason="Prevent a IANA media types update from failing a CI run",
-)
 def test_validate_media_type_list(cli_runner):
     """
     This test will fail if the media types file is out of date
@@ -40,4 +36,8 @@ def test_validate_media_type_list(cli_runner):
         cli_runner.invoke(
             download_media_type_files, args=["-o", str(new_media_types_file)]
         )
-        assert filecmp.cmp(existing_media_types_file, new_media_types_file)
+
+        # Prevent a IANA media types update from failing a CI build
+        # Run the test for coverage but skip the assertion
+        if not os.getenv("CONTINUOUS_INTEGRATION", "").lower() == "true":
+            assert filecmp.cmp(existing_media_types_file, new_media_types_file)
