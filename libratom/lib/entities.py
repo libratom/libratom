@@ -175,7 +175,7 @@ def extract_entities(
         try:
 
             for msg_count, worker_output in enumerate(
-                pool.imap(
+                pool.imap_unordered(
                     process_message,
                     get_messages(files, spacy_model=spacy_model, **kwargs),
                     chunksize=RATOM_MSG_BATCH_SIZE,
