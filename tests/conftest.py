@@ -9,6 +9,7 @@ from zipfile import ZipFile
 
 import pytest
 import requests
+from requests.adapters import HTTPAdapter
 
 from libratom.lib.download import download_file, download_files
 
@@ -37,11 +38,20 @@ def fetch_enron_dataset(name: str, files: List[str], url: str) -> Path:
     if not path.exists():
         # Make the directories
         CACHED_ENRON_DATA_DIR.mkdir(parents=True, exist_ok=True)
+        zipped_path = CACHED_ENRON_DATA_DIR / f"{name}.zip"
+
+        # Set up HTTP adapter
+        session = requests.Session()
+        adapter = HTTPAdapter(max_retries=10)
+        session.mount("https://", adapter)
 
         # Fetch the zipped PST file
-        response = requests.get(url)
-        zipped_path = CACHED_ENRON_DATA_DIR / f"{name}.zip"
-        zipped_path.write_bytes(response.content)
+        with session.get(url, timeout=(6.05, 30)) as response:
+            if response.ok:
+                zipped_path.write_bytes(requests.get(url).content)
+
+            else:
+                response.raise_for_status()
 
         # Unzip and remove archive
         ZipFile(zipped_path).extractall(path=CACHED_ENRON_DATA_DIR)
