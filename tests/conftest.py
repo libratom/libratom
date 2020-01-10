@@ -48,7 +48,7 @@ def fetch_enron_dataset(name: str, files: List[str], url: str) -> Path:
         # Fetch the zipped PST file
         with session.get(url, timeout=(6.05, 30)) as response:
             if response.ok:
-                zipped_path.write_bytes(requests.get(url).content)
+                zipped_path.write_bytes(response.content)
 
             else:
                 response.raise_for_status()
