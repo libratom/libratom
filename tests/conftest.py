@@ -16,6 +16,7 @@ from libratom.lib.download import download_file, download_files
 if not os.getenv("LIBRATOM_LOAD_TESTING"):
     collect_ignore_glob = ["load/*"]
 
+ENRON_DATASET_URL = "https://www.ibiblio.org/enron/RevisedEDRMv1_Complete"
 CACHED_ENRON_DATA_DIR = Path("/tmp/libratom/test_data/RevisedEDRMv1_Complete")
 CACHED_HTTPD_USERS_MAIL_DIR = Path("/tmp/libratom/test_data/httpd-users")
 
@@ -63,7 +64,7 @@ def enron_dataset_part001() -> Path:
 
     name = "albert_meyers"
     files = ["albert_meyers_000_1_1.pst"]
-    url = "https://s3.amazonaws.com/edrm.download.nuix.com/RevisedEDRMv1/albert_meyers.zip"
+    url = f"{ENRON_DATASET_URL}/albert_meyers.zip"
 
     yield fetch_enron_dataset(name, files, url)
 
@@ -78,9 +79,7 @@ def enron_dataset_part002() -> Path:
 
     name = "andrea_ring"
     files = ["andrea_ring_000_1_1.pst"]
-    url = (
-        "https://s3.amazonaws.com/edrm.download.nuix.com/RevisedEDRMv1/andrea_ring.zip"
-    )
+    url = f"{ENRON_DATASET_URL}/andrea_ring.zip"
 
     yield fetch_enron_dataset(name, files, url)
 
@@ -95,9 +94,7 @@ def enron_dataset_part003() -> Path:
 
     name = "andrew_lewis"
     files = ["andrew_lewis_000_1_1.pst"]
-    url = (
-        "https://s3.amazonaws.com/edrm.download.nuix.com/RevisedEDRMv1/andrew_lewis.zip"
-    )
+    url = f"{ENRON_DATASET_URL}/andrew_lewis.zip"
 
     yield fetch_enron_dataset(name, files, url)
 
@@ -113,9 +110,7 @@ def enron_dataset_part004() -> Path:
 
     name = "andy_zipper"
     files = ["andy_zipper_000_1_1.pst", "andy_zipper_001_1_1.pst"]
-    url = (
-        "https://s3.amazonaws.com/edrm.download.nuix.com/RevisedEDRMv1/andy_zipper.zip"
-    )
+    url = f"{ENRON_DATASET_URL}/andy_zipper.zip"
 
     yield fetch_enron_dataset(name, files, url)
 
@@ -131,7 +126,7 @@ def enron_dataset_part012() -> Path:
 
     name = "chris_dorland"
     files = ["chris_dorland_000_1_1_1.pst", "chris_dorland_001_1_1_1.pst"]
-    url = "https://s3.amazonaws.com/edrm.download.nuix.com/RevisedEDRMv1/chris_dorland.zip"
+    url = f"{ENRON_DATASET_URL}/chris_dorland.zip"
 
     yield fetch_enron_dataset(name, files, url)
 
@@ -147,9 +142,7 @@ def enron_dataset_part044() -> Path:
 
     name = "jason_wolfe"
     files = ["jason_wolfe_000_1_1.pst", "jason_wolfe_000_1_2.pst"]
-    url = (
-        "https://s3.amazonaws.com/edrm.download.nuix.com/RevisedEDRMv1/jason_wolfe.zip"
-    )
+    url = f"{ENRON_DATASET_URL}/jason_wolfe.zip"
 
     yield fetch_enron_dataset(name, files, url)
 
@@ -178,7 +171,7 @@ def enron_dataset_part129() -> Path:
         "vkaminski_003_1_1_1.pst",
         "vkaminski_003_1_1_2.pst",
     ]
-    url = "https://s3.amazonaws.com/edrm.download.nuix.com/RevisedEDRMv1/vkaminski.zip"
+    url = f"{ENRON_DATASET_URL}/vkaminski.zip"
 
     yield fetch_enron_dataset(name, files, url)
 
