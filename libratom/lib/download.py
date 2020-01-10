@@ -53,13 +53,12 @@ def download_file(
 
     # https://requests.readthedocs.io/en/master/user/advanced/#timeouts
     with session.get(url, timeout=(6.05, 30)) as response:
-        http_status = response.status_code
-        if http_status == 200:
-            written = path.write_bytes(requests.get(url).content)
+        if response.ok:
+            written = path.write_bytes(response.content)
             logger.debug(f"{thread_id}: Wrote {written} bytes to {path}")
         else:
             written = -1
-            logger.error(f"{thread_id}: Request error: {http_status}")
+            logger.error(f"{thread_id}: Request error: {response.status_code}")
 
     return written
 
