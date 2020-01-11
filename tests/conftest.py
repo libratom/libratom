@@ -1,5 +1,6 @@
 # pylint: disable=invalid-name,missing-docstring,redefined-outer-name,stop-iteration-return,line-too-long
 import os
+import time
 from email import message_from_binary_file
 from email.message import Message
 from pathlib import Path
@@ -9,8 +10,6 @@ from zipfile import ZipFile
 
 import pytest
 import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 
 from libratom.lib.download import download_file, download_files
 
@@ -39,21 +38,21 @@ def fetch_enron_dataset(name: str, files: List[str], url: str) -> Path:
     if not path.exists():
         # Make the directories
         CACHED_ENRON_DATA_DIR.mkdir(parents=True, exist_ok=True)
-        zipped_path = CACHED_ENRON_DATA_DIR / f"{name}.zip"
-
-        # Set up HTTP adapter
-        retries = Retry(total=10, backoff_factor=1)
-        session = requests.Session()
-        adapter = HTTPAdapter(max_retries=retries)
-        session.mount("https://", adapter)
 
         # Fetch the zipped PST file
-        with session.get(url, timeout=(6.05, 30)) as response:
-            if response.ok:
-                zipped_path.write_bytes(response.content)
+        for delay in range(1, 6):
+            try:
+                response = requests.get(url, timeout=(6.05, 30))
+                break
+            except ConnectionError:
+                time.sleep(delay)
 
-            else:
-                response.raise_for_status()
+        if response.ok:
+            zipped_path = CACHED_ENRON_DATA_DIR / f"{name}.zip"
+            zipped_path.write_bytes(response.content)
+
+        else:
+            response.raise_for_status()
 
         # Unzip and remove archive
         ZipFile(zipped_path).extractall(path=CACHED_ENRON_DATA_DIR)
