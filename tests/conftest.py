@@ -10,6 +10,7 @@ from zipfile import ZipFile
 import pytest
 import requests
 from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from libratom.lib.download import download_file, download_files
 
@@ -41,8 +42,9 @@ def fetch_enron_dataset(name: str, files: List[str], url: str) -> Path:
         zipped_path = CACHED_ENRON_DATA_DIR / f"{name}.zip"
 
         # Set up HTTP adapter
+        retries = Retry(total=10, backoff_factor=1)
         session = requests.Session()
-        adapter = HTTPAdapter(max_retries=10)
+        adapter = HTTPAdapter(max_retries=retries)
         session.mount("https://", adapter)
 
         # Fetch the zipped PST file
