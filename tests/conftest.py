@@ -10,6 +10,7 @@ from zipfile import ZipFile
 
 import pytest
 import requests
+from requests.exceptions import ChunkedEncodingError, HTTPError
 
 from libratom.lib.download import download_file, download_files
 
@@ -38,21 +39,27 @@ def fetch_enron_dataset(name: str, files: List[str], url: str) -> Path:
     if not path.exists():
         # Make the directories
         CACHED_ENRON_DATA_DIR.mkdir(parents=True, exist_ok=True)
+        zipped_path = CACHED_ENRON_DATA_DIR / f"{name}.zip"
 
         # Fetch the zipped PST file
-        for delay in range(1, 6):
+        max_tries = 5
+        for i in range(1, max_tries + 1):
             try:
                 response = requests.get(url, timeout=(6.05, 30))
+
+                if response.ok:
+                    zipped_path.write_bytes(response.content)
+                else:
+                    response.raise_for_status()
+
+                # success
                 break
-            except ConnectionError:
-                time.sleep(delay)
 
-        if response.ok:
-            zipped_path = CACHED_ENRON_DATA_DIR / f"{name}.zip"
-            zipped_path.write_bytes(response.content)
-
-        else:
-            response.raise_for_status()
+            except (ChunkedEncodingError, HTTPError):
+                if i < max_tries:
+                    time.sleep(i)
+                else:
+                    raise
 
         # Unzip and remove archive
         ZipFile(zipped_path).extractall(path=CACHED_ENRON_DATA_DIR)
