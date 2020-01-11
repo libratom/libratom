@@ -11,6 +11,7 @@ from typing import Iterable
 
 import requests
 from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -25,7 +26,8 @@ def get_session() -> requests.Session:
     except AttributeError:
         thread_local.session = requests.Session()
 
-        adapter = HTTPAdapter(max_retries=10)
+        retries = Retry(total=10, backoff_factor=1)
+        adapter = HTTPAdapter(max_retries=retries)
         thread_local.session.mount("https://", adapter)
 
         return thread_local.session
