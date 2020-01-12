@@ -10,8 +10,6 @@
 
 Python library and supporting utilities to parse and process PST and mbox email sources.
 
-***This project is under development***
-
 ## Installation
 
 Libratom requires Python 3.6 or newer, and can be installed from the Python Package Index. Installing with **pip** will automatically install all required dependencies. These dependencies include a version of **libpff** that will be compiled automatically with C++ tooling during install. A selection of environments we have tested follows:
@@ -102,7 +100,7 @@ To change the name or location used for the sqlite3 output file, use the -o flag
 
 ## Interactive examples
 
-More usage documentation will appear here as the project matures. For now, you can try out some of the functionality in Jupyter notebooks we've prepared at:
+We have prepared a selection of Jupyter notebooks to demonstrate core functionality and additional scripts built using libratom. The repository linked below includes instructions for deploying these notebooks in an executable environment using MyBinder:
 
 [https://github.com/libratom/ratom-notebooks](https://github.com/libratom/ratom-notebooks)
 
@@ -120,28 +118,28 @@ Visit <https://www.anaconda.com/distribution/> to download and install the 64-bi
 
 Open the Windows Start Menu, select Anaconda3 (64-bit) and click "Anaconda Prompt (Anaconda3)".
 
-In the terminal that appears, create a new virtual environment in which to install libratom:
+In the terminal that appears, create a new virtual environment in which to install libratom. Replace "username" in the prompt with your username. Do not replace the word "name" in the "--name" flag:
 
 ```shell
-(base) C:\Users\name>conda create --name ratomenv
+(base) C:\Users\username>conda create --name ratomenv
 ```
 
 Type y to confirm any prompts and proceed. Activate the environment:
 
 ```shell
-(base) C:\Users\name>conda activate ratomenv
+(base) C:\Users\username>conda activate ratomenv
 ```
 
 Type y to confirm and proceed. At the next prompt, install pip:
 
 ```shell
-(ratomenv) C:\Users\name>conda install pip
+(ratomenv) C:\Users\username>conda install pip
 ```
 
 Type y to confirm and proceed. At the next prompt, install libratom:
 
 ```shell
-(ratomenv) C:\Users\name>pip install libratom
+(ratomenv) C:\Users\username>pip install libratom
 ```
 
 Libratom and the ratom CLI tool should now be ready to use.
@@ -149,13 +147,13 @@ Libratom and the ratom CLI tool should now be ready to use.
 Python virtual environments can be deactivated and reactivated as needed. To deactivate the environment, type:
 
 ```shell
-(ratomenv) C:\Users\name>conda deactivate
+(ratomenv) C:\Users\username>conda deactivate
 ```
 
 To remove the environment completely, type:
 
 ```shell
-(base) C:\Users\name>conda env remove -n ratomenv
+(base) C:\Users\username>conda env remove -n ratomenv
 ```
 
 ### macOS environment setup
