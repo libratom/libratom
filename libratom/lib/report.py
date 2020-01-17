@@ -14,11 +14,14 @@ from typing import Callable, Dict, Iterable, Optional, Tuple
 from sqlalchemy.orm.session import Session
 
 import libratom
-from libratom.lib.concurrency import imap_job, worker_init
+from libratom.lib.concurrency import get_messages, imap_job, worker_init
 from libratom.lib.core import open_mail_archive
-from libratom.models import Configuration, FileReport
+from libratom.models import Attachment, Configuration, FileReport, Message
 
 logger = logging.getLogger(__name__)
+
+# Interval between progress updates in the message generator
+MSG_PROGRESS_STEP = int(os.environ.get("RATOM_MSG_PROGRESS_STEP", 10))
 
 
 @imap_job
@@ -123,3 +126,75 @@ def store_configuration_in_db(
             for name, value in configuration.items()
         ]
     )
+
+
+def generate_report(
+    files: Iterable[Path], session: Session, progress_callback: Callable = None
+) -> int:
+    """
+    Store full archive report in the DB
+    """
+
+    # Confirm environment settings
+    for key, value in globals().items():
+        if key.startswith("RATOM_"):
+            logger.debug(f"{key}: {value}")
+
+    # Default progress callback to no-op
+    update_progress = progress_callback or (lambda *_, **__: None)
+
+    # Load the file_report table for local lookup
+    _file_reports = session.query(FileReport).all()  # noqa: F841
+
+    msg_count = 0
+
+    try:
+
+        for msg_count, msg_info in enumerate(get_messages(files), start=1):
+
+            # Extract results
+            message_id = msg_info.pop("message_id")
+            filepath = msg_info.pop("filepath")
+            attachments = msg_info.pop("attachments")
+
+            # Create new message instance
+            message = Message(pff_identifier=message_id, **msg_info)
+
+            # Link message to a file_report
+            try:
+                file_report = session.query(FileReport).filter_by(path=filepath).one()
+            except Exception as exc:
+                file_report = None
+                logger.info(
+                    f"Unable to link message id {message_id} to a file. Error: {exc}"
+                )
+
+            message.file_report = file_report
+            session.add(message)
+
+            # Record attachment info
+            session.add_all(
+                [
+                    Attachment(
+                        **attachment._asdict(),
+                        message=message,
+                        file_report=file_report,
+                    )
+                    for attachment in attachments
+                ]
+            )
+
+            # Update progress every N messages
+            if not msg_count % MSG_PROGRESS_STEP:
+                update_progress(MSG_PROGRESS_STEP)
+
+        # Update progress with remaining message count
+        update_progress(msg_count % MSG_PROGRESS_STEP)
+
+    except KeyboardInterrupt:
+        logger.warning("Cancelling running task")
+        logger.info("Partial results written to database")
+
+        return 1
+
+    return 0

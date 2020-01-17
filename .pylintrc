@@ -141,6 +141,7 @@ disable=print-statement,
         logging-format-interpolation,
         bad-continuation,  # formatting handled by black
         ungrouped-imports,  # import order handled by isort
+        duplicate-code,  # remove when this is fixed: https://github.com/PyCQA/pylint/issues/214
         exception-escape,
         comprehension-escape
 
