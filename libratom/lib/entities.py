@@ -150,7 +150,7 @@ def extract_entities(
     """
     Main entity extraction function that extracts named entities from a given iterable of files
 
-    Spawns multiples processes via multiprocessing.Pool
+    Spawns multiple processes via multiprocessing.Pool
     """
 
     # Confirm environment settings
