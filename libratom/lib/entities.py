@@ -23,8 +23,6 @@ from libratom.models import Attachment, Entity, FileReport, Message
 
 logger = logging.getLogger(__name__)
 
-OUTPUT_FILENAME_TEMPLATE = "{}_entities_{}.sqlite3"
-
 # Allow these to be set through the environment
 RATOM_MSG_BATCH_SIZE = int(os.environ.get("RATOM_MSG_BATCH_SIZE", 100))
 RATOM_DB_COMMIT_BATCH_SIZE = int(os.environ.get("RATOM_DB_COMMIT_BATCH_SIZE", 10_000))
