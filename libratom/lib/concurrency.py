@@ -14,7 +14,9 @@ from libratom.lib.core import open_mail_archive
 logger = logging.getLogger(__name__)
 
 
-def get_messages(files: Iterable[Path], **kwargs) -> Generator[Dict, None, None]:
+def get_messages(
+    files: Iterable[Path], with_content=True, **kwargs
+) -> Generator[Dict, None, None]:
     """
     Message generator to feed a pool of processes from a directory of PST files
     """
@@ -30,11 +32,13 @@ def get_messages(files: Iterable[Path], **kwargs) -> Generator[Dict, None, None]
                         res = {
                             "filepath": str(file),
                             "message_id": getattr(message, "identifier", None),
-                            "message": archive.format_message(
-                                message, with_headers=False
-                            ),
                             "attachments": archive.get_attachment_metadata(message),
                         }
+
+                        if with_content:
+                            res["message"] = archive.format_message(
+                                message, with_headers=False
+                            )
 
                         # Add any optional arguments
                         res.update(kwargs)

@@ -4,6 +4,7 @@ Database related utilities
 """
 import logging
 from contextlib import contextmanager
+from pathlib import Path
 from typing import ContextManager
 
 from sqlalchemy import create_engine
@@ -17,7 +18,7 @@ logger = logging.getLogger(__name__)
 Base = declarative_base()
 
 
-def db_init(db_file: str) -> sessionmaker:
+def db_init(db_file: Path) -> sessionmaker:
     """
     Initializes the database and returns a session factory
     """

@@ -66,7 +66,7 @@ def get_file_info(path: Path) -> Tuple[Dict, Optional[str]]:
 def scan_files(
     files: Iterable[Path],
     session: Session,
-    jobs=None,
+    jobs: Optional[int] = None,
     progress_callback: Callable = None,
 ) -> int:
     """
@@ -107,7 +107,9 @@ def scan_files(
 
 
 def store_configuration_in_db(
-    session: Session, spacy_model: str, spacy_model_version: int
+    session: Session,
+    spacy_model: Optional[str] = None,
+    spacy_model_version: Optional[int] = None,
 ) -> None:
     """
     Store configuration / environment information in the database output during a ratom command execution
@@ -129,7 +131,9 @@ def store_configuration_in_db(
 
 
 def generate_report(
-    files: Iterable[Path], session: Session, progress_callback: Callable = None
+    files: Iterable[Path],
+    session: Session,
+    progress_callback: Optional[Callable] = None,
 ) -> int:
     """
     Store full archive report in the DB
@@ -150,7 +154,9 @@ def generate_report(
 
     try:
 
-        for msg_count, msg_info in enumerate(get_messages(files), start=1):
+        for msg_count, msg_info in enumerate(
+            get_messages(files, with_content=False), start=1
+        ):
 
             # Extract results
             message_id = msg_info.pop("message_id")

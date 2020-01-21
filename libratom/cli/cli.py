@@ -101,3 +101,46 @@ def entities(out, spacy_model, jobs, src, progress):
         out=out, spacy_model_name=spacy_model, jobs=jobs, src=src, progress=progress
     )
     sys.exit(status)
+
+
+@ratom.command(
+    context_settings=CONTEXT_SETTINGS, short_help="Generate mailbox contents report."
+)
+@click.option(
+    "-o",
+    "--out",
+    metavar=PATH_METAVAR,
+    default=Path.cwd,
+    callback=validate_out_path,
+    type=PathPath(resolve_path=True),
+    help=f"Write the output to {PATH_METAVAR}.",
+)
+@click.option(
+    "-j",
+    "--jobs",
+    metavar=INT_METAVAR,
+    type=click.IntRange(min=1, max=128),
+    help=f"Use {INT_METAVAR} concurrent jobs.",
+)
+@click.argument(
+    "src",
+    metavar="[SOURCE]",
+    default=Path.cwd,
+    type=PathPath(exists=True, resolve_path=True),
+)
+@click.option(
+    "-v",
+    "--verbose",
+    count=True,
+    callback=set_log_level_from_verbose,
+    help="Increase verbosity (can be repeated).",
+    expose_value=False,
+)
+@click.option("-p", "--progress", is_flag=True, help="Show progress.")
+def report(out, jobs, src, progress):
+    """
+    ...
+    """
+
+    status = subcommands.report(out=out, jobs=jobs, src=src, progress=progress)
+    sys.exit(status)
