@@ -9,6 +9,7 @@ from pathlib import Path
 
 import click
 import click_log
+import psutil
 
 import libratom.cli.subcommands as subcommands
 from libratom.cli import CONTEXT_SETTINGS, INT_METAVAR, PATH_METAVAR
@@ -65,8 +66,9 @@ def ratom():
     "-j",
     "--jobs",
     metavar=INT_METAVAR,
-    type=click.IntRange(min=1, max=128),
+    type=click.INT,
     help=f"Use {INT_METAVAR} concurrent jobs.",
+    default=psutil.cpu_count(logical=False),
 )
 @click.argument(
     "src",
@@ -119,8 +121,9 @@ def entities(out, spacy_model, jobs, src, progress):
     "-j",
     "--jobs",
     metavar=INT_METAVAR,
-    type=click.IntRange(min=1, max=128),
+    type=click.INT,
     help=f"Use {INT_METAVAR} concurrent jobs.",
+    default=psutil.cpu_count(logical=False),
 )
 @click.argument(
     "src",
