@@ -7,3 +7,4 @@ libpff-python-ratom
 spacy
 sqlalchemy
 enlighten
+psutil
