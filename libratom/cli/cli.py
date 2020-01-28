@@ -37,6 +37,17 @@ def set_log_level_from_verbose(ctx, param, value):
     return level
 
 
+def cpu_count():
+    """
+    Return the number of available cores
+    """
+
+    # Use logical cores until this issue is fixed
+    # https://github.com/giampaolo/psutil/issues/1620
+    # return psutil.cpu_count(logical=False)
+    return psutil.cpu_count(logical=True)
+
+
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.version_option()
 def ratom():
@@ -68,7 +79,7 @@ def ratom():
     metavar=INT_METAVAR,
     type=click.INT,
     help=f"Use {INT_METAVAR} concurrent jobs.",
-    default=psutil.cpu_count(logical=False),
+    default=cpu_count(),
 )
 @click.argument(
     "src",
@@ -123,7 +134,7 @@ def entities(out, spacy_model, jobs, src, progress):
     metavar=INT_METAVAR,
     type=click.INT,
     help=f"Use {INT_METAVAR} concurrent jobs.",
-    default=psutil.cpu_count(logical=False),
+    default=cpu_count(),
 )
 @click.argument(
     "src",
