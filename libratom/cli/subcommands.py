@@ -95,8 +95,13 @@ def entities(
         ]
 
         with progress_bar_context(
-            total=msg_count, desc="Processing messages", unit="msg", color="green"
-        ) as msg_bar:
+            total=msg_count, desc="Processing messages", unit="msg", color="blue"
+        ) as processing_msg_bar, progress_bar_context(
+            total=msg_count,
+            desc="Generating message reports",
+            unit="msg",
+            color="green",
+        ) as reporting_msg_bar:
 
             # Record configuration info
             store_configuration_in_db(session, spacy_model_name, spacy_model_version)
@@ -106,7 +111,8 @@ def entities(
                 session=session,
                 spacy_model=spacy_model,
                 jobs=jobs,
-                progress_callback=msg_bar.update,
+                processing_progress_callback=processing_msg_bar.update,
+                reporting_progress_callback=reporting_msg_bar.update,
             )
 
     logger.info("All done")

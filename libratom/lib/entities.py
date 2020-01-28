@@ -1,4 +1,4 @@
-# pylint: disable=broad-except,invalid-name,protected-access,consider-using-ternary,import-outside-toplevel,too-many-locals
+# pylint: disable=broad-except,invalid-name,protected-access,consider-using-ternary,import-outside-toplevel,too-many-locals,too-many-arguments
 """
 Set of utility functions that use spaCy to perform named entity recognition
 """
@@ -142,7 +142,8 @@ def extract_entities(
     session: Session,
     spacy_model: Language,
     jobs: int = None,
-    progress_callback: Callable = None,
+    processing_progress_callback: Callable = None,
+    reporting_progress_callback: Callable = None,
     **kwargs,
 ) -> int:
     """
@@ -156,8 +157,9 @@ def extract_entities(
         if key.startswith("RATOM_"):
             logger.debug(f"{key}: {value}")
 
-    # Default progress callback to no-op
-    update_progress = progress_callback or (lambda *_, **__: None)
+    # Default progress callbacks to no-op
+    processing_update_progress = processing_progress_callback or (lambda *_, **__: None)
+    reporting_update_progress = reporting_progress_callback or (lambda *_, **__: None)
 
     # Load the file_report table for local lookup
     _file_reports = session.query(FileReport).all()  # noqa: F841
@@ -175,7 +177,12 @@ def extract_entities(
             for msg_count, worker_output in enumerate(
                 pool.imap_unordered(
                     process_message,
-                    get_messages(files, spacy_model=spacy_model, **kwargs),
+                    get_messages(
+                        files,
+                        spacy_model=spacy_model,
+                        progress_callback=processing_update_progress,
+                        **kwargs,
+                    ),
                     chunksize=RATOM_MSG_BATCH_SIZE,
                 ),
                 start=1,
@@ -257,13 +264,13 @@ def extract_entities(
 
                 # Update progress every N messages
                 if not msg_count % MSG_PROGRESS_STEP:
-                    update_progress(MSG_PROGRESS_STEP)
+                    reporting_update_progress(MSG_PROGRESS_STEP)
 
             # Add remaining new entities
             session.add_all(new_entities)
 
             # Update progress with remaining message count
-            update_progress(msg_count % MSG_PROGRESS_STEP)
+            reporting_update_progress(msg_count % MSG_PROGRESS_STEP)
 
         except KeyboardInterrupt:
             logger.warning("Cancelling running task")

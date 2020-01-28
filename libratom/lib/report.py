@@ -155,7 +155,8 @@ def generate_report(
     try:
 
         for msg_count, msg_info in enumerate(
-            get_messages(files, with_content=False), start=1
+            get_messages(files, progress_callback=update_progress, with_content=False),
+            start=1,
         ):
 
             # Extract results
