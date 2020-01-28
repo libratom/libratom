@@ -7,7 +7,7 @@ import functools
 import logging
 import signal
 from pathlib import Path
-from typing import Dict, Generator, Iterable
+from typing import Callable, Dict, Generator, Iterable
 
 from libratom.lib.core import open_mail_archive
 
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_messages(
-    files: Iterable[Path], with_content=True, **kwargs
+    files: Iterable[Path], progress_callback: Callable, with_content=True, **kwargs
 ) -> Generator[Dict, None, None]:
     """
     Message generator to feed a pool of processes from a directory of PST files
@@ -49,6 +49,9 @@ def get_messages(
                         # Log and move on to the next message
                         logger.info(f"Invalid message in file {file}")
                         logger.debug(exc, exc_info=True)
+
+                    finally:
+                        progress_callback()
 
         except Exception as exc:
             # Log and move on to the next file
