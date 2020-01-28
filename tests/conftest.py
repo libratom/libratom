@@ -5,7 +5,7 @@ from email import message_from_binary_file
 from email.message import Message
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import List
+from typing import List, Callable
 from zipfile import ZipFile
 
 import pytest
@@ -279,3 +279,8 @@ def utf8_message_with_no_cte_header() -> Message:
 
         with file_path.open("rb") as fp:
             yield message_from_binary_file(fp)
+
+
+@pytest.fixture(scope="session")
+def mock_progress_callback() -> Callable:
+    return lambda *_, **__: None

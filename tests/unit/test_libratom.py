@@ -129,11 +129,11 @@ def test_extract_message_attachments(enron_dataset_part002):
             assert filepath.stat().st_size == att.size
 
 
-def test_get_messages_with_bad_files(enron_dataset_part044):
+def test_get_messages_with_bad_files(enron_dataset_part044, mock_progress_callback):
 
     _count = 0
     for _count, res in enumerate(
-        get_messages(files=enron_dataset_part044.glob("*.pst")), start=1
+        get_messages(files=enron_dataset_part044.glob("*.pst"), progress_callback=mock_progress_callback), start=1
     ):
         assert res
 
@@ -153,11 +153,11 @@ def test_get_message_by_id_with_bad_id(sample_pst_file):
         assert archive.get_message_by_id(1234) is None
 
 
-def test_get_messages_with_bad_messages(enron_dataset_part012):
+def test_get_messages_with_bad_messages(enron_dataset_part012, mock_progress_callback):
 
     _count = 0
     for _count, res in enumerate(
-        get_messages(files=enron_dataset_part012.glob("*.pst")), start=1
+        get_messages(files=enron_dataset_part012.glob("*.pst"), progress_callback=mock_progress_callback), start=1
     ):
         assert res
 
@@ -313,7 +313,7 @@ def test_get_file_info(sample_pst_file):
     assert not error
 
 
-def test_attachments_mime_type_validation(enron_dataset):
+def test_attachments_mime_type_validation(enron_dataset, mock_progress_callback):
 
     # Load media types
     with resources.path(data, "media_types.json") as media_types_file, open(
@@ -326,7 +326,7 @@ def test_attachments_mime_type_validation(enron_dataset):
 
     files = get_set_of_files(enron_dataset)
 
-    for res in get_messages(files):
+    for res in get_messages(files, progress_callback=mock_progress_callback):
         attachments = res.get("attachments")
         if attachments:
             for attachment in attachments:
