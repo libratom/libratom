@@ -21,8 +21,10 @@ def get_messages(
     Message generator to feed a pool of processes from a directory of PST files
     """
 
+    msg_count = 0
+
     # Iterate over files
-    for count, file in enumerate(files):
+    for file in files:
         try:
             with open_mail_archive(file) as archive:
                 # Iterate over messages
@@ -51,8 +53,10 @@ def get_messages(
                         logger.debug(exc, exc_info=True)
 
                     finally:
+                        msg_count += 1
+
                         # Update progress every N messages
-                        if not count % MSG_PROGRESS_STEP:
+                        if not msg_count % MSG_PROGRESS_STEP:
                             progress_callback(MSG_PROGRESS_STEP)
 
         except Exception as exc:
@@ -60,9 +64,8 @@ def get_messages(
             logger.info(f"Skipping file {file}")
             logger.debug(exc, exc_info=True)
 
-        finally:
-            # Update progress with remaining message count
-            progress_callback(count % MSG_PROGRESS_STEP)
+    # Update progress with remaining message count
+    progress_callback(msg_count % MSG_PROGRESS_STEP)
 
 
 def worker_init():
