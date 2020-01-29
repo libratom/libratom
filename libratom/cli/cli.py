@@ -14,7 +14,7 @@ import psutil
 import libratom.cli.subcommands as subcommands
 from libratom.cli import CONTEXT_SETTINGS, INT_METAVAR, PATH_METAVAR
 from libratom.cli.utils import PathPath, validate_out_path
-from libratom.lib.entities import SPACY_MODEL_NAMES, SPACY_MODELS
+from libratom.lib.core import SPACY_MODEL_NAMES, SPACY_MODELS
 
 logger = logging.getLogger(__name__)
 

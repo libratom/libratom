@@ -5,7 +5,7 @@ from email import message_from_binary_file
 from email.message import Message
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import List, Callable
+from typing import Callable, List
 from zipfile import ZipFile
 
 import pytest
