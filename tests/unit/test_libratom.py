@@ -14,10 +14,15 @@ import pytest
 import libratom
 from libratom import data
 from libratom.lib.concurrency import get_messages
-from libratom.lib.core import get_set_of_files, open_mail_archive
+from libratom.lib.core import (
+    SPACY_MODELS,
+    get_set_of_files,
+    load_spacy_model,
+    open_mail_archive,
+)
 from libratom.lib.database import db_init, db_session
 from libratom.lib.download import download_files
-from libratom.lib.entities import SPACY_MODELS, extract_entities, load_spacy_model
+from libratom.lib.entities import extract_entities
 from libratom.lib.exceptions import FileTypeError
 from libratom.lib.mbox import MboxArchive
 from libratom.lib.pff import PffArchive
