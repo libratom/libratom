@@ -12,9 +12,9 @@ import enlighten
 from sqlalchemy import func
 
 from libratom.cli.utils import MockContext
-from libratom.lib.core import get_set_of_files
+from libratom.lib.core import get_set_of_files, load_spacy_model
 from libratom.lib.database import db_init, db_session
-from libratom.lib.entities import extract_entities, load_spacy_model
+from libratom.lib.entities import extract_entities
 from libratom.lib.report import generate_report, scan_files, store_configuration_in_db
 from libratom.models import FileReport
 

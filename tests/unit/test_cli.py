@@ -14,8 +14,9 @@ from sqlalchemy.orm import sessionmaker
 import libratom
 import libratom.cli.subcommands as subcommands
 from libratom.cli.cli import ratom
+from libratom.lib.core import SPACY_MODELS, load_spacy_model
 from libratom.lib.database import db_session
-from libratom.lib.entities import SPACY_MODELS, load_spacy_model, process_message
+from libratom.lib.entities import process_message
 from libratom.models import Entity, FileReport
 
 
