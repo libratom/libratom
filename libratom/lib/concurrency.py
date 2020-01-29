@@ -9,7 +9,7 @@ import signal
 from pathlib import Path
 from typing import Callable, Dict, Generator, Iterable
 
-from libratom.lib.core import open_mail_archive
+from libratom.lib.core import MSG_PROGRESS_STEP, open_mail_archive
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ def get_messages(
     """
 
     # Iterate over files
-    for file in files:
+    for count, file in enumerate(files):
         try:
             with open_mail_archive(file) as archive:
                 # Iterate over messages
@@ -51,12 +51,18 @@ def get_messages(
                         logger.debug(exc, exc_info=True)
 
                     finally:
-                        progress_callback()
+                        # Update progress every N messages
+                        if not count % MSG_PROGRESS_STEP:
+                            progress_callback(MSG_PROGRESS_STEP)
 
         except Exception as exc:
             # Log and move on to the next file
             logger.info(f"Skipping file {file}")
             logger.debug(exc, exc_info=True)
+
+        finally:
+            # Update progress with remaining message count
+            progress_callback(count % MSG_PROGRESS_STEP)
 
 
 def worker_init():

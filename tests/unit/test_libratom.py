@@ -133,7 +133,11 @@ def test_get_messages_with_bad_files(enron_dataset_part044, mock_progress_callba
 
     _count = 0
     for _count, res in enumerate(
-        get_messages(files=enron_dataset_part044.glob("*.pst"), progress_callback=mock_progress_callback), start=1
+        get_messages(
+            files=enron_dataset_part044.glob("*.pst"),
+            progress_callback=mock_progress_callback,
+        ),
+        start=1,
     ):
         assert res
 
@@ -157,7 +161,11 @@ def test_get_messages_with_bad_messages(enron_dataset_part012, mock_progress_cal
 
     _count = 0
     for _count, res in enumerate(
-        get_messages(files=enron_dataset_part012.glob("*.pst"), progress_callback=mock_progress_callback), start=1
+        get_messages(
+            files=enron_dataset_part012.glob("*.pst"),
+            progress_callback=mock_progress_callback,
+        ),
+        start=1,
     ):
         assert res
 
