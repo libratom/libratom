@@ -30,17 +30,21 @@ class Expected:
         self.tokens = tokens
 
 
-def extract_entities(
+def run_ratom_subcommand(
+    cmd: str,
     options: List,
     args: Union[Path, str, None],
     runner: CliRunner,
     expected: Optional[Expected],
 ) -> Result:
     """
-    Block of code to run an entity extraction job as part of a test
+    Block of code to run a given ratom subcommand as part of a test
     """
 
-    subcommand = ["entities"]
+    if not str:
+        raise ValueError("Empty ratom subcommand string")
+
+    subcommand = [cmd]
     subcommand.extend(options)
 
     if args:
@@ -55,6 +59,32 @@ def extract_entities(
             assert token in result.output
 
     return result
+
+
+def extract_entities(
+    options: List,
+    args: Union[Path, str, None],
+    runner: CliRunner,
+    expected: Optional[Expected],
+) -> Result:
+    """
+    Block of code to run an entity extraction job as part of a test
+    """
+
+    return run_ratom_subcommand("entities", options, args, runner, expected)
+
+
+def generate_report(
+    options: List,
+    args: Union[Path, str, None],
+    runner: CliRunner,
+    expected: Optional[Expected],
+) -> Result:
+    """
+    Block of code to run reporting job as part of a test
+    """
+
+    return run_ratom_subcommand("report", options, args, runner, expected)
 
 
 @pytest.mark.parametrize(
@@ -106,6 +136,21 @@ def test_ratom_entities_enron_001(
     isolated_cli_runner, enron_dataset_part001, params, expected
 ):
     extract_entities(params, enron_dataset_part001, isolated_cli_runner, expected)
+
+
+@pytest.mark.parametrize(
+    "params, expected",
+    [
+        (
+            ["-vvp", "-j2"],
+            Expected(status=0, tokens=["Creating database file", "All done"]),
+        )
+    ],
+)
+def test_ratom_report_enron_001(
+    isolated_cli_runner, enron_dataset_part001, params, expected
+):
+    generate_report(params, enron_dataset_part001, isolated_cli_runner, expected)
 
 
 @pytest.mark.parametrize(
