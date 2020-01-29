@@ -1,4 +1,4 @@
-# pylint: disable=broad-except,invalid-name,protected-access,consider-using-ternary,import-outside-toplevel,too-many-locals,too-many-arguments
+# pylint: disable=broad-except,invalid-name,protected-access,consider-using-ternary,too-many-locals,too-many-arguments
 """
 Set of utility functions that use spaCy to perform named entity recognition
 """
@@ -6,12 +6,9 @@ Set of utility functions that use spaCy to perform named entity recognition
 import logging
 import multiprocessing
 from datetime import datetime
-from importlib import reload
 from pathlib import Path
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
-import pkg_resources
-import spacy
 from spacy.language import Language
 from sqlalchemy.orm.session import Session
 
@@ -21,7 +18,6 @@ from libratom.lib.core import (
     MSG_PROGRESS_STEP,
     RATOM_DB_COMMIT_BATCH_SIZE,
     RATOM_MSG_BATCH_SIZE,
-    RATOM_SPACY_MODEL_MAX_LENGTH,
 )
 from libratom.models import Attachment, Entity, FileReport, Message
 
@@ -59,57 +55,6 @@ def process_message(
 
     except Exception as exc:
         return res, str(exc)
-
-
-def load_spacy_model(spacy_model_name: str) -> Tuple[Optional[Language], Optional[int]]:
-    """
-    Loads and returns a given spaCy model
-
-    If the model is not present, an attempt will be made to download and install it
-    """
-
-    try:
-        spacy_model = spacy.load(spacy_model_name)
-
-    except OSError as exc:
-        logger.info(f"Unable to load spacy model {spacy_model_name}")
-
-        if "E050" in str(exc):
-            # https://github.com/explosion/spaCy/blob/v2.1.6/spacy/errors.py#L207
-            # Model not found, try installing it
-            logger.info(f"Downloading {spacy_model_name}")
-
-            from spacy.cli.download import msg as spacy_msg
-
-            # Download quietly
-            spacy_msg.no_print = True
-            try:
-                spacy.cli.download(spacy_model_name, False, "--quiet")
-            except SystemExit:
-                logger.error(f"Unable to install spacy model {spacy_model_name}")
-                return None, None
-
-            # Now try loading it again
-            reload(pkg_resources)
-            spacy_model = spacy.load(spacy_model_name)
-
-        else:
-            logger.exception(exc)
-            return None, None
-
-    # Try to get spaCy model version
-    try:
-        spacy_model_version = pkg_resources.get_distribution(spacy_model_name).version
-    except Exception as exc:
-        spacy_model_version = None
-        logger.info(
-            f"Unable to get spaCy model version for {spacy_model_name}, error: {exc}"
-        )
-
-    # Set text length limit for model
-    spacy_model.max_length = RATOM_SPACY_MODEL_MAX_LENGTH
-
-    return spacy_model, spacy_model_version
 
 
 def extract_entities(

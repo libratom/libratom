@@ -1,12 +1,21 @@
-# pylint: disable=missing-docstring,broad-except
+# pylint: disable=missing-docstring,broad-except,import-outside-toplevel,
 
+import logging
 import os
 from collections import namedtuple
+from importlib import reload
 from pathlib import Path
-from typing import Optional, Set, Union
+from typing import Optional, Set, Tuple, Union
+
+import pkg_resources
+import spacy
+from spacy.language import Language
 
 from libratom.lib import MboxArchive, PffArchive
 from libratom.lib.exceptions import FileTypeError
+
+logger = logging.getLogger(__name__)
+
 
 # Allow these to be set through the environment
 RATOM_MSG_BATCH_SIZE = int(os.environ.get("RATOM_MSG_BATCH_SIZE", 1000))
@@ -56,3 +65,54 @@ def get_set_of_files(path: Path) -> Set[Path]:
         return set(path.glob("**/*.pst")).union(set(path.glob("**/*.mbox")))
 
     return {path}
+
+
+def load_spacy_model(spacy_model_name: str) -> Tuple[Optional[Language], Optional[int]]:
+    """
+    Loads and returns a given spaCy model
+
+    If the model is not present, an attempt will be made to download and install it
+    """
+
+    try:
+        spacy_model = spacy.load(spacy_model_name)
+
+    except OSError as exc:
+        logger.info(f"Unable to load spacy model {spacy_model_name}")
+
+        if "E050" in str(exc):
+            # https://github.com/explosion/spaCy/blob/v2.1.6/spacy/errors.py#L207
+            # Model not found, try installing it
+            logger.info(f"Downloading {spacy_model_name}")
+
+            from spacy.cli.download import msg as spacy_msg
+
+            # Download quietly
+            spacy_msg.no_print = True
+            try:
+                spacy.cli.download(spacy_model_name, False, "--quiet")
+            except SystemExit:
+                logger.error(f"Unable to install spacy model {spacy_model_name}")
+                return None, None
+
+            # Now try loading it again
+            reload(pkg_resources)
+            spacy_model = spacy.load(spacy_model_name)
+
+        else:
+            logger.exception(exc)
+            return None, None
+
+    # Try to get spaCy model version
+    try:
+        spacy_model_version = pkg_resources.get_distribution(spacy_model_name).version
+    except Exception as exc:
+        spacy_model_version = None
+        logger.info(
+            f"Unable to get spaCy model version for {spacy_model_name}, error: {exc}"
+        )
+
+    # Set text length limit for model
+    spacy_model.max_length = RATOM_SPACY_MODEL_MAX_LENGTH
+
+    return spacy_model, spacy_model_version
