@@ -57,8 +57,7 @@ def entities(
     files = get_set_of_files(src)
 
     if not files:
-        logger.info(f"No PST file found in {src}; nothing to do")
-        return 0
+        logger.info(f"No PST file found in {src}")
 
     # Compute and store file information
     with progress_bar_context(
@@ -85,6 +84,11 @@ def entities(
     # Get messages and extract entities
     with db_session(Session) as session:
 
+        # Record configuration info
+        store_configuration_in_db(
+            session, str(src), jobs, spacy_model_name, spacy_model_version
+        )
+
         # Get total message count
         msg_count = session.query(func.sum(FileReport.msg_count)).scalar()
 
@@ -102,9 +106,6 @@ def entities(
             unit="msg",
             color="green",
         ) as reporting_msg_bar:
-
-            # Record configuration info
-            store_configuration_in_db(session, spacy_model_name, spacy_model_version)
 
             status = extract_entities(
                 files=good_files,
@@ -152,8 +153,7 @@ def report(out: Path, jobs: Optional[int], src: Path, progress: bool) -> int:
     files = get_set_of_files(src)
 
     if not files:
-        logger.info(f"No PST file found in {src}; nothing to do")
-        return 0
+        logger.info(f"No PST file found in {src}")
 
     # Compute and store file information
     with progress_bar_context(
@@ -174,6 +174,9 @@ def report(out: Path, jobs: Optional[int], src: Path, progress: bool) -> int:
     # Get messages and extract entities
     with db_session(Session) as session:
 
+        # Record configuration info
+        store_configuration_in_db(session, str(src), jobs)
+
         # Get total message count
         msg_count = session.query(func.sum(FileReport.msg_count)).scalar()
 
@@ -186,9 +189,6 @@ def report(out: Path, jobs: Optional[int], src: Path, progress: bool) -> int:
         with progress_bar_context(
             total=msg_count, desc="Processing messages", unit="msg", color="green"
         ) as msg_bar:
-
-            # Record configuration info
-            store_configuration_in_db(session)
 
             status = generate_report(
                 files=good_files, session=session, progress_callback=msg_bar.update,
