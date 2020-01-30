@@ -108,6 +108,8 @@ def scan_files(
 
 def store_configuration_in_db(
     session: Session,
+    src: str,
+    jobs: int,
     spacy_model: Optional[str] = None,
     spacy_model_version: Optional[int] = None,
 ) -> None:
@@ -116,7 +118,8 @@ def store_configuration_in_db(
     """
 
     configuration = {
-        "cpu_count": multiprocessing.cpu_count(),
+        "source": src,
+        "jobs": jobs,
         "libratom_version": libratom.__version__,
         "spacy_model_name": spacy_model,
         "spacy_model_version": spacy_model_version,
@@ -128,6 +131,8 @@ def store_configuration_in_db(
             for name, value in configuration.items()
         ]
     )
+
+    session.commit()
 
 
 def generate_report(

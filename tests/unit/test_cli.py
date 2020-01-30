@@ -108,7 +108,7 @@ def test_ratom(cli_runner, params, expected):
     [
         ([], Expected(status=0, tokens=[""])),
         (["-h"], Expected(status=0, tokens=["Usage"])),
-        (["-v"], Expected(status=0, tokens=["nothing to do"])),
+        (["-v"], Expected(status=0, tokens=["No PST file found"])),
         (
             ["-o", Path(__file__)],
             Expected(status=2, tokens=["Invalid value", "already exists"]),
@@ -151,6 +151,15 @@ def test_ratom_report_enron_001(
     isolated_cli_runner, enron_dataset_part001, params, expected
 ):
     generate_report(params, enron_dataset_part001, isolated_cli_runner, expected)
+
+
+@pytest.mark.parametrize(
+    "params, expected", [(["-v"], Expected(status=0, tokens=["No PST file found"]))],
+)
+def test_ratom_report_empty(isolated_cli_runner, params, expected):
+    # Make new empty dir
+    with tempfile.TemporaryDirectory() as dirname:
+        generate_report(params, Path(dirname), isolated_cli_runner, expected)
 
 
 @pytest.mark.parametrize(
