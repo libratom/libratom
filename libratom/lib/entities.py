@@ -15,9 +15,9 @@ from sqlalchemy.orm.session import Session
 from libratom.lib.base import AttachmentMetadata
 from libratom.lib.concurrency import get_messages, imap_job, worker_init
 from libratom.lib.core import (
-    RATOM_MSG_PROGRESS_STEP,
     RATOM_DB_COMMIT_BATCH_SIZE,
     RATOM_MSG_BATCH_SIZE,
+    RATOM_MSG_PROGRESS_STEP,
 )
 from libratom.models import Attachment, Entity, FileReport, Message
 

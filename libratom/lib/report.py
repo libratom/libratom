@@ -125,13 +125,20 @@ def store_configuration_in_db(
         "spacy_model_version": spacy_model_version,
     }
 
-    session.add_all(
+    settings = [
+        Configuration(name=name, value=str(value))
+        for name, value in configuration.items()
+    ]
+
+    settings.extend(
         [
-            Configuration(name=name, value=str(value))
-            for name, value in configuration.items()
+            Configuration(name=key, value=str(value))
+            for key, value in globals().items()
+            if key.startswith("RATOM_")
         ]
     )
 
+    session.add_all(settings)
     session.commit()
 
 
