@@ -9,7 +9,7 @@ import signal
 from pathlib import Path
 from typing import Callable, Dict, Generator, Iterable
 
-from libratom.lib.core import MSG_PROGRESS_STEP, open_mail_archive
+from libratom.lib.core import RATOM_MSG_PROGRESS_STEP, open_mail_archive
 
 logger = logging.getLogger(__name__)
 
@@ -56,8 +56,8 @@ def get_messages(
                         msg_count += 1
 
                         # Update progress every N messages
-                        if not msg_count % MSG_PROGRESS_STEP:
-                            progress_callback(MSG_PROGRESS_STEP)
+                        if not msg_count % RATOM_MSG_PROGRESS_STEP:
+                            progress_callback(RATOM_MSG_PROGRESS_STEP)
 
         except Exception as exc:
             # Log and move on to the next file
@@ -65,7 +65,7 @@ def get_messages(
             logger.debug(exc, exc_info=True)
 
     # Update progress with remaining message count
-    progress_callback(msg_count % MSG_PROGRESS_STEP)
+    progress_callback(msg_count % RATOM_MSG_PROGRESS_STEP)
 
 
 def worker_init():

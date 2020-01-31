@@ -15,7 +15,7 @@ from sqlalchemy.orm.session import Session
 from libratom.lib.base import AttachmentMetadata
 from libratom.lib.concurrency import get_messages, imap_job, worker_init
 from libratom.lib.core import (
-    MSG_PROGRESS_STEP,
+    RATOM_MSG_PROGRESS_STEP,
     RATOM_DB_COMMIT_BATCH_SIZE,
     RATOM_MSG_BATCH_SIZE,
 )
@@ -183,14 +183,14 @@ def extract_entities(
                         session.rollback()
 
                 # Update progress every N messages
-                if not msg_count % MSG_PROGRESS_STEP:
-                    reporting_update_progress(MSG_PROGRESS_STEP)
+                if not msg_count % RATOM_MSG_PROGRESS_STEP:
+                    reporting_update_progress(RATOM_MSG_PROGRESS_STEP)
 
             # Add remaining new entities
             session.add_all(new_entities)
 
             # Update progress with remaining message count
-            reporting_update_progress(msg_count % MSG_PROGRESS_STEP)
+            reporting_update_progress(msg_count % RATOM_MSG_PROGRESS_STEP)
 
         except KeyboardInterrupt:
             logger.warning("Cancelling running task")
