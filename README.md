@@ -12,7 +12,7 @@ Python library and supporting utilities to parse and process PST and mbox email 
 
 ## Installation
 
-Libratom requires Python 3.6 or newer, and can be installed from the Python Package Index. Installing with **pip** will automatically install all required dependencies. These dependencies include a version of **libpff** that will be compiled automatically with C++ tooling during install. A selection of environments we have tested follows:
+Libratom requires Python 3.6 or newer, and can be installed from the Python Package Index. Installing with **pip** will automatically install all required dependencies. These dependencies include a version of **libpff** that will be compiled automatically with C tooling during install. A selection of environments we have tested follows:
 
 *   Ubuntu 16.04LTS, 18.04LTS (and newer) releases require build-essential, python3, python3-pip, and python3-venv packages
 *   macOS 10.13 (and newer) releases require Xcode 9.4.1 (or newer), Xcode CLI tools, and Python 3 installed using Homebrew (or your preferred method)
