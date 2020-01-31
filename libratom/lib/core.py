@@ -33,16 +33,22 @@ RATOM_SPACY_MODEL_MAX_LENGTH = int(
 # Spacy trained model names
 SPACY_MODEL_NAMES = [
     "de_core_news_sm",
-    "es_core_news_sm",
-    "es_core_news_md",
-    "pt_core_news_sm",
-    "it_core_news_sm",
-    "nl_core_news_sm",
+    "de_core_news_md",
+    "el_core_news_sm",
+    "el_core_news_md",
     "en_core_web_sm",
     "en_core_web_md",
     "en_core_web_lg",
+    "es_core_news_sm",
+    "es_core_news_md",
     "fr_core_news_sm",
     "fr_core_news_md",
+    "it_core_news_sm",
+    "lt_core_news_sm",
+    "nb_core_news_sm",
+    "nl_core_news_sm",
+    "pt_core_news_sm",
+    "xx_ent_wiki_sm",
 ]
 
 SPACY_MODELS = namedtuple("SpacyModels", SPACY_MODEL_NAMES)(*SPACY_MODEL_NAMES)
