@@ -5,7 +5,7 @@ import os
 from collections import namedtuple
 from importlib import reload
 from pathlib import Path
-from typing import Optional, Set, Tuple, Union
+from typing import List, Optional, Set, Tuple, Union
 
 import pkg_resources
 import spacy
@@ -52,6 +52,12 @@ SPACY_MODEL_NAMES = [
 ]
 
 SPACY_MODELS = namedtuple("SpacyModels", SPACY_MODEL_NAMES)(*SPACY_MODEL_NAMES)
+
+
+def get_ratom_settings() -> List[Tuple[str, Union[int, str]]]:
+    return [
+        (key, value) for key, value in globals().items() if key.startswith("RATOM_")
+    ]
 
 
 def open_mail_archive(path: Path, **kwargs) -> Optional[Union[PffArchive, MboxArchive]]:
