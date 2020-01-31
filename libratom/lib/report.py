@@ -15,13 +15,14 @@ from sqlalchemy.orm.session import Session
 
 import libratom
 from libratom.lib.concurrency import get_messages, imap_job, worker_init
-from libratom.lib.core import open_mail_archive
+from libratom.lib.core import (
+    RATOM_MSG_PROGRESS_STEP,
+    get_ratom_settings,
+    open_mail_archive,
+)
 from libratom.models import Attachment, Configuration, FileReport, Message
 
 logger = logging.getLogger(__name__)
-
-# Interval between progress updates in the message generator
-MSG_PROGRESS_STEP = int(os.environ.get("RATOM_MSG_PROGRESS_STEP", 10))
 
 
 @imap_job
@@ -126,15 +127,14 @@ def store_configuration_in_db(
     }
 
     settings = [
-        Configuration(name=name, value=str(value))
-        for name, value in configuration.items()
+        Configuration(name=key, value=str(value))
+        for key, value in configuration.items()
     ]
 
     settings.extend(
         [
             Configuration(name=key, value=str(value))
-            for key, value in globals().items()
-            if key.startswith("RATOM_")
+            for key, value in get_ratom_settings()
         ]
     )
 
@@ -152,9 +152,8 @@ def generate_report(
     """
 
     # Confirm environment settings
-    for key, value in globals().items():
-        if key.startswith("RATOM_"):
-            logger.debug(f"{key}: {value}")
+    for key, value in get_ratom_settings():
+        logger.debug(f"{key}: {value}")
 
     # Default progress callback to no-op
     update_progress = progress_callback or (lambda *_, **__: None)
@@ -204,11 +203,11 @@ def generate_report(
             )
 
             # Update progress every N messages
-            if not msg_count % MSG_PROGRESS_STEP:
-                update_progress(MSG_PROGRESS_STEP)
+            if not msg_count % RATOM_MSG_PROGRESS_STEP:
+                update_progress(RATOM_MSG_PROGRESS_STEP)
 
         # Update progress with remaining message count
-        update_progress(msg_count % MSG_PROGRESS_STEP)
+        update_progress(msg_count % RATOM_MSG_PROGRESS_STEP)
 
     except KeyboardInterrupt:
         logger.warning("Cancelling running task")
