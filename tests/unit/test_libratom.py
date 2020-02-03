@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring,invalid-name,no-member
+# pylint: disable=missing-docstring,invalid-name,no-member,unused-import
 import email
 import hashlib
 import json
@@ -10,6 +10,7 @@ from tempfile import TemporaryDirectory
 from unittest.mock import MagicMock, patch
 
 import pytest
+import requests
 
 import libratom
 from libratom import data
@@ -296,9 +297,11 @@ def test_download_files(directory_of_mbox_files, dry_run):
 
 def test_download_files_with_bad_urls():
 
-    bad_urls = ["http://httpstat.us/404"] * 6
+    bad_urls = ["http://foobar"] * 6
 
-    with TemporaryDirectory() as tmpdir:
+    with TemporaryDirectory() as tmpdir, patch("requests.Session.get") as mock_get:
+        mock_get.return_value.ok = False
+
         with pytest.raises(RuntimeError):
             download_files(bad_urls, Path(tmpdir))
 
