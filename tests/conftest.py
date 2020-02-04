@@ -262,6 +262,11 @@ def directory_of_mbox_files() -> Path:
 
 
 @pytest.fixture(scope="session")
+def sample_mbox_file(directory_of_mbox_files) -> Path:
+    yield next(directory_of_mbox_files.glob("*.mbox"))
+
+
+@pytest.fixture(scope="session")
 def utf8_message_with_no_cte_header() -> Message:
     """
     Returns:
@@ -283,4 +288,4 @@ def utf8_message_with_no_cte_header() -> Message:
 
 @pytest.fixture(scope="session")
 def mock_progress_callback() -> Callable:
-    return lambda *_, **__: None
+    yield lambda *_, **__: None

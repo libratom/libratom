@@ -1,3 +1,4 @@
+# pylint: disable=attribute-defined-outside-init
 """
 mbox parsing utilities
 """
@@ -6,7 +7,9 @@ import mailbox
 from copy import deepcopy
 from email.message import Message
 from pathlib import Path
-from typing import Generator, List, Union
+from typing import Generator, List, Optional, Union
+
+from treelib import Tree
 
 from libratom.lib.base import Archive, AttachmentMetadata
 
@@ -78,3 +81,50 @@ class MboxArchive(Archive):
             for part in message.walk()
             if part.get_content_disposition() == "attachment"
         ]
+
+    def _build_tree(self) -> None:
+        """Builds the internal tree structure
+
+        Builds the internal tree structure
+
+        Returns:
+            None
+        """
+
+        self._tree = Tree()
+
+        # Set up root node
+        self._tree.create_node("root", 0)
+
+        # Set up children
+        for i, message in enumerate(self.messages(), start=1):
+            self._tree.create_node(
+                f"Message index: {i}", i, parent=0, data=message,
+            )
+
+    @property
+    def tree(self) -> Tree:
+        """Returns the object's internal tree structure
+        """
+
+        try:
+            return self._tree
+        except AttributeError:
+            self._build_tree()
+            return self._tree
+
+    def get_message_by_id(self, message_id: int) -> Optional[Message]:
+        """Gets a message by its index.
+        If no message was found for the given index, None is returned.
+
+        Args:
+            message_id: The target message's index
+
+        Returns:
+            A Message object or None
+        """
+
+        try:
+            return self.tree.get_node(message_id).data
+        except AttributeError:
+            return None
