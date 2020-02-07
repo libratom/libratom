@@ -42,24 +42,25 @@ def fetch_enron_dataset(name: str, files: List[str], url: str) -> Path:
         zipped_path = CACHED_ENRON_DATA_DIR / f"{name}.zip"
 
         # Fetch the zipped PST file
-        max_tries = 5
-        for i in range(1, max_tries + 1):
-            try:
-                response = requests.get(url, timeout=(6.05, 30))
+        if not zipped_path.exists():
+            max_tries = 5
+            for i in range(1, max_tries + 1):
+                try:
+                    response = requests.get(url, timeout=(6.05, 30))
 
-                if response.ok:
-                    zipped_path.write_bytes(response.content)
-                else:
-                    response.raise_for_status()
+                    if response.ok:
+                        zipped_path.write_bytes(response.content)
+                    else:
+                        response.raise_for_status()
 
-                # success
-                break
+                    # success
+                    break
 
-            except (ChunkedEncodingError, HTTPError):
-                if i < max_tries:
-                    time.sleep(i)
-                else:
-                    raise
+                except (ChunkedEncodingError, HTTPError):
+                    if i < max_tries:
+                        time.sleep(i)
+                    else:
+                        raise
 
         # Unzip and remove archive
         ZipFile(zipped_path).extractall(path=CACHED_ENRON_DATA_DIR)
