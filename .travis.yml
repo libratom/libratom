@@ -4,7 +4,7 @@ git:
   depth: false
 install:
   - pip3 install --upgrade pip
-  - pip3 install tox-travis codecov
+  - pip3 install tox-travis codecov click click-log
 before_script: ./libratom/scripts/download_edrm_zipped_files.py
 script: tox
 after_success: codecov
