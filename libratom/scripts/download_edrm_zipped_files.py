@@ -22,7 +22,7 @@ click_log.basic_config(logging.getLogger())
 
 @click.command(
     context_settings=CONTEXT_SETTINGS,
-    help=f"Download edrm files into {CACHED_ENRON_DATA_DIR}",
+    help=f"Download edrm files into {CACHED_ENRON_DATA_DIR}/",
 )
 @click.option(
     "-v",
