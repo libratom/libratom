@@ -6,7 +6,7 @@ install:
   - pip3 install --upgrade pip
   - pip3 install tox-travis codecov
 before_script: ./libratom/scripts/download_edrm_zipped_files.py
-script: travis_wait 60 tox
+script: tox
 after_success: codecov
 
 stages:
