@@ -20,7 +20,10 @@ CACHED_ENRON_DATA_DIR = Path("/tmp/libratom/test_data/RevisedEDRMv1_Complete")
 click_log.basic_config(logging.getLogger())
 
 
-@click.command(context_settings=CONTEXT_SETTINGS, help=f"Download edrm files into {CACHED_ENRON_DATA_DIR}/")
+@click.command(
+    context_settings=CONTEXT_SETTINGS,
+    help=f"Download edrm files into {CACHED_ENRON_DATA_DIR}/",
+)
 @click.option(
     "-v",
     "--verbose",
@@ -40,13 +43,11 @@ def download_edrm_zipped_files() -> None:
         "andy_zipper",
         "chris_dorland",
         "jason_wolfe",
-        "vkaminski"
+        "vkaminski",
     ]
 
     # CSV files to download
-    urls = [
-        f"{ENRON_DATASET_URL}/{name}.zip" for name in names
-    ]
+    urls = [f"{ENRON_DATASET_URL}/{name}.zip" for name in names]
 
     download_files(urls, CACHED_ENRON_DATA_DIR, dry_run=False)
 
