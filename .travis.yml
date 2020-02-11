@@ -38,6 +38,7 @@ jobs:
       dist: bionic
       python: 3.8
       install: skip
+      before_script: skip
       script: skip
       after_success: true
       deploy:
