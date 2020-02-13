@@ -12,7 +12,7 @@ import click_log
 import psutil
 
 import libratom.cli.subcommands as subcommands
-from libratom.cli import CONTEXT_SETTINGS, INT_METAVAR, PATH_METAVAR
+from libratom.cli import CONTEXT_SETTINGS, INT_METAVAR, MODEL_METAVAR, PATH_METAVAR
 from libratom.cli.utils import PathPath, validate_out_path
 from libratom.lib.core import SPACY_MODEL_NAMES, SPACY_MODELS
 
@@ -157,4 +157,42 @@ def report(out, jobs, src, progress):
     """
 
     status = subcommands.report(out=out, jobs=jobs, src=src, progress=progress)
+    sys.exit(status)
+
+
+@ratom.command(context_settings=CONTEXT_SETTINGS, short_help="Manage spaCy models.")
+# @click.option(
+#     "-v",
+#     "--verbose",
+#     count=True,
+#     callback=set_log_level_from_verbose,
+#     help="Increase verbosity (can be repeated).",
+#     expose_value=False,
+# )
+@click.option(
+    "-l", "--list", "action", flag_value="list", default=True, help="List spaCy models."
+)
+@click.option(
+    "-i",
+    "--install",
+    "action",
+    flag_value="install",
+    metavar=MODEL_METAVAR,
+    help=f"Install {MODEL_METAVAR}.",
+)
+@click.option(
+    "-u",
+    "--upgrade",
+    "action",
+    flag_value="upgrade",
+    metavar=MODEL_METAVAR,
+    help=f"Upgrade {MODEL_METAVAR}",
+)
+@click.argument("model-name", required=False, metavar=f"[{MODEL_METAVAR}]")
+def model(action, model_name):
+    """
+    Manage spaCy models.
+    """
+
+    status = subcommands.model(action=action, model_name=model_name)
     sys.exit(status)

@@ -11,7 +11,7 @@ from typing import Optional
 import enlighten
 from sqlalchemy import func
 
-from libratom.cli.utils import MockContext
+from libratom.cli.utils import MockContext, list_spacy_models
 from libratom.lib.core import get_set_of_files, load_spacy_model
 from libratom.lib.database import db_init, db_session
 from libratom.lib.entities import extract_entities
@@ -197,3 +197,12 @@ def report(out: Path, jobs: Optional[int], src: Path, progress: bool) -> int:
     logger.info("All done")
 
     return status
+
+
+def model(action: str, model_name: str) -> int:
+    """
+    Click sub command function called by `ratom model`
+    """
+
+    if action == "list":
+        return list_spacy_models(model_name)
