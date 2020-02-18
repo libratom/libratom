@@ -12,7 +12,13 @@ import click_log
 import psutil
 
 import libratom.cli.subcommands as subcommands
-from libratom.cli import CONTEXT_SETTINGS, INT_METAVAR, MODEL_METAVAR, PATH_METAVAR, VERSION_METAVAR
+from libratom.cli import (
+    CONTEXT_SETTINGS,
+    INT_METAVAR,
+    MODEL_METAVAR,
+    PATH_METAVAR,
+    VERSION_METAVAR,
+)
 from libratom.cli.utils import PathPath, validate_out_path, validate_version_string
 from libratom.lib.core import SPACY_MODEL_NAMES, SPACY_MODELS
 
@@ -174,29 +180,23 @@ def report(out, jobs, src, progress):
 
 
 @ratom.command(context_settings=CONTEXT_SETTINGS, short_help="Manage spaCy models.")
-# @click.option(
-#     "-v",
-#     "--verbose",
-#     count=True,
-#     callback=set_log_level_from_verbose,
-#     help="Increase verbosity (can be repeated).",
-#     expose_value=False,
-# )
 @click.option(
-    "-l", "--list", "action", flag_value="list", default=True, help="List spaCy models."
+    "-l", "--list", "_list", required=False, is_flag=True, help="List spaCy models."
 )
 @click.option(
     "-i",
     "--install",
-    "action",
-    flag_value="install",
+    required=False,
+    type=click.Choice(SPACY_MODEL_NAMES),
+    metavar=MODEL_METAVAR,
     help=f"Install {MODEL_METAVAR}.",
 )
 @click.option(
     "-u",
     "--upgrade",
-    "action",
-    flag_value="upgrade",
+    required=False,
+    type=click.Choice(SPACY_MODEL_NAMES),
+    metavar=MODEL_METAVAR,
     help=f"Upgrade {MODEL_METAVAR}.",
 )
 @click.option(
@@ -206,11 +206,26 @@ def report(out, jobs, src, progress):
     callback=validate_version_string,
     help=f"If used alongside -i/--install, install a given model version. Otherwise this has no effect.",
 )
-@click.argument("model-name", required=False, type=click.Choice(SPACY_MODEL_NAMES), metavar=f"[{MODEL_METAVAR}]")
-def model(action, model_name, version):
+def model(_list, install, upgrade, version):
     """
     Manage spaCy models.
     """
 
-    status = subcommands.model(action=action, name=model_name, version=version)
+    actions = [_list, install, upgrade]
+
+    # Show help if no action option is passed
+    if not any(actions):
+        with click.get_current_context() as ctx:
+            click.echo(ctx.get_help())
+            sys.exit(0)
+
+    # Error out if multiple actions are selected
+    if [bool(x) for x in actions].count(True) > 1:
+        raise click.UsageError(
+            "Only one of [list|install|upgrade] can be selected at once."
+        )
+
+    status = subcommands.model(
+        _list=_list, install=install, upgrade=upgrade, version=version
+    )
     sys.exit(status)

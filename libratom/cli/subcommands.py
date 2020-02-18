@@ -11,7 +11,7 @@ from typing import Optional
 import enlighten
 from sqlalchemy import func
 
-from libratom.cli.utils import MockContext, list_spacy_models
+from libratom.cli.utils import MockContext, install_spacy_model, list_spacy_models
 from libratom.lib.core import get_set_of_files, load_spacy_model
 from libratom.lib.database import db_init, db_session
 from libratom.lib.entities import extract_entities
@@ -199,10 +199,16 @@ def report(out: Path, jobs: Optional[int], src: Path, progress: bool) -> int:
     return status
 
 
-def model(action: str, name: str, version: str) -> int:
+def model(_list: bool, install: str, upgrade: str, version: str) -> int:
     """
     Click sub command function called by `ratom model`
     """
 
-    if action == "list":
-        return list_spacy_models(name)
+    if install:
+        return install_spacy_model(install, version, False)
+
+    if upgrade:
+        return install_spacy_model(upgrade, None, True)
+
+    # List by default
+    return list_spacy_models()

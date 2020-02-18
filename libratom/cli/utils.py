@@ -12,6 +12,7 @@ from typing import Optional
 import click
 import pkg_resources
 import requests
+import spacy
 from pkg_resources import DistributionNotFound
 from tabulate import tabulate
 
@@ -75,7 +76,18 @@ def validate_version_string(ctx, param, value: Optional[str]) -> Optional[str]:
     return value
 
 
-def list_spacy_models(model_name: str = None) -> int:
+def get_installed_model_version(name: str) -> Optional[str]:
+    """
+    Return the version of an installed package
+    """
+
+    try:
+        return pkg_resources.get_distribution(name).version
+    except DistributionNotFound:
+        return None
+
+
+def list_spacy_models() -> int:
 
     response = requests.get(
         url="https://api.github.com/repos/explosion/spacy-models/releases"
@@ -84,32 +96,52 @@ def list_spacy_models(model_name: str = None) -> int:
     if not response.ok:
         return -1
 
-    releases = json.loads(response.content)
+    # Get name-version pairs
+    releases = [
+        release["name"].rsplit("-", maxsplit=1)
+        for release in json.loads(response.content)
+    ]
 
-    if model_name:
-        releases = [
-            release["name"].split("-")
-            for release in releases
-            if release["name"].startswith(model_name)
-        ]
-    else:
-        releases = [release["name"].split("-") for release in releases]
-
-    # sort by name
+    # Sort them by version name
     releases.sort(key=lambda x: x[0])
 
     table = [["spaCy model", "installed version", "latest version"]]
 
     for name, version in releases:
-
-        # See if we have an installed version
-        try:
-            installed_model_version = pkg_resources.get_distribution(name).version
-        except DistributionNotFound:
-            installed_model_version = None
-
-        table.append([name, installed_model_version, version])
+        table.append([name, get_installed_model_version(name), version])
 
     print(tabulate(table, headers="firstrow"))
+
+    return 0
+
+
+def install_spacy_model(
+    model: str, version: Optional[str] = None, upgrade=False
+) -> int:
+    from spacy.cli.download import msg as spacy_msg
+
+    # Check for existing version
+    installed_version = get_installed_model_version(model)
+
+    if not version and not upgrade and installed_version:
+        click.echo(
+            click.style(f"Model {model} already installed, version {installed_version}")
+        )
+        return 0
+
+    # Download quietly
+    spacy_msg.no_print = True
+
+    version_suffix, direct_download = (f"-{version}", True) if version else ("", False)
+
+    try:
+        spacy.cli.download(f"{model}{version_suffix}", direct_download, "--quiet")
+    except SystemExit:
+        click.echo(
+            click.style(
+                f"Unable to install spacy model {model}{version_suffix}", fg="red"
+            )
+        )
+        return -1
 
     return 0
