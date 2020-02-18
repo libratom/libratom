@@ -188,7 +188,7 @@ def report(out, jobs, src, progress):
     metavar=MODEL_METAVAR,
     help=f"Upgrade {MODEL_METAVAR}",
 )
-@click.argument("model-name", required=False, metavar=f"[{MODEL_METAVAR}]")
+@click.argument("model-name", required=False, type=click.Choice(SPACY_MODEL_NAMES), metavar=f"[{MODEL_METAVAR}]")
 def model(action, model_name):
     """
     Manage spaCy models.

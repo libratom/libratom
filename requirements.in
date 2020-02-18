@@ -8,3 +8,4 @@ spacy
 sqlalchemy
 enlighten
 psutil
+tabulate
