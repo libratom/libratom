@@ -12,8 +12,8 @@ import click_log
 import psutil
 
 import libratom.cli.subcommands as subcommands
-from libratom.cli import CONTEXT_SETTINGS, INT_METAVAR, MODEL_METAVAR, PATH_METAVAR
-from libratom.cli.utils import PathPath, validate_out_path
+from libratom.cli import CONTEXT_SETTINGS, INT_METAVAR, MODEL_METAVAR, PATH_METAVAR, VERSION_METAVAR
+from libratom.cli.utils import PathPath, validate_out_path, validate_version_string
 from libratom.lib.core import SPACY_MODEL_NAMES, SPACY_MODELS
 
 logger = logging.getLogger(__name__)
@@ -153,7 +153,20 @@ def entities(out, spacy_model, jobs, src, progress):
 @click.option("-p", "--progress", is_flag=True, help="Show progress.")
 def report(out, jobs, src, progress):
     """
-    ...
+    Generate a report (file metadata, message count, and attachment metadata)
+    from a PST or mbox file, or a directory of one or more PST and mbox files.
+
+    If SOURCE is a directory it will be walked recursively. Non-PST and non-
+    mbox files will be skipped.
+
+    If SOURCE is not provided the current working directory is used.
+
+    Upon success the result will be a new .sqlite3 database file. If an output
+    path is provided it will be either the output file's parent directory or
+    the file itself.
+
+    If no output path is provided the file will be written in the current
+    working directory.
     """
 
     status = subcommands.report(out=out, jobs=jobs, src=src, progress=progress)
@@ -177,7 +190,6 @@ def report(out, jobs, src, progress):
     "--install",
     "action",
     flag_value="install",
-    metavar=MODEL_METAVAR,
     help=f"Install {MODEL_METAVAR}.",
 )
 @click.option(
@@ -185,14 +197,20 @@ def report(out, jobs, src, progress):
     "--upgrade",
     "action",
     flag_value="upgrade",
-    metavar=MODEL_METAVAR,
-    help=f"Upgrade {MODEL_METAVAR}",
+    help=f"Upgrade {MODEL_METAVAR}.",
+)
+@click.option(
+    "--version",
+    required=False,
+    metavar=VERSION_METAVAR,
+    callback=validate_version_string,
+    help=f"If used alongside -i/--install, install a given model version. Otherwise this has no effect.",
 )
 @click.argument("model-name", required=False, type=click.Choice(SPACY_MODEL_NAMES), metavar=f"[{MODEL_METAVAR}]")
-def model(action, model_name):
+def model(action, model_name, version):
     """
     Manage spaCy models.
     """
 
-    status = subcommands.model(action=action, model_name=model_name)
+    status = subcommands.model(action=action, name=model_name, version=version)
     sys.exit(status)

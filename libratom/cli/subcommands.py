@@ -199,10 +199,10 @@ def report(out: Path, jobs: Optional[int], src: Path, progress: bool) -> int:
     return status
 
 
-def model(action: str, model_name: str) -> int:
+def model(action: str, name: str, version: str) -> int:
     """
     Click sub command function called by `ratom model`
     """
 
     if action == "list":
-        return list_spacy_models(model_name)
+        return list_spacy_models(name)

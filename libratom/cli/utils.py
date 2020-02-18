@@ -7,6 +7,7 @@ import json
 import re
 from contextlib import AbstractContextManager
 from pathlib import Path
+from typing import Optional
 
 import click
 import pkg_resources
@@ -58,10 +59,13 @@ def validate_out_path(ctx, param, value: Path) -> Path:
     return value
 
 
-def validate_version_string(ctx, param, value: str) -> str:
+def validate_version_string(ctx, param, value: Optional[str]) -> Optional[str]:
     """
     Callback for click commands that checks that version string is valid
     """
+
+    if value is None:
+        return None
 
     version_pattern = re.compile(r"\d+(?:\.\d+)+")
 
