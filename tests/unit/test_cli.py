@@ -8,7 +8,7 @@ from typing import List, Optional, Union
 
 import pytest
 from click.testing import CliRunner, Result
-from sqlalchemy import create_engine, func
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 import libratom
@@ -81,10 +81,23 @@ def generate_report(
     expected: Optional[Expected],
 ) -> Result:
     """
-    Block of code to run reporting job as part of a test
+    Block of code to run a reporting job as part of a test
     """
 
     return run_ratom_subcommand("report", options, args, runner, expected)
+
+
+def manage_spacy_models(
+    options: List,
+    args: Union[Path, str, None],
+    runner: CliRunner,
+    expected: Optional[Expected],
+) -> Result:
+    """
+    Block of code to run a model management job as part of a test
+    """
+
+    return run_ratom_subcommand("model", options, args, runner, expected)
 
 
 @pytest.mark.parametrize(
@@ -160,6 +173,20 @@ def test_ratom_report_empty(isolated_cli_runner, params, expected):
     # Make new empty dir
     with tempfile.TemporaryDirectory() as dirname:
         generate_report(params, Path(dirname), isolated_cli_runner, expected)
+
+
+@pytest.mark.parametrize(
+    "params, expected",
+    [
+        ([], Expected(status=0, tokens=["Usage"])),
+        (["-h"], Expected(status=0, tokens=["Usage"])),
+        (["-l"], Expected(status=0, tokens=["spaCy model", "installed version", "latest version"])),
+        (["-i"], Expected(status=2, tokens=["Error: -i option requires an argument"])),
+        (["-u"], Expected(status=2, tokens=["Error: -i option requires an argument"])),
+    ],
+)
+def test_ratom_model(cli_runner, params, expected):
+    manage_spacy_models(params, None, cli_runner, expected)
 
 
 @pytest.mark.parametrize(
