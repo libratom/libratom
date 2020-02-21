@@ -131,7 +131,16 @@ def install_spacy_model(
 
     if not version and not upgrade and installed_version:
         click.echo(
-            click.style(f"Model {model} already installed, version {installed_version}")
+            click.style(
+                f"Model {model} already installed, version {installed_version}",
+                fg="blue",
+            )
+        )
+        click.echo(
+            click.style(
+                f"Please specify a version or run `ratom model --upgrade {model}` to upgrade to the latest version",
+                fg="blue",
+            )
         )
         return 0
 
