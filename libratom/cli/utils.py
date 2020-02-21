@@ -1,4 +1,4 @@
-# pylint: disable=unused-argument,too-few-public-methods,arguments-differ
+# pylint: disable=unused-argument,too-few-public-methods,arguments-differ,import-outside-toplevel
 """
 Command-line interface utilities
 """
@@ -88,6 +88,9 @@ def get_installed_model_version(name: str) -> Optional[str]:
 
 
 def list_spacy_models() -> int:
+    """
+    Print installed spaCy models
+    """
 
     response = requests.get(
         url="https://api.github.com/repos/explosion/spacy-models/releases"
@@ -118,6 +121,9 @@ def list_spacy_models() -> int:
 def install_spacy_model(
     model: str, version: Optional[str] = None, upgrade=False
 ) -> int:
+    """
+    Install a given spaCy model
+    """
     from spacy.cli.download import msg as spacy_msg
 
     # Check for existing version
