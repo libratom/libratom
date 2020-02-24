@@ -197,6 +197,17 @@ def test_ratom_model(cli_runner, params, expected):
 @pytest.mark.parametrize(
     "params, expected",
     [
+        (["-i", "en_core_web_sm"], Expected(status=0, tokens=[])),
+        (["-u", "en_core_web_sm"], Expected(status=0, tokens=[])),
+    ],
+)
+def test_ratom_model_install(cli_runner, params, expected):
+    manage_spacy_models(params, None, cli_runner, expected)
+
+
+@pytest.mark.parametrize(
+    "params, expected",
+    [
         (
             ["-vvp", "-j2"],
             Expected(status=0, tokens=["Creating database file", "All done"]),
