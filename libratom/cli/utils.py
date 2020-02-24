@@ -1,4 +1,4 @@
-# pylint: disable=unused-argument,too-few-public-methods,arguments-differ,import-outside-toplevel
+# pylint: disable=unused-argument,too-few-public-methods,arguments-differ,import-outside-toplevel,broad-except
 """
 Command-line interface utilities
 """
@@ -6,6 +6,7 @@ Command-line interface utilities
 import json
 import re
 from contextlib import AbstractContextManager
+from importlib import reload
 from pathlib import Path
 from typing import Optional
 
@@ -13,6 +14,7 @@ import click
 import pkg_resources
 import requests
 import spacy
+from packaging.version import parse
 from pkg_resources import DistributionNotFound
 from tabulate import tabulate
 
@@ -154,9 +156,37 @@ def install_spacy_model(
     except SystemExit:
         click.echo(
             click.style(
-                f"Unable to install spacy model {model}{version_suffix}", fg="red"
-            )
+                f"❌ Unable to install spacy model {model}{version_suffix}", fg="red"
+            ),
+            err=True,
         )
         return -1
 
+    # Confirm installation
+    try:
+        reload(pkg_resources)
+        installed_version = pkg_resources.get_distribution(model).version
+
+    except Exception as exc:
+        click.echo(
+            click.style(
+                f"❌ Unable to confirm model installation, error: {exc}", fg="red"
+            ),
+            err=True,
+        )
+        return -1
+
+    if version and parse(version) != parse(installed_version):
+        click.echo(
+            click.style(
+                f"❌ Installed model version {installed_version} and specified version {version} differ",
+                fg="red",
+            ),
+            err=True,
+        )
+        return -1
+
+    click.echo(
+        click.style(f"✔ Installed {model}, version {installed_version}", fg="green")
+    )
     return 0
