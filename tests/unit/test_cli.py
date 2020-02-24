@@ -187,7 +187,7 @@ def test_ratom_report_empty(isolated_cli_runner, params, expected):
             ),
         ),
         (["-i"], Expected(status=2, tokens=["Error: -i option requires an argument"])),
-        (["-u"], Expected(status=2, tokens=["Error: -i option requires an argument"])),
+        (["-u"], Expected(status=2, tokens=["Error: -u option requires an argument"])),
     ],
 )
 def test_ratom_model(cli_runner, params, expected):
