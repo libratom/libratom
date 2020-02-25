@@ -39,5 +39,5 @@ def test_validate_media_type_list(cli_runner):
 
         # Prevent a IANA media types update from failing a CI build
         # Run the test for coverage but skip the assertion
-        if not os.getenv("CONTINUOUS_INTEGRATION", "").lower() == "true":
+        if os.getenv("CONTINUOUS_INTEGRATION", "").lower() != "true":
             assert filecmp.cmp(existing_media_types_file, new_media_types_file)
