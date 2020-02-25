@@ -183,7 +183,8 @@ def test_ratom_report_empty(isolated_cli_runner, params, expected):
         (
             ["-l"],
             Expected(
-                status=0, tokens=["spaCy model", "installed version", "available versions"]
+                status=0,
+                tokens=["spaCy model", "installed version", "available versions"],
             ),
         ),
         (["-i"], Expected(status=2, tokens=["Error: -i option requires an argument"])),
