@@ -102,15 +102,17 @@ def list_spacy_models() -> int:
         return -1
 
     # Get name-version pairs
-    releases = [
-        release["name"].rsplit("-", maxsplit=1)
-        for release in json.loads(response.content)
-    ]
+    releases = {}
+    for release in json.loads(response.content):
+        name, version = release["name"].rsplit("-", maxsplit=1)
+        versions = [releases[name], version] if releases.get(name) else [version]
+        releases[name] = ", ".join(versions)
 
     # Sort them by version name
+    releases = list(releases.items())
     releases.sort(key=lambda x: x[0])
 
-    table = [["spaCy model", "installed version", "latest version"]]
+    table = [["spaCy model", "installed version", "available versions"]]
 
     for name, version in releases:
         table.append([name, get_installed_model_version(name), version])
