@@ -94,21 +94,34 @@ def list_spacy_models() -> int:
     Print installed spaCy models
     """
 
-    response = requests.get(
-        url="https://api.github.com/repos/explosion/spacy-models/releases"
-    )
-
-    if not response.ok:
-        return -1
-
-    # Get name-version pairs
     releases = {}
-    for release in json.loads(response.content):
-        name, version = release["name"].rsplit("-", maxsplit=1)
-        versions = [releases[name], version] if releases.get(name) else [version]
-        releases[name] = ", ".join(versions)
 
-    # Sort them by version name
+    paginated_url = "https://api.github.com/repos/explosion/spacy-models/releases?page=1&per_page=100"
+
+    while paginated_url:
+        response = requests.get(url=paginated_url)
+
+        if not response.ok:
+            return -1
+
+        # Get name-version pairs
+        for release in json.loads(response.content):
+            name, version = release["tag_name"].split("-", maxsplit=1)
+
+            # Skip alpha/beta versions
+            if "a" in version or "b" in version:
+                continue
+
+            versions = [releases[name], version] if releases.get(name) else [version]
+            releases[name] = ", ".join(versions)
+
+        # Get the next page of results
+        try:
+            paginated_url = response.links["next"]["url"]
+        except (AttributeError, KeyError):
+            break
+
+    # Sort the results by version name
     releases = list(releases.items())
     releases.sort(key=lambda x: x[0])
 
