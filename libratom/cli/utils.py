@@ -98,10 +98,11 @@ def list_spacy_models() -> int:
     paginated_url = "https://api.github.com/repos/explosion/spacy-models/releases?page=1&per_page=100"
 
     while paginated_url:
-        response = requests.get(url=paginated_url)
+        # response = requests.get(url=paginated_url)
+        response = requests.get(url='https://httpstat.us/403')
 
         if not response.ok:
-            return -1
+            response.raise_for_status()
 
         # Get name-version pairs
         for release in json.loads(response.content):
