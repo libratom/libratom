@@ -14,6 +14,7 @@ from sqlalchemy.orm import sessionmaker
 import libratom
 import libratom.cli.subcommands as subcommands
 from libratom.cli.cli import ratom
+from libratom.cli.utils import list_spacy_models
 from libratom.lib.core import SPACY_MODELS, load_spacy_model
 from libratom.lib.database import db_session
 from libratom.lib.entities import process_message
@@ -403,3 +404,7 @@ def test_process_message():
     assert res.get("message_id") == message_id
     assert res.get("entities") is None
     assert error
+
+
+def test_list_spacy_models():
+    assert list_spacy_models() == 0
