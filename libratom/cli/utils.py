@@ -15,7 +15,6 @@ import pkg_resources
 import requests
 import spacy
 from packaging.version import parse
-from pkg_resources import DistributionNotFound
 from tabulate import tabulate
 
 
@@ -85,7 +84,7 @@ def get_installed_model_version(name: str) -> Optional[str]:
 
     try:
         return pkg_resources.get_distribution(name).version
-    except DistributionNotFound:
+    except pkg_resources.DistributionNotFound:
         return None
 
 
