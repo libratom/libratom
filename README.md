@@ -106,7 +106,7 @@ To change the name or location used for the sqlite3 output file, use the -o flag
 
 ## Model installation
 
-New spaCy releases are generally accompanied by newly trained models. Using different versions of models over the same collection may produce different results. When running the [entity extraction](#entity-extraction) command (see the next section), users may wish to select specific previously released versions of models, upgrade models that were previously installed, or install multiple models. The model command assists with these tasks.
+New spaCy releases are generally accompanied by newly trained models. Using different versions of models over the same collection may produce different results. Depending on your workflow and needs, you may wish to install earlier versions of models, upgrade models that were previously installed, or install multiple models. The model command assists with these tasks.
 
 To see detailed help for the model command, type:
 
@@ -125,6 +125,8 @@ To install a specific version of an available model, use the -i and --version fl
 ```shell
 (venv) user@host:~$ ratom model -i en\_core\_web\_sm --version 2.2.0
 ```
+
+Note that a request to install a specific version will replace any existing version of that model, even if the existing version is newer.
 
 ## Scan and report
 
