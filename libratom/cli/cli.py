@@ -88,10 +88,7 @@ def ratom():
     default=cpu_count(),
 )
 @click.argument(
-    "src",
-    metavar="[SOURCE]",
-    default=Path.cwd,
-    type=PathPath(exists=True, resolve_path=True),
+    "src", metavar="[SOURCE]", type=PathPath(exists=True, resolve_path=True),
 )
 @click.option(
     "-v",
@@ -107,8 +104,6 @@ def entities(out, spacy_model, jobs, src, progress):
     Extract named entities from a PST or mbox file, or a directory of one or more PST and mbox files.
 
     If SOURCE is a directory it will be walked recursively. Non-PST and non-mbox files will be skipped.
-
-    If SOURCE is not provided the current working directory is used.
 
     Upon success the result will be a new .sqlite3 database file. If an output path is provided
     it will be either the output file's parent directory or the file itself.
@@ -143,10 +138,7 @@ def entities(out, spacy_model, jobs, src, progress):
     default=cpu_count(),
 )
 @click.argument(
-    "src",
-    metavar="[SOURCE]",
-    default=Path.cwd,
-    type=PathPath(exists=True, resolve_path=True),
+    "src", metavar="[SOURCE]", type=PathPath(exists=True, resolve_path=True),
 )
 @click.option(
     "-v",
@@ -164,8 +156,6 @@ def report(out, jobs, src, progress):
 
     If SOURCE is a directory it will be walked recursively. Non-PST and non-
     mbox files will be skipped.
-
-    If SOURCE is not provided the current working directory is used.
 
     Upon success the result will be a new .sqlite3 database file. If an output
     path is provided it will be either the output file's parent directory or

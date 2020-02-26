@@ -3,7 +3,6 @@
 Command-line interface utilities
 """
 
-import json
 import re
 from contextlib import AbstractContextManager
 from importlib import reload
@@ -12,13 +11,11 @@ from typing import Optional
 
 import click
 import pkg_resources
-import requests
 import spacy
 from packaging.version import parse
-from requests import HTTPError
 from tabulate import tabulate
 
-from libratom.lib.core import SPACY_MODEL_NAMES
+from libratom.lib.core import get_spacy_models
 
 
 class PathPath(click.Path):
@@ -96,38 +93,7 @@ def list_spacy_models() -> int:
     Print installed spaCy models
     """
 
-    releases = {}
-
-    paginated_url = "https://api.github.com/repos/explosion/spacy-models/releases?page=1&per_page=100"
-
-    try:
-        while paginated_url:
-            response = requests.get(url=paginated_url)
-
-            if not response.ok:
-                response.raise_for_status()
-
-            # Get name-version pairs
-            for release in json.loads(response.content):
-                name, version = release["tag_name"].split("-", maxsplit=1)
-
-                # Skip alpha/beta versions
-                if "a" in version or "b" in version:
-                    continue
-
-                versions = (
-                    [releases[name], version] if releases.get(name) else [version]
-                )
-                releases[name] = ", ".join(versions)
-
-            # Get the next page of results
-            try:
-                paginated_url = response.links["next"]["url"]
-            except (AttributeError, KeyError):
-                break
-
-    except HTTPError:
-        releases = {name: "" for name in SPACY_MODEL_NAMES}
+    releases = get_spacy_models()
 
     # Sort the results by version name
     releases = list(releases.items())
@@ -135,8 +101,8 @@ def list_spacy_models() -> int:
 
     table = [["spaCy model", "installed version", "available versions"]]
 
-    for name, version in releases:
-        table.append([name, get_installed_model_version(name), version])
+    for name, versions in releases:
+        table.append([name, get_installed_model_version(name), ", ".join(versions)])
 
     print(tabulate(table, headers="firstrow"))
 
