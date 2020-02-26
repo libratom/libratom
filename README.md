@@ -47,7 +47,7 @@ Libratom provides a command line interface to run several different tasks. To se
 Follow one of the section links below for detailed explanations of how the available commands work:
 
 *   [Entity extraction](#entity-extraction): Entity extraction from individual PST and mbox files, or directories containing PST and mbox files. 
-*   [Model management](#model-installation): Management tool for spaCy language models. Use to display available models and install specific model versions.
+*   [Model management](#model-management): Management tool for spaCy language models. Use to display available models and install specific model versions.
 *   [Scan and report](#scan-and-report): Quickly scan an email source and generate a report.
 
 ## Entity extraction
