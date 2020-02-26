@@ -199,6 +199,9 @@ def report(out, jobs, src, progress):
 def model(_list, install, upgrade, version):
     """
     Manage spaCy models.
+
+    List, install, or upgrade currently installed models. Use the -i and --version
+    flags together to install a previously released version of a specific model.
     """
 
     actions = [_list, install, upgrade]
