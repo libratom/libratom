@@ -77,7 +77,7 @@ def entities(
         return status
 
     # Get spaCy model
-    logger.info(f"Loading spacy model: {spacy_model_name}")
+    logger.info(f"Loading spaCy model: {spacy_model_name}")
     spacy_model, spacy_model_version = load_spacy_model(spacy_model_name)
     if not spacy_model:
         return 1
@@ -87,7 +87,7 @@ def entities(
         latest_version = get_spacy_models()[spacy_model_name][0]
         if parse(latest_version) > parse(spacy_model_version):
             logger.info(
-                f"Version {spacy_model_version} of {spacy_model_name} will be used but {latest_version} is available"
+                f"Model {spacy_model_name} {spacy_model_version} will be used, but {latest_version} is available"
             )
     except Exception as exc:
         logger.debug(exc, exc_info=True)
