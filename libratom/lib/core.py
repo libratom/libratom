@@ -132,7 +132,7 @@ def get_spacy_models() -> Dict[str, List[str]]:
     return releases
 
 
-def load_spacy_model(spacy_model_name: str) -> Tuple[Optional[Language], Optional[int]]:
+def load_spacy_model(spacy_model_name: str) -> Tuple[Optional[Language], Optional[str]]:
     """
     Loads and returns a given spaCy model
 
