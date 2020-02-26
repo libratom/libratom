@@ -14,8 +14,8 @@ import click
 import pkg_resources
 import requests
 import spacy
-from requests import HTTPError
 from packaging.version import parse
+from requests import HTTPError
 from tabulate import tabulate
 
 from libratom.lib.core import SPACY_MODEL_NAMES
@@ -102,8 +102,7 @@ def list_spacy_models() -> int:
 
     try:
         while paginated_url:
-            # response = requests.get(url=paginated_url)
-            response = requests.get(url='https://httpstat.us/403')
+            response = requests.get(url=paginated_url)
 
             if not response.ok:
                 response.raise_for_status()
@@ -116,7 +115,9 @@ def list_spacy_models() -> int:
                 if "a" in version or "b" in version:
                     continue
 
-                versions = [releases[name], version] if releases.get(name) else [version]
+                versions = (
+                    [releases[name], version] if releases.get(name) else [version]
+                )
                 releases[name] = ", ".join(versions)
 
             # Get the next page of results
@@ -126,7 +127,7 @@ def list_spacy_models() -> int:
                 break
 
     except HTTPError:
-        releases = {name: '?' for name in SPACY_MODEL_NAMES}
+        releases = {name: "" for name in SPACY_MODEL_NAMES}
 
     # Sort the results by version name
     releases = list(releases.items())
