@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name,broad-except
 """
 The functions in this module are entry points for ratom sub-commands, e.g. `ratom entities ...`
 """
@@ -9,10 +9,11 @@ from pathlib import Path
 from typing import Optional
 
 import enlighten
+from packaging.version import parse
 from sqlalchemy import func
 
 from libratom.cli.utils import MockContext, install_spacy_model, list_spacy_models
-from libratom.lib.core import get_set_of_files, load_spacy_model
+from libratom.lib.core import get_set_of_files, get_spacy_models, load_spacy_model
 from libratom.lib.database import db_init, db_session
 from libratom.lib.entities import extract_entities
 from libratom.lib.report import generate_report, scan_files, store_configuration_in_db
@@ -80,6 +81,16 @@ def entities(
     spacy_model, spacy_model_version = load_spacy_model(spacy_model_name)
     if not spacy_model:
         return 1
+
+    # Try to see if we're using a stale model version
+    try:
+        latest_version = get_spacy_models()[spacy_model_name][0]
+        if parse(latest_version) > parse(spacy_model_version):
+            logger.info(
+                f"Version {spacy_model_version} of {spacy_model_name} will be used but {latest_version} is available"
+            )
+    except Exception as exc:
+        logger.debug(exc, exc_info=True)
 
     # Get messages and extract entities
     with db_session(Session) as session:

@@ -120,9 +120,9 @@ def test_ratom(cli_runner, params, expected):
 @pytest.mark.parametrize(
     "params, expected",
     [
-        ([], Expected(status=0, tokens=[""])),
+        ([], Expected(status=2, tokens=["Usage"])),
         (["-h"], Expected(status=0, tokens=["Usage"])),
-        (["-v"], Expected(status=0, tokens=["No PST file found"])),
+        (["-v", os.getcwd()], Expected(status=0, tokens=["No PST file found"])),
         (
             ["-o", Path(__file__)],
             Expected(status=2, tokens=["Invalid value", "already exists"]),

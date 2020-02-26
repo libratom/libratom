@@ -1,14 +1,17 @@
 # pylint: disable=missing-docstring,broad-except,import-outside-toplevel,
 
+import json
 import logging
 import os
 from collections import namedtuple
 from importlib import reload
 from pathlib import Path
-from typing import List, Optional, Set, Tuple, Union
+from typing import Dict, List, Optional, Set, Tuple, Union
 
 import pkg_resources
+import requests
 import spacy
+from requests import HTTPError
 from spacy.language import Language
 
 from libratom.lib import MboxArchive, PffArchive
@@ -92,6 +95,41 @@ def get_set_of_files(path: Path) -> Set[Path]:
         return set(path.glob("**/*.pst")).union(set(path.glob("**/*.mbox")))
 
     return {path}
+
+
+def get_spacy_models() -> Dict[str, List[str]]:
+
+    releases = {}
+
+    paginated_url = "https://api.github.com/repos/explosion/spacy-models/releases?page=1&per_page=100"
+
+    try:
+        while paginated_url:
+            response = requests.get(url=paginated_url)
+
+            if not response.ok:
+                response.raise_for_status()
+
+            # Get name-version pairs
+            for release in json.loads(response.content):
+                name, version = release["tag_name"].split("-", maxsplit=1)
+
+                # Skip alpha/beta versions
+                if "a" in version or "b" in version:
+                    continue
+
+                releases[name] = [*releases.get(name, []), version]
+
+            # Get the next page of results
+            try:
+                paginated_url = response.links["next"]["url"]
+            except (AttributeError, KeyError):
+                break
+
+    except HTTPError:
+        releases = {name: [] for name in SPACY_MODEL_NAMES}
+
+    return releases
 
 
 def load_spacy_model(spacy_model_name: str) -> Tuple[Optional[Language], Optional[int]]:
