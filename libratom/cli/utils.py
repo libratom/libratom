@@ -14,8 +14,11 @@ import click
 import pkg_resources
 import requests
 import spacy
+from requests import HTTPError
 from packaging.version import parse
 from tabulate import tabulate
+
+from libratom.lib.core import SPACY_MODEL_NAMES
 
 
 class PathPath(click.Path):
@@ -97,29 +100,33 @@ def list_spacy_models() -> int:
 
     paginated_url = "https://api.github.com/repos/explosion/spacy-models/releases?page=1&per_page=100"
 
-    while paginated_url:
-        # response = requests.get(url=paginated_url)
-        response = requests.get(url='https://httpstat.us/403')
+    try:
+        while paginated_url:
+            # response = requests.get(url=paginated_url)
+            response = requests.get(url='https://httpstat.us/403')
 
-        if not response.ok:
-            response.raise_for_status()
+            if not response.ok:
+                response.raise_for_status()
 
-        # Get name-version pairs
-        for release in json.loads(response.content):
-            name, version = release["tag_name"].split("-", maxsplit=1)
+            # Get name-version pairs
+            for release in json.loads(response.content):
+                name, version = release["tag_name"].split("-", maxsplit=1)
 
-            # Skip alpha/beta versions
-            if "a" in version or "b" in version:
-                continue
+                # Skip alpha/beta versions
+                if "a" in version or "b" in version:
+                    continue
 
-            versions = [releases[name], version] if releases.get(name) else [version]
-            releases[name] = ", ".join(versions)
+                versions = [releases[name], version] if releases.get(name) else [version]
+                releases[name] = ", ".join(versions)
 
-        # Get the next page of results
-        try:
-            paginated_url = response.links["next"]["url"]
-        except (AttributeError, KeyError):
-            break
+            # Get the next page of results
+            try:
+                paginated_url = response.links["next"]["url"]
+            except (AttributeError, KeyError):
+                break
+
+    except HTTPError:
+        releases = {name: '?' for name in SPACY_MODEL_NAMES}
 
     # Sort the results by version name
     releases = list(releases.items())
