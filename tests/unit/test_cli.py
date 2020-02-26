@@ -6,6 +6,7 @@ import tempfile
 from pathlib import Path
 from typing import List, Optional, Union
 
+import click
 import pytest
 from click.testing import CliRunner, Result
 from sqlalchemy import create_engine
@@ -14,7 +15,7 @@ from sqlalchemy.orm import sessionmaker
 import libratom
 import libratom.cli.subcommands as subcommands
 from libratom.cli.cli import ratom
-from libratom.cli.utils import list_spacy_models
+from libratom.cli.utils import list_spacy_models, validate_version_string
 from libratom.lib.core import SPACY_MODELS, load_spacy_model
 from libratom.lib.database import db_session
 from libratom.lib.entities import process_message
@@ -408,3 +409,14 @@ def test_process_message():
 
 def test_list_spacy_models():
     assert list_spacy_models() == 0
+
+
+@pytest.mark.parametrize("value", ["1.2.3", "2.0", "0.0a1", None])
+def test_validate_version_string(value):
+    assert validate_version_string(None, None, value) == value
+
+
+@pytest.mark.parametrize("value", ["foobar", "1", ".5"])
+def test_validate_version_string_with_bad_versions(value):
+    with pytest.raises(click.BadParameter):
+        validate_version_string(None, None, value)
