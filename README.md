@@ -36,9 +36,9 @@ Install libratom:
 pip install libratom
 ```
 
-## Command Overview
+## CLI Overview
 
-Libratom provides a CLI to run several different tasks. To see available commands, type:
+Libratom provides a command line interface to run several different tasks. To see available commands, type:
 
 ```shell
 (venv) user@host:~$ ratom -h
@@ -46,8 +46,8 @@ Libratom provides a CLI to run several different tasks. To see available command
 
 Follow one of the section links below for detailed explanations of how the available commands work:
 
-*   [Entity extraction](#entity-extraction): Entity extraction from individual PST and mbox files, or directories containing one or more PST and mbox files. 
-*   [Model installation](#model-installation): Model selection and installation tool for users who wish to install models prior to running the tool, or select specific older versions of models.
+*   [Entity extraction](#entity-extraction): Entity extraction from individual PST and mbox files, or directories containing PST and mbox files. 
+*   [Model management](#model-installation): Management tool for spaCy language models. Use to display available models and install specific model versions.
 *   [Scan and report](#scan-and-report): Quickly scan an email source and generate a report.
 
 ## Entity extraction
@@ -66,7 +66,7 @@ To run the extractor with default settings over a PST or mbox file, or a directo
 
 Progress is displayed in a bar at the bottom of the window. To terminate a job early and shut down all workers, type Ctrl-C.
 
-By default, the tool will install and use the spaCy en\_core\_web\_sm model (see the [model installation](#model-installation) section for how to install specific previous model versions). It will start as many concurrent jobs as there are virtual cores available. Entities are written to a sqlite3 file automatically named using the existing file or directory name and current datetime stamp, and with the following schema:
+By default, the tool will install and use the spaCy en\_core\_web\_sm model (see the [model management](#model-management) section for how to list and install model versions). It will start as many concurrent jobs as there are virtual cores available. Entities are written to a sqlite3 file automatically named using the existing file or directory name and current datetime stamp, and with the following schema:
 
 ![RATOM database schema](https://libratom.github.io/ratom-db-schema.svg)
 
@@ -104,14 +104,14 @@ To change the name or location used for the sqlite3 output file, use the -o flag
 (venv) user@host:~$ ratom entities -pv -o /path/to/directory/filename.db /path/to/PST-or-mbox-file-or-directory
 ```
 
-## Model installation
+## Model management
 
 New spaCy releases are generally accompanied by newly trained models. Using different versions of models over the same collection may produce different results. Depending on your workflow and needs, you may wish to install earlier versions of models, upgrade models that were previously installed, or install multiple models. The model command assists with these tasks.
 
 To see detailed help for the model command, type:
 
 ```shell
-(venv) user@host:~$ ratom model
+(venv) user@host:~$ ratom model -h
 ```
 
 To see a list of available models, type:
@@ -123,7 +123,7 @@ To see a list of available models, type:
 To install a specific version of an available model, use the -i and --version flags. For example, to install the 2.2.0 version of en\_core\_web\_sm, type:
 
 ```shell
-(venv) user@host:~$ ratom model -i en\_core\_web\_sm --version 2.2.0
+(venv) user@host:~$ ratom model -i en_core_web_sm --version 2.2.0
 ```
 
 Note that a request to install a specific version will replace any existing version of that model, even if the existing version is newer.
