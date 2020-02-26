@@ -36,15 +36,21 @@ Install libratom:
 pip install libratom
 ```
 
-## Entity extraction
+## Command Overview
 
-Libratom provides a CLI with planned support for a range of email processing tasks. Currently, the CLI supports entity extraction from individual PST and mbox files, or directories containing one or more PST and mbox files. 
-
-To see available commands, type:
+Libratom provides a CLI to run several different tasks. To see available commands, type:
 
 ```shell
 (venv) user@host:~$ ratom -h
 ```
+
+Follow one of the section links below for detailed explanations of how the available commands work:
+
+*   [Entity extraction](#entity-extraction): Entity extraction from individual PST and mbox files, or directories containing one or more PST and mbox files. 
+*   [Model installation](#model-installation): Model selection and installation tool for users who wish to install models prior to running the tool, or select specific older versions of models.
+*   [Scan and report](#scan-and-report): Quickly scan an email source and generate a report.
+
+## Entity extraction
 
 To see detailed help for the entity extraction command, type:
 
@@ -60,7 +66,7 @@ To run the extractor with default settings over a PST or mbox file, or a directo
 
 Progress is displayed in a bar at the bottom of the window. To terminate a job early and shut down all workers, type Ctrl-C.
 
-By default, the tool will use the spaCy en\_core\_web\_sm model, and will start as many concurrent jobs as there are virtual cores available. Entities are written to a sqlite3 file automatically named using the existing file or directory name and current datetime stamp, and with the following schema:
+By default, the tool will install and use the spaCy en\_core\_web\_sm model (see the [model installation](#model-installation) section for how to install specific previous model versions). It will start as many concurrent jobs as there are virtual cores available. Entities are written to a sqlite3 file automatically named using the existing file or directory name and current datetime stamp, and with the following schema:
 
 ![RATOM database schema](https://libratom.github.io/ratom-db-schema.svg)
 
@@ -68,7 +74,7 @@ The schema contains five tables. Four tables are used to represent files, messag
 
 In the entity table, text is the entity instance, label\_ is the entity type, filepath is the PST or mbox file associated with this entity. Full message and file information for each entity are also available through message_id and file_report_id respectively. Note that pff_identifier (a message ID specific to PST files) will not be populated for messages located in mbox files. Examples of how to query these tables can be found in the **Interactive examples** section near the end of this README.
 
-## Advanced CLI uses
+## Advanced uses of the entity extration command
 
 The CLI provides additional flags to tune performance, output location, and verbosity of the tool. Flags that do not take a value may be chained. For example, "-p -v" is equivalent to "-pv" Some example use cases are provided below.
 
@@ -80,7 +86,7 @@ The CLI is "quiet" and produces minimal output by default. A single -v flag enab
 
 All remaining examples are presented with verbosity level 1 enabled.
 
-To use a different entity model, use the --spacy-model flag. The following example directs the tool to use the multi-language model:
+To use the latest version of a different entity model, use the --spacy-model flag. The following example directs the tool to use the multi-language model:
 
 ```shell
 (venv) user@host:~$ ratom entities -pv --spacy-model xx_ent_wiki_sm /path/to/PST-or-mbox-file-or-directory
@@ -96,6 +102,44 @@ To change the name or location used for the sqlite3 output file, use the -o flag
 
 ```shell
 (venv) user@host:~$ ratom entities -pv -o /path/to/directory/filename.db /path/to/PST-or-mbox-file-or-directory
+```
+
+## Model installation
+
+New spaCy releases are generally accompanied by newly trained models. Using different versions of models over the same collection may produce different results. When running the [entity extraction](#entity-extraction) command (see the next section), users may wish to select specific previously released versions of models, upgrade models that were previously installed, or install multiple models. The model command assists with these tasks.
+
+To see detailed help for the model command, type:
+
+```shell
+(venv) user@host:~$ ratom model
+```
+
+To see a list of available models, type:
+
+```shell
+(venv) user@host:~$ ratom model -l
+```
+
+To install a specific version of an available model, use the -i and --version flags. For example, to install the 2.2.0 version of en\_core\_web\_sm, type:
+
+```shell
+(venv) user@host:~$ ratom model -i en\_core\_web\_sm --version 2.2.0
+```
+
+## Scan and report
+
+To generate a report (file metadata, message count, and attachment metadata) from an email source (file or directory) in the same sqlite3 databse format as the entity extraction command without actually extracting any entities, use the report command.
+
+To see detailed help for the report command, type:
+
+```shell
+(venv) user@host:~$ ratom report -h
+```
+
+As an example, the following command generates a report (showing progress while running) from a single PST or MBOX file, or directory of files:
+
+```shell
+(venv) user@host:~$ ratom report -p /path/to/PST-or-mbox-file-or-directory
 ```
 
 ## Interactive examples
