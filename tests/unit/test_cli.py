@@ -191,6 +191,13 @@ def test_ratom_report_empty(isolated_cli_runner, params, expected):
         ),
         (["-i"], Expected(status=2, tokens=["Error: -i option requires an argument"])),
         (["-u"], Expected(status=2, tokens=["Error: -u option requires an argument"])),
+        (
+            ["-li", "en_core_web_sm"],
+            Expected(
+                status=2,
+                tokens=["Only one of [list|install|upgrade] can be selected at once."],
+            ),
+        ),
     ],
 )
 def test_ratom_model(cli_runner, params, expected):
