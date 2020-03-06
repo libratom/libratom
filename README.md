@@ -74,7 +74,7 @@ The schema contains five tables. Four tables are used to represent files, messag
 
 In the entity table, text is the entity instance, label\_ is the entity type, filepath is the PST or mbox file associated with this entity. Full message and file information for each entity are also available through message_id and file_report_id respectively. Note that pff_identifier (a message ID specific to PST files) will not be populated for messages located in mbox files. Examples of how to query these tables can be found in the **Interactive examples** section near the end of this README.
 
-## Advanced uses of the entity extration command
+## Advanced uses of the entity extraction command
 
 The CLI provides additional flags to tune performance, output location, and verbosity of the tool. Flags that do not take a value may be chained. For example, "-p -v" is equivalent to "-pv" Some example use cases are provided below.
 
