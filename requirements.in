@@ -9,3 +9,4 @@ sqlalchemy
 enlighten
 psutil
 tabulate
+packaging
