@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 from collections import namedtuple
-from typing import Any, Generator, Iterable
+from typing import Any, Generator, Iterable, Optional
 
 AttachmentMetadata = namedtuple("AttachmentMetadata", ["name", "mime_type", "size"])
 
@@ -22,6 +22,10 @@ class Archive(ABC):  # pragma: no cover
 
     @abstractmethod
     def messages(self) -> Generator[Any, None, None]:
+        ...
+
+    @abstractmethod
+    def get_message_by_id(self, message_id: int) -> Optional[Any]:
         ...
 
     @property
