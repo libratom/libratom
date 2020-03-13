@@ -222,3 +222,28 @@ def model(_list, install, upgrade, version):
         _list=_list, install=install, upgrade=upgrade, version=version
     )
     sys.exit(status)
+
+
+@ratom.command(context_settings=CONTEXT_SETTINGS, short_help="Generate .eml files from pst/mbox files.")
+@click.option(
+    "-v",
+    "--verbose",
+    count=True,
+    callback=set_log_level_from_verbose,
+    help="Increase verbosity (can be repeated).",
+    expose_value=False,
+)
+@click.option(
+    "-o",
+    "--out",
+    metavar=PATH_METAVAR,
+    default=Path.cwd,
+    callback=validate_out_path,
+    type=PathPath(resolve_path=True),
+    help=f"Write .eml files in {PATH_METAVAR}.",
+)
+def emldump(out) -> None:
+    """Do stuff
+    """
+
+    click.echo(out)
