@@ -10,3 +10,4 @@ enlighten
 psutil
 tabulate
 packaging
+jsonschema
