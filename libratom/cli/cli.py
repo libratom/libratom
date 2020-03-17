@@ -256,7 +256,7 @@ def model(_list, install, upgrade, version):
     "--location",
     metavar=PATH_METAVAR,
     default=Path.cwd,
-    allback=validate_existing_dir,
+    callback=validate_existing_dir,
     type=PathPath(resolve_path=True),
     help=f"Look for input files in {PATH_METAVAR}.",
 )
