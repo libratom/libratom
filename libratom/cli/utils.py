@@ -14,12 +14,6 @@ from importlib import reload
 from pathlib import Path
 from typing import Iterable, Optional
 
-try:
-    from importlib import resources
-except ImportError:
-    # backport version for Python 3.6
-    import importlib_resources as resources
-
 import click
 import pkg_resources
 import pypff
@@ -32,6 +26,12 @@ from libratom import data
 from libratom.lib import MboxArchive
 from libratom.lib.base import Archive
 from libratom.lib.core import get_spacy_models, open_mail_archive
+
+try:
+    from importlib import resources
+except ImportError:
+    # backport version for Python 3.6
+    import importlib_resources as resources
 
 
 class PathPath(click.Path):
@@ -226,7 +226,9 @@ def extract_message_from_archive(archive: Archive, msg_id: int) -> Message:
     return Parser(policy=policy.default).parsestr(pff_msg_to_string(msg))
 
 
-def export_messages_from_file(src_file: Path, msg_ids: Iterable[int], dest_folder: Path = Path.cwd()) -> None:
+def export_messages_from_file(
+    src_file: Path, msg_ids: Iterable[int], dest_folder: Path = Path.cwd()
+) -> None:
     """
     Writes .eml files in a destination directory given a mailbox file (PST or mbox) and a list of message IDs
     """
@@ -235,7 +237,7 @@ def export_messages_from_file(src_file: Path, msg_ids: Iterable[int], dest_folde
         for msg_id in msg_ids:
             msg = extract_message_from_archive(archive, msg_id)
 
-            with (dest_folder / f'{msg_id}.eml').open(mode='w') as eml_file:
+            with (dest_folder / f"{msg_id}.eml").open(mode="w") as eml_file:
                 Generator(eml_file).flatten(msg)
 
 
@@ -245,14 +247,16 @@ def validate_eml_export_input(ctx, param, value: Path) -> Path:
     """
 
     try:
-        with value.open() as json_file, resources.path(data, "eml_dump_input.schema.json") as schema_file, open(schema_file) as schema_fp:
+        with value.open() as json_fp, resources.path(
+            data, "eml_dump_input.schema.json"
+        ) as schema_file, open(schema_file) as schema_fp:
             schema = json.load(schema_fp)
-            input_json = json.load(json_file)
+            input_json = json.load(json_fp)
 
             validate(instance=input_json, schema=schema)
 
     except Exception as exc:
-        click.echo(click.style(f'{exc}\r\n', fg='red'), err=True)
+        click.echo(click.style(f"{exc}\r\n", fg="red"), err=True)
         raise click.BadParameter(value) from exc
 
     return value
