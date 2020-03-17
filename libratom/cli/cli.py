@@ -19,7 +19,12 @@ from libratom.cli import (
     PATH_METAVAR,
     VERSION_METAVAR,
 )
-from libratom.cli.utils import PathPath, validate_out_path, validate_version_string, validate_eml_export_input
+from libratom.cli.utils import (
+    PathPath,
+    validate_eml_export_input,
+    validate_out_path,
+    validate_version_string,
+)
 from libratom.lib.core import SPACY_MODEL_NAMES, SPACY_MODELS
 
 logger = logging.getLogger(__name__)
@@ -224,7 +229,10 @@ def model(_list, install, upgrade, version):
     sys.exit(status)
 
 
-@ratom.command(context_settings=CONTEXT_SETTINGS, short_help="Generate .eml files from pst/mbox files.")
+@ratom.command(
+    context_settings=CONTEXT_SETTINGS,
+    short_help="Generate .eml files from pst/mbox files.",
+)
 @click.option(
     "-v",
     "--verbose",
@@ -252,7 +260,10 @@ def model(_list, install, upgrade, version):
     help=f"Look for input files in {PATH_METAVAR}.",
 )
 @click.argument(
-    "src", metavar="[SOURCE]", type=PathPath(exists=True, resolve_path=True), callback=validate_eml_export_input
+    "src",
+    metavar="[SOURCE]",
+    type=PathPath(exists=True, resolve_path=True),
+    callback=validate_eml_export_input,
 )
 def emldump(out, location, src) -> None:
     """
