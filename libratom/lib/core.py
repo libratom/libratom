@@ -216,7 +216,7 @@ def export_messages_from_file(
     with open_mail_archive(src_file) as archive:
         for msg_id in msg_ids:
             try:
-                msg = extract_message_from_archive(archive, msg_id)
+                msg = extract_message_from_archive(archive, int(msg_id))
 
                 with (dest_folder / f"{msg_id}.eml").open(mode="w") as eml_file:
                     Generator(eml_file).flatten(msg)
