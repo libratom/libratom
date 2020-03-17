@@ -205,11 +205,13 @@ def extract_message_from_archive(archive: Archive, msg_id: int) -> Message:
 
 
 def export_messages_from_file(
-    src_file: Path, msg_ids: Iterable[int], dest_folder: Path = Path.cwd()
+    src_file: Path, msg_ids: Iterable[int], dest_folder: Path = None
 ) -> None:
     """
     Writes .eml files in a destination directory given a mailbox file (PST or mbox) and a list of message IDs
     """
+
+    dest_folder = dest_folder or Path.cwd()
 
     with open_mail_archive(src_file) as archive:
         for msg_id in msg_ids:
