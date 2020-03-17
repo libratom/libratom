@@ -57,7 +57,7 @@ pytest-click==0.3         # via -r requirements-dev.in
 pytest-cov==2.8.1         # via -r requirements-dev.in
 pytest-mock==2.0.0        # via -r requirements-dev.in
 pytest-sugar==0.9.2       # via -r requirements-dev.in
-pytest==5.4.1             # via -r requirements-dev.in, pytest-benchmark, pytest-click, pytest-cov, pytest-mock, pytest-sugar
+pytest==5.3.5             # via -r requirements-dev.in, pytest-benchmark, pytest-click, pytest-cov, pytest-mock, pytest-sugar
 regex==2020.2.20          # via black
 requests==2.23.0          # via -r requirements-dev.in, spacy
 six==1.14.0               # via astroid, blessed, jsonschema, packaging, pip-tools, pyrsistent, tox, virtualenv
