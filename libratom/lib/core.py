@@ -4,9 +4,13 @@ import json
 import logging
 import os
 from collections import namedtuple
+from email import policy
+from email.generator import Generator
+from email.message import Message
+from email.parser import Parser
 from importlib import reload
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple, Union
+from typing import Dict, Iterable, List, Optional, Set, Tuple, Union
 
 import pkg_resources
 import requests
@@ -15,7 +19,9 @@ from requests import HTTPError
 from spacy.language import Language
 
 from libratom.lib import MboxArchive, PffArchive
+from libratom.lib.base import Archive
 from libratom.lib.exceptions import FileTypeError
+from libratom.lib.pff import pff_msg_to_string
 
 logger = logging.getLogger(__name__)
 
@@ -181,3 +187,40 @@ def load_spacy_model(spacy_model_name: str) -> Tuple[Optional[Language], Optiona
     spacy_model.max_length = RATOM_SPACY_MODEL_MAX_LENGTH
 
     return spacy_model, spacy_model_version
+
+
+def extract_message_from_archive(archive: Archive, msg_id: int) -> Message:
+    """
+    Extracts a message from an open Archive object
+    """
+
+    msg = archive.get_message_by_id(msg_id)
+
+    # mbox archive
+    if isinstance(archive, MboxArchive):
+        return msg
+
+    # pst archive
+    return Parser(policy=policy.default).parsestr(pff_msg_to_string(msg))
+
+
+def export_messages_from_file(
+    src_file: Path, msg_ids: Iterable[int], dest_folder: Path = Path.cwd()
+) -> None:
+    """
+    Writes .eml files in a destination directory given a mailbox file (PST or mbox) and a list of message IDs
+    """
+
+    with open_mail_archive(src_file) as archive:
+        for msg_id in msg_ids:
+            try:
+                msg = extract_message_from_archive(archive, msg_id)
+
+                with (dest_folder / f"{msg_id}.eml").open(mode="w") as eml_file:
+                    Generator(eml_file).flatten(msg)
+
+            except Exception as exc:
+                logger.warning(
+                    f"Skipping message {msg_id} from {src_file}, reason: {exc}",
+                    exc_info=True,
+                )

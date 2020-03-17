@@ -209,3 +209,17 @@ class PffArchive(Archive):
             )
             for attachment in message.attachments
         ]
+
+
+def pff_msg_to_string(message: pypff.message) -> str:
+    """
+    Serializes a pff.message object to a string
+    """
+
+    headers = message.transport_headers or ""
+    body = message.plain_text_body or ""
+
+    if isinstance(body, bytes):
+        body = str(body, encoding="utf-8", errors="replace")
+
+    return f"{headers.strip()}\r\n\r\n{body.strip()}"

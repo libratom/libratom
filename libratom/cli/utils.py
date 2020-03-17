@@ -6,26 +6,19 @@ Command-line interface utilities
 import json
 import re
 from contextlib import AbstractContextManager
-from email import policy
-from email.generator import Generator
-from email.message import Message
-from email.parser import Parser
 from importlib import reload
 from pathlib import Path
-from typing import Iterable, Optional
+from typing import Optional
 
 import click
 import pkg_resources
-import pypff
 import spacy
 from jsonschema import validate
 from packaging.version import parse
 from tabulate import tabulate
 
 from libratom import data
-from libratom.lib import MboxArchive
-from libratom.lib.base import Archive
-from libratom.lib.core import get_spacy_models, open_mail_archive
+from libratom.lib.core import get_spacy_models
 
 try:
     from importlib import resources
@@ -195,50 +188,6 @@ def install_spacy_model(
         click.style(f"✔ Installed {model}, version {installed_version}", fg="green")
     )
     return 0
-
-
-def pff_msg_to_string(message: pypff.message) -> str:
-    """
-    Serializes a pff.message object to a string
-    """
-
-    headers = message.transport_headers or ""
-    body = message.plain_text_body or ""
-
-    if isinstance(body, bytes):
-        body = str(body, encoding="utf-8", errors="replace")
-
-    return f"{headers.strip()}\r\n\r\n{body.strip()}"
-
-
-def extract_message_from_archive(archive: Archive, msg_id: int) -> Message:
-    """
-    Extracts a message from an open Archive object
-    """
-
-    msg = archive.get_message_by_id(msg_id)
-
-    # mbox archive
-    if isinstance(archive, MboxArchive):
-        return msg
-
-    # pst archive
-    return Parser(policy=policy.default).parsestr(pff_msg_to_string(msg))
-
-
-def export_messages_from_file(
-    src_file: Path, msg_ids: Iterable[int], dest_folder: Path = Path.cwd()
-) -> None:
-    """
-    Writes .eml files in a destination directory given a mailbox file (PST or mbox) and a list of message IDs
-    """
-
-    with open_mail_archive(src_file) as archive:
-        for msg_id in msg_ids:
-            msg = extract_message_from_archive(archive, msg_id)
-
-            with (dest_folder / f"{msg_id}.eml").open(mode="w") as eml_file:
-                Generator(eml_file).flatten(msg)
 
 
 def validate_eml_export_input(ctx, param, value: Path) -> Path:
