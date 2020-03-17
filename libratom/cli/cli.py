@@ -19,7 +19,7 @@ from libratom.cli import (
     PATH_METAVAR,
     VERSION_METAVAR,
 )
-from libratom.cli.utils import PathPath, validate_out_path, validate_version_string
+from libratom.cli.utils import PathPath, validate_out_path, validate_version_string, validate_eml_export_input
 from libratom.lib.core import SPACY_MODEL_NAMES, SPACY_MODELS
 
 logger = logging.getLogger(__name__)
@@ -242,8 +242,23 @@ def model(_list, install, upgrade, version):
     type=PathPath(resolve_path=True),
     help=f"Write .eml files in {PATH_METAVAR}.",
 )
-def emldump(out) -> None:
-    """Do stuff
+@click.option(
+    "-l",
+    "--location",
+    metavar=PATH_METAVAR,
+    default=Path.cwd,
+    # callback=validate_out_path,
+    type=PathPath(resolve_path=True),
+    help=f"Look for input files in {PATH_METAVAR}.",
+)
+@click.argument(
+    "src", metavar="[SOURCE]", type=PathPath(exists=True, resolve_path=True), callback=validate_eml_export_input
+)
+def emldump(out, location, src) -> None:
+    """
+    Generate .eml files from pst/mbox files.
     """
 
     click.echo(out)
+    click.echo(location)
+    click.echo(src)

@@ -3,6 +3,7 @@
 Command-line interface utilities
 """
 
+import json
 import re
 from contextlib import AbstractContextManager
 from email import policy
@@ -13,13 +14,21 @@ from importlib import reload
 from pathlib import Path
 from typing import Iterable, Optional
 
+try:
+    from importlib import resources
+except ImportError:
+    # backport version for Python 3.6
+    import importlib_resources as resources
+
 import click
 import pkg_resources
 import pypff
 import spacy
+from jsonschema import validate
 from packaging.version import parse
 from tabulate import tabulate
 
+from libratom import data
 from libratom.lib import MboxArchive
 from libratom.lib.base import Archive
 from libratom.lib.core import get_spacy_models, open_mail_archive
@@ -228,3 +237,22 @@ def export_messages_from_file(src_file: Path, msg_ids: Iterable[int], dest_folde
 
             with (dest_folder / f'{msg_id}.eml').open(mode='w') as eml_file:
                 Generator(eml_file).flatten(msg)
+
+
+def validate_eml_export_input(ctx, param, value: Path) -> Path:
+    """
+    Validator callback for eml export json input
+    """
+
+    try:
+        with value.open() as json_file, resources.path(data, "eml_dump_input.schema.json") as schema_file, open(schema_file) as schema_fp:
+            schema = json.load(schema_fp)
+            input_json = json.load(json_file)
+
+            validate(instance=input_json, schema=schema)
+
+    except Exception as exc:
+        click.echo(click.style(f'{exc}\r\n', fg='red'), err=True)
+        raise click.BadParameter(value) from exc
+
+    return value

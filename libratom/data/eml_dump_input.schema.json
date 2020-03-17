@@ -1,0 +1,32 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "array",
+    "items": {
+        "$id": "#/items",
+        "type": "object",
+        "required": [
+            "filename",
+            "sha256",
+            "id_list"
+        ],
+        "properties": {
+            "filename": {
+                "$id": "#/items/properties/filename",
+                "type": "string"
+            },
+            "sha256": {
+                "$id": "#/items/properties/sha256",
+                "type": "string"
+            },
+            "id_list": {
+                "$id": "#/items/properties/id_list",
+                "type": "array",
+                "items": {
+                    "$id": "#/items/properties/id_list/items",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
