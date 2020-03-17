@@ -22,6 +22,7 @@ from libratom.cli import (
 from libratom.cli.utils import (
     PathPath,
     validate_eml_export_input,
+    validate_existing_dir,
     validate_out_path,
     validate_version_string,
 )
@@ -246,7 +247,7 @@ def model(_list, install, upgrade, version):
     "--out",
     metavar=PATH_METAVAR,
     default=Path.cwd,
-    callback=validate_out_path,
+    callback=validate_existing_dir,
     type=PathPath(resolve_path=True),
     help=f"Write .eml files in {PATH_METAVAR}.",
 )
@@ -255,7 +256,7 @@ def model(_list, install, upgrade, version):
     "--location",
     metavar=PATH_METAVAR,
     default=Path.cwd,
-    # callback=validate_out_path,
+    allback=validate_existing_dir,
     type=PathPath(resolve_path=True),
     help=f"Look for input files in {PATH_METAVAR}.",
 )
@@ -270,6 +271,5 @@ def emldump(out, location, src) -> None:
     Generate .eml files from pst/mbox files.
     """
 
-    click.echo(out)
-    click.echo(location)
-    click.echo(src)
+    status = subcommands.emldump(out=out, location=location, src=src)
+    sys.exit(status)

@@ -3,6 +3,7 @@
 The functions in this module are entry points for ratom sub-commands, e.g. `ratom entities ...`
 """
 
+import json
 import logging
 from datetime import datetime
 from pathlib import Path
@@ -13,7 +14,12 @@ from packaging.version import parse
 from sqlalchemy import func
 
 from libratom.cli.utils import MockContext, install_spacy_model, list_spacy_models
-from libratom.lib.core import get_set_of_files, get_spacy_models, load_spacy_model
+from libratom.lib.core import (
+    export_messages_from_file,
+    get_set_of_files,
+    get_spacy_models,
+    load_spacy_model,
+)
 from libratom.lib.database import db_init, db_session
 from libratom.lib.entities import extract_entities
 from libratom.lib.report import generate_report, scan_files, store_configuration_in_db
@@ -223,3 +229,21 @@ def model(_list: bool, install: str, upgrade: str, version: str) -> int:
 
     # List by default
     return list_spacy_models()
+
+
+def emldump(out: Path, location: Path, src: Path) -> int:
+    """
+    Generate .eml files from pst/mbox files.
+    """
+
+    # Extract inputs from json file
+    with src.open() as f:
+        input_elements = json.load(f)
+
+    # Process each file / id_list
+    for input_element in input_elements:
+        export_messages_from_file(
+            location / input_element["filename"], input_element["id_list"], out
+        )
+
+    return 0

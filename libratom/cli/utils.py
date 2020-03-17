@@ -70,6 +70,17 @@ def validate_out_path(ctx, param, value: Path) -> Path:
     return value
 
 
+def validate_existing_dir(ctx, param, value: Path) -> Path:
+    """
+    Callback for click commands that checks that a given path is a directory
+    """
+
+    if not value.is_dir():
+        raise click.BadParameter(f"{value} is not a directory")
+
+    return value
+
+
 def validate_version_string(ctx, param, value: Optional[str]) -> Optional[str]:
     """
     Callback for click commands that checks that version string is valid
@@ -199,10 +210,8 @@ def validate_eml_export_input(ctx, param, value: Path) -> Path:
         with value.open() as json_fp, resources.path(
             data, "eml_dump_input.schema.json"
         ) as schema_file, open(schema_file) as schema_fp:
-            schema = json.load(schema_fp)
-            input_json = json.load(json_fp)
 
-            validate(instance=input_json, schema=schema)
+            validate(instance=json.load(json_fp), schema=json.load(schema_fp))
 
     except Exception as exc:
         click.echo(click.style(f"{exc}\r\n", fg="red"), err=True)
