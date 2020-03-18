@@ -6,6 +6,7 @@ The functions in this module are entry points for ratom sub-commands, e.g. `rato
 import json
 import logging
 from datetime import datetime
+from operator import itemgetter
 from pathlib import Path
 from typing import Optional
 
@@ -242,8 +243,15 @@ def emldump(out: Path, location: Path, src: Path) -> int:
 
     # Process each file / id_list
     for input_element in input_elements:
-        export_messages_from_file(
-            location / input_element["filename"], input_element["id_list"], out
-        )
+
+        filename, id_list = itemgetter("filename", "id_list")(input_element)
+
+        try:
+            export_messages_from_file(location / filename, id_list, out)
+
+        except Exception as exc:
+            logger.warning(
+                f"Skipping {location / filename}, reason: {exc}", exc_info=True,
+            )
 
     return 0
