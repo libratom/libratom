@@ -17,6 +17,7 @@ from libratom import data
 from libratom.lib.concurrency import get_messages
 from libratom.lib.core import (
     SPACY_MODELS,
+    extract_message_from_archive,
     get_set_of_files,
     load_spacy_model,
     open_mail_archive,
@@ -353,6 +354,7 @@ def test_get_mbox_message_by_id(sample_mbox_file):
     with open_mail_archive(sample_mbox_file) as archive:
         for index, message in enumerate(archive.messages(), start=1):
             msg = archive.get_message_by_id(index)
+            assert extract_message_from_archive(archive, index)
             assert archive.format_message(msg) == archive.format_message(message)
 
 
