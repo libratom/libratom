@@ -4,6 +4,7 @@ import datetime
 import json
 import os
 import tempfile
+from contextlib import contextmanager
 from pathlib import Path
 from typing import List, Optional, Union
 
@@ -26,6 +27,11 @@ from libratom.lib.core import SPACY_MODELS, load_spacy_model
 from libratom.lib.database import db_session
 from libratom.lib.entities import process_message
 from libratom.models import Entity, FileReport
+
+
+@contextmanager
+def does_not_raise():
+    yield
 
 
 class Expected:
@@ -424,54 +430,73 @@ def test_list_spacy_models():
     assert list_spacy_models() == 0
 
 
-@pytest.mark.parametrize("value", ["1.2.3", "2.0", "0.0a1", None])
-def test_validate_version_string(value):
-    assert validate_version_string(None, None, value) == value
+@pytest.mark.parametrize(
+    "value,context",
+    [
+        ("1.2.3", does_not_raise()),
+        ("2.0", does_not_raise()),
+        ("0.0a1", does_not_raise()),
+        (None, does_not_raise()),
+        ("foobar", pytest.raises(click.BadParameter)),
+        ("1", pytest.raises(click.BadParameter)),
+        (".5", pytest.raises(click.BadParameter)),
+    ],
+)
+def test_validate_version_string(value, context):
+    with context:
+        assert validate_version_string(None, None, value) == value
 
 
-@pytest.mark.parametrize("value", ["foobar", "1", ".5"])
-def test_validate_version_string_with_bad_versions(value):
-    with pytest.raises(click.BadParameter):
-        validate_version_string(None, None, value)
+@pytest.mark.parametrize(
+    "value,context",
+    [
+        (Path.cwd(), does_not_raise()),
+        (Path("/bad/path/"), pytest.raises(click.BadParameter)),
+    ],
+)
+def test_validate_existing_dir(value, context):
+    with context:
+        assert validate_existing_dir(None, None, value) == value
 
 
-def test_validate_existing_dir():
-    assert validate_existing_dir(None, None, Path.cwd()) == Path.cwd()
-
-    with pytest.raises(click.BadParameter):
-        validate_existing_dir(None, None, Path("/bad/path/"))
-
-
-def test_validate_eml_export_input():
-
-    sample_json = [
-        {
-            "filename": "andy_zipper_000_1_1.pst",
-            "sha256": "70a405404fd766a...",
-            "id_list": ["2203588", "2203620", "2203652"],
-        },
-        {
-            "filename": "andy_zipper_001_1_1.pst",
-            "sha256": "70a405404fd766a...",
-            "id_list": ["2133380", "2133412", "2133444"],
-        },
-    ]
-
+@pytest.mark.parametrize(
+    "value,context",
+    [
+        (
+            [
+                {
+                    "filename": "andy_zipper_000_1_1.pst",
+                    "sha256": "70a405404fd766a...",
+                    "id_list": ["2203588", "2203620", "2203652"],
+                },
+                {
+                    "filename": "andy_zipper_001_1_1.pst",
+                    "sha256": "70a405404fd766a...",
+                    "id_list": ["2133380", "2133412", "2133444"],
+                },
+            ],
+            does_not_raise(),
+        ),
+        (
+            [
+                {
+                    "filename": "andy_zipper_000_1_1.pst",
+                    "id_list": ["2203588", "2203620", "2203652"],
+                },
+            ],
+            pytest.raises(click.BadParameter),
+        ),
+    ],
+)
+def test_validate_eml_export_input(value, context):
     with tempfile.TemporaryDirectory() as tmpdir:
 
         json_file_path = Path(tmpdir) / "test.json"
 
-        # Good json
         with json_file_path.open(mode="w") as json_file:
-            json.dump(sample_json, json_file)
+            json.dump(value, json_file)
 
-        assert validate_eml_export_input(None, None, json_file_path) == json_file_path
-
-        # Bad json
-        del sample_json[0]["sha256"]
-
-        with json_file_path.open(mode="w") as json_file:
-            json.dump(sample_json, json_file)
-
-        with pytest.raises(click.BadParameter):
-            validate_eml_export_input(None, None, Path(tmpdir) / "test.json")
+        with context:
+            assert (
+                validate_eml_export_input(None, None, json_file_path) == json_file_path
+            )
