@@ -1,4 +1,5 @@
 # pylint: disable=invalid-name,missing-docstring,redefined-outer-name,stop-iteration-return,line-too-long
+
 import os
 import time
 from email import message_from_binary_file
@@ -289,4 +290,9 @@ def utf8_message_with_no_cte_header() -> Message:
 
 @pytest.fixture(scope="session")
 def mock_progress_callback() -> Callable:
+    """
+    Returns:
+        A no-op function
+    """
+
     yield lambda *_, **__: None
