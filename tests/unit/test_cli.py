@@ -1,6 +1,7 @@
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods,misplaced-comparison-constant,no-value-for-parameter
 
 import datetime
+import json
 import os
 import tempfile
 from pathlib import Path
@@ -15,7 +16,12 @@ from sqlalchemy.orm import sessionmaker
 import libratom
 import libratom.cli.subcommands as subcommands
 from libratom.cli.cli import ratom
-from libratom.cli.utils import list_spacy_models, validate_version_string
+from libratom.cli.utils import (
+    list_spacy_models,
+    validate_eml_export_input,
+    validate_existing_dir,
+    validate_version_string,
+)
 from libratom.lib.core import SPACY_MODELS, load_spacy_model
 from libratom.lib.database import db_session
 from libratom.lib.entities import process_message
@@ -427,3 +433,45 @@ def test_validate_version_string(value):
 def test_validate_version_string_with_bad_versions(value):
     with pytest.raises(click.BadParameter):
         validate_version_string(None, None, value)
+
+
+def test_validate_existing_dir():
+    assert validate_existing_dir(None, None, Path.cwd()) == Path.cwd()
+
+    with pytest.raises(click.BadParameter):
+        validate_existing_dir(None, None, Path("/bad/path/"))
+
+
+def test_validate_eml_export_input():
+
+    sample_json = [
+        {
+            "filename": "andy_zipper_000_1_1.pst",
+            "sha256": "70a405404fd766a...",
+            "id_list": ["2203588", "2203620", "2203652"],
+        },
+        {
+            "filename": "andy_zipper_001_1_1.pst",
+            "sha256": "70a405404fd766a...",
+            "id_list": ["2133380", "2133412", "2133444"],
+        },
+    ]
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+
+        json_file_path = Path(tmpdir) / "test.json"
+
+        # Good json
+        with json_file_path.open(mode="w") as json_file:
+            json.dump(sample_json, json_file)
+
+        assert validate_eml_export_input(None, None, json_file_path) == json_file_path
+
+        # Bad json
+        del sample_json[0]["sha256"]
+
+        with json_file_path.open(mode="w") as json_file:
+            json.dump(sample_json, json_file)
+
+        with pytest.raises(click.BadParameter):
+            validate_eml_export_input(None, None, Path(tmpdir) / "test.json")
