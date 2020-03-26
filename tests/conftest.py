@@ -1,12 +1,12 @@
 # pylint: disable=invalid-name,missing-docstring,redefined-outer-name,stop-iteration-return,line-too-long
-
+import json
 import os
 import time
 from email import message_from_binary_file
 from email.message import Message
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Callable, List
+from typing import Callable, Dict, List
 from zipfile import ZipFile
 
 import pytest
@@ -296,3 +296,50 @@ def mock_progress_callback() -> Callable:
     """
 
     yield lambda *_, **__: None
+
+
+@pytest.fixture(scope="function")
+def eml_export_input_json() -> List[Dict]:
+    """
+    Returns:
+        A JSON object that complies to libratom/data/eml_dump_input.schema.json
+    """
+
+    yield [
+        {
+            "filename": "andy_zipper_000_1_1.pst",
+            "sha256": "70a405404fd766a...",
+            "id_list": ["2203588", "2203620", "2203652"],
+        },
+        {
+            "filename": "andy_zipper_001_1_1.pst",
+            "sha256": "70a405404fd766a...",
+            "id_list": ["2133380", "2133412", "2133444"],
+        },
+    ]
+
+
+@pytest.fixture(scope="function")
+def good_eml_export_input(eml_export_input_json) -> Path:
+
+    with TemporaryDirectory() as tmpdir:
+        json_file_path = Path(tmpdir) / "test.json"
+
+        with json_file_path.open(mode="w") as json_file:
+            json.dump(eml_export_input_json, json_file)
+
+        yield json_file_path
+
+
+@pytest.fixture(scope="function")
+def bad_eml_export_input(eml_export_input_json) -> Path:
+
+    del eml_export_input_json[0]["sha256"]
+
+    with TemporaryDirectory() as tmpdir:
+        json_file_path = Path(tmpdir) / "test.json"
+
+        with json_file_path.open(mode="w") as json_file:
+            json.dump(eml_export_input_json, json_file)
+
+        yield json_file_path

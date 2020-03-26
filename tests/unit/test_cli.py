@@ -1,7 +1,6 @@
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods,misplaced-comparison-constant,no-value-for-parameter
 
 import datetime
-import json
 import os
 import tempfile
 from contextlib import contextmanager
@@ -112,6 +111,19 @@ def manage_spacy_models(
     """
 
     return run_ratom_subcommand("model", options, args, runner, expected)
+
+
+def dump_eml_files(
+    options: List,
+    args: Union[Path, str, None],
+    runner: CliRunner,
+    expected: Optional[Expected],
+) -> Result:
+    """
+    Block of code to run an eml dump job as part of a test
+    """
+
+    return run_ratom_subcommand("emldump", options, args, runner, expected)
 
 
 @pytest.mark.parametrize(
@@ -459,44 +471,14 @@ def test_validate_existing_dir(value, context):
         assert validate_existing_dir(None, None, value) == value
 
 
-@pytest.mark.parametrize(
-    "value,context",
-    [
-        (
-            [
-                {
-                    "filename": "andy_zipper_000_1_1.pst",
-                    "sha256": "70a405404fd766a...",
-                    "id_list": ["2203588", "2203620", "2203652"],
-                },
-                {
-                    "filename": "andy_zipper_001_1_1.pst",
-                    "sha256": "70a405404fd766a...",
-                    "id_list": ["2133380", "2133412", "2133444"],
-                },
-            ],
-            does_not_raise(),
-        ),
-        (
-            [
-                {
-                    "filename": "andy_zipper_000_1_1.pst",
-                    "id_list": ["2203588", "2203620", "2203652"],
-                },
-            ],
-            pytest.raises(click.BadParameter),
-        ),
-    ],
-)
-def test_validate_eml_export_input(value, context):
-    with tempfile.TemporaryDirectory() as tmpdir:
+def test_validate_eml_export_input(bad_eml_export_input):
+    with pytest.raises(click.BadParameter):
+        validate_eml_export_input(None, None, bad_eml_export_input)
 
-        json_file_path = Path(tmpdir) / "test.json"
 
-        with json_file_path.open(mode="w") as json_file:
-            json.dump(value, json_file)
+def test_ratom_emldump(cli_runner, enron_dataset_part004, good_eml_export_input):
+    expected = Expected(status=0, tokens=[])
 
-        with context:
-            assert (
-                validate_eml_export_input(None, None, json_file_path) == json_file_path
-            )
+    params = [f"-l{enron_dataset_part004}", str(good_eml_export_input)]
+
+    dump_eml_files(params, None, cli_runner, expected)
