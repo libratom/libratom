@@ -357,3 +357,9 @@ def test_get_mbox_message_by_id(sample_mbox_file):
 def test_get_mbox_message_by_id_with_bad_id(sample_mbox_file):
     with open_mail_archive(sample_mbox_file) as archive:
         assert archive.get_message_by_id(1234) is None
+
+
+def test_get_attachment_metadata():
+    message = MagicMock(identifier=123, attachments=[MagicMock(name="foo", size="0")])
+
+    assert PffArchive.get_attachment_metadata(message)[0].mime_type == ""
