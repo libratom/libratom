@@ -12,7 +12,6 @@ from typing import Generator, List, Optional, Union
 import pypff
 from treelib import Tree
 
-from libratom.data import MIME_TYPES
 from libratom.lib.base import Archive, AttachmentMetadata
 
 logger = logging.getLogger(__name__)
@@ -190,6 +189,19 @@ class PffArchive(Archive):
         Returns the metadata of all attachments in a given message
         """
 
+        type_registries = {
+            "application",
+            "audio",
+            "font",
+            "example",
+            "image",
+            "message",
+            "model",
+            "multipart",
+            "text",
+            "video",
+        }
+
         def get_mime_type(attachment):
             # pylint: disable=broad-except
             try:
@@ -200,12 +212,16 @@ class PffArchive(Archive):
                     .rstrip("\0")
                 )
 
-                if mime_type not in MIME_TYPES:
-                    raise ValueError(f"Unknown mime type: {mime_type}")
+                if mime_type.split("/", maxsplit=1)[0] not in type_registries:
+                    raise ValueError(f"Invalid mime type: {mime_type}")
 
                 return mime_type
 
             except Exception as exc:
+                # Info to avoid false positives while this is WIP
+                logger.info(
+                    f"Error extracting attachment from message id: {message.identifier}"
+                )
                 logger.info(exc, exc_info=True)
                 return ""
 

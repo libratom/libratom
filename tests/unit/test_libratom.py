@@ -1,7 +1,6 @@
 # pylint: disable=missing-docstring,invalid-name,no-member,unused-import
 import email
 import hashlib
-import json
 import logging
 import os
 from email import policy
@@ -339,7 +338,7 @@ def test_attachments_mime_type_validation(enron_dataset, mock_progress_callback)
             for attachment in attachments:
                 try:
                     assert attachment.mime_type in MIME_TYPES
-                except ValueError:
+                except AssertionError:
                     # Some enron files have these non-official attachment types
                     assert attachment.mime_type in [
                         "application/msexcell",
