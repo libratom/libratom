@@ -17,14 +17,8 @@ from jsonschema import validate
 from packaging.version import parse
 from tabulate import tabulate
 
-from libratom import data
+from libratom.data import EML_DUMP_INPUT_SCHEMA
 from libratom.lib.core import get_spacy_models
-
-try:
-    from importlib import resources
-except ImportError:
-    # backport version for Python 3.6
-    import importlib_resources as resources
 
 
 class PathPath(click.Path):
@@ -207,11 +201,8 @@ def validate_eml_export_input(ctx, param, value: Path) -> Path:
     """
 
     try:
-        with value.open() as json_fp, resources.path(
-            data, "eml_dump_input.schema.json"
-        ) as schema_file, open(schema_file) as schema_fp:
-
-            validate(instance=json.load(json_fp), schema=json.load(schema_fp))
+        with value.open() as json_fp:
+            validate(instance=json.load(json_fp), schema=EML_DUMP_INPUT_SCHEMA)
 
     except Exception as exc:
         click.echo(click.style(f"{exc}\r\n", fg="red"), err=True)

@@ -29,13 +29,6 @@ from libratom.lib.pff import PffArchive
 from libratom.lib.report import get_file_info, scan_files
 from libratom.models import FileReport
 
-try:
-    from importlib import resources
-except ImportError:
-    # backport version for Python 3.6
-    import importlib_resources as resources
-
-
 logger = logging.getLogger(__name__)
 
 
