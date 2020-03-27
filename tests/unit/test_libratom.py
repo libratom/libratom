@@ -10,10 +10,9 @@ from tempfile import TemporaryDirectory
 from unittest.mock import MagicMock, patch
 
 import pytest
-import requests
 
 import libratom
-from libratom import data
+from libratom.data import MIME_TYPES
 from libratom.lib.concurrency import get_messages
 from libratom.lib.core import (
     SPACY_MODELS,
@@ -332,22 +331,20 @@ def test_get_file_info(sample_pst_file):
 
 def test_attachments_mime_type_validation(enron_dataset, mock_progress_callback):
 
-    # Load media types
-    with resources.path(data, "media_types.json") as media_types_file, open(
-        media_types_file, "r"
-    ) as f:
-        media_types = json.load(f)
-
-    # Some enron files have these non-official attachment types
-    media_types.extend(["application/msexcell", "application/mspowerpoint"])
-
     files = get_set_of_files(enron_dataset)
 
     for res in get_messages(files, progress_callback=mock_progress_callback):
         attachments = res.get("attachments")
         if attachments:
             for attachment in attachments:
-                assert attachment.mime_type in media_types
+                try:
+                    assert attachment.mime_type in MIME_TYPES
+                except ValueError:
+                    # Some enron files have these non-official attachment types
+                    assert attachment.mime_type in [
+                        "application/msexcell",
+                        "application/mspowerpoint",
+                    ]
 
 
 def test_get_mbox_message_by_id(sample_mbox_file):
