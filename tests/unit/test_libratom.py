@@ -339,7 +339,7 @@ def test_attachments_mime_type_validation(enron_dataset, mock_progress_callback)
                 try:
                     assert attachment.mime_type in MIME_TYPES
                 except AssertionError:
-                    # Some enron files have these non-official attachment types
+                    # Some enron files have these obsolete attachment types
                     assert attachment.mime_type in [
                         "application/msexcell",
                         "application/mspowerpoint",
