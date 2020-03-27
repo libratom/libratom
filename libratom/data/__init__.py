@@ -11,6 +11,8 @@ except ImportError:
     import importlib_resources as resources
 
 
-with resources.path(__name__, "media_types.json") as media_types_file:
-    with open(media_types_file, "r") as fp:
-        MIME_TYPES = set(json.load(fp))
+# Load mime types for direct access
+with resources.path(__name__, "media_types.json") as media_types_file, open(
+    media_types_file, "r"
+) as fp:
+    MIME_TYPES = set(json.load(fp))
