@@ -211,7 +211,8 @@ def export_messages_from_file(
     Writes .eml files in a destination directory given a mailbox file (PST or mbox) and a list of message IDs
     """
 
-    dest_folder = dest_folder or Path.cwd()
+    dest_folder = (dest_folder or Path.cwd()) / src_file.stem
+    dest_folder.mkdir(parents=True, exist_ok=True)
 
     with open_mail_archive(src_file) as archive:
         for msg_id in msg_ids:
