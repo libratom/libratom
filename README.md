@@ -176,7 +176,7 @@ A sample JSON input is given below:
 
 Note that the JSON file contains filenames only. When invoking the command you can specify where those files are via the `-l` or `--location` option. By default the tool will look for them in the current working directory.
 
-You may also specify a destination folder for the output .eml files via the -o, --out option. By default the tool will create them in the current working directory.
+You may also specify a base destination folder for the output .eml files via the `-o` or `--out` option. By default the tool will create them under the current working directory, grouped in directories named after each `filename`.
 
 For example, the above input file can be used as follows:
 
