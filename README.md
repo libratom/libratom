@@ -49,6 +49,7 @@ Follow one of the section links below for detailed explanations of how the avail
 *   [Entity extraction](#entity-extraction): Entity extraction from individual PST and mbox files, or directories containing PST and mbox files. 
 *   [Model management](#model-management): Management tool for spaCy language models. Use to display available models and install specific model versions.
 *   [Scan and report](#scan-and-report): Quickly scan an email source and generate a report.
+*   [Message export](#message-export): Export selected messages from PST files as one .eml file per message.
 
 ## Entity extraction
 
@@ -143,6 +144,46 @@ As an example, the following command generates a report (showing progress while 
 ```shell
 (venv) user@host:~$ ratom report -p /path/to/PST-or-mbox-file-or-directory
 ```
+
+## Message export
+
+The emldump command generates .eml files from selected messages in one or more PST files. The use case for this command is having to extract messages from multiple PST files fetched from cloud storage onto a local filesystem.
+To see its detailed help type:
+
+```shell
+(venv) user@host:~$ ratom emldump -h
+```
+
+The required input for emldump is the path to a JSON file listing the source PST files and for each PST file the identifiers of messages to be exported.
+
+A sample JSON input is given below:
+
+```shell
+(venv) user@host:~$ cat files.json
+[
+  {
+    "filename" : "andy_zipper_000_1_1.pst",
+    "sha256": "70a405404fd766a...",
+    "id_list": ["2203588", "2203620", "2203652"]
+  },
+  {
+   "filename" : "andy_zipper_001_1_1.pst",
+   "sha256": "70a405404fd766a...",
+   "id_list": ["2133380", "2133412", "2133444"]
+  }
+]
+```
+
+Note that the JSON file contains filenames only. When invoking the command you can specify where those files are via the -l/--location option. By default the tool will look for them in the current working directory.
+
+You may also specify a destination folder for the output .eml files via the -o, --out option. By default the tool will create them in the current working directory.
+
+For example, the above input file can be used as follows:
+
+```shell
+(venv) user@host:~$ ratom emldump -l /tmp/libratom/test_data/RevisedEDRMv1_Complete/andy_zipper/ -o /tmp/eml/ files.json
+```
+
 
 ## Interactive examples
 
