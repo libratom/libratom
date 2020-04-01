@@ -163,12 +163,12 @@ A sample JSON input is given below:
 [
   {
     "filename" : "andy_zipper_000_1_1.pst",
-    "sha256": "70a405404fd766a...",
+    "sha256": "7223f79c894f6911ca0fe9a105fa47da0edde31670590d45e2ddfdec37469c4d",
     "id_list": ["2203588", "2203620", "2203652"]
   },
   {
    "filename" : "andy_zipper_001_1_1.pst",
-   "sha256": "70a405404fd766a...",
+   "sha256": "c10d0bb5ac6ee4386c7c990b22f0d337f8f31cfcb685bb1739dd2d8293043134",
    "id_list": ["2133380", "2133412", "2133444"]
   }
 ]
