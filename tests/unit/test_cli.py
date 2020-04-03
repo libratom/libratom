@@ -479,6 +479,11 @@ def test_validate_eml_export_input(bad_eml_export_input):
 def test_ratom_emldump(cli_runner, enron_dataset_part004, good_eml_export_input):
     expected = Expected(status=0, tokens=[])
 
-    params = [f"-l{enron_dataset_part004}", str(good_eml_export_input)]
+    with tempfile.TemporaryDirectory() as tmpdir:
+        params = [
+            f"-l{enron_dataset_part004}",
+            f"-o{tmpdir}",
+            str(good_eml_export_input),
+        ]
 
-    dump_eml_files(params, None, cli_runner, expected)
+        dump_eml_files(params, None, cli_runner, expected)
