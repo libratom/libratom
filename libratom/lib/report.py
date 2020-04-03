@@ -15,11 +15,7 @@ from sqlalchemy.orm.session import Session
 
 import libratom
 from libratom.lib.concurrency import get_messages, imap_job, worker_init
-from libratom.lib.core import (
-    RATOM_MSG_PROGRESS_STEP,
-    get_ratom_settings,
-    open_mail_archive,
-)
+from libratom.lib.core import get_ratom_settings, open_mail_archive
 from libratom.models import Attachment, Configuration, FileReport, Message
 
 logger = logging.getLogger(__name__)
@@ -161,13 +157,10 @@ def generate_report(
     # Load the file_report table for local lookup
     _file_reports = session.query(FileReport).all()  # noqa: F841
 
-    msg_count = 0
-
     try:
 
-        for msg_count, msg_info in enumerate(
-            get_messages(files, progress_callback=update_progress, with_content=False),
-            start=1,
+        for msg_info in get_messages(
+            files, progress_callback=update_progress, with_content=False
         ):
 
             # Extract results
@@ -201,13 +194,6 @@ def generate_report(
                     for attachment in attachments
                 ]
             )
-
-            # Update progress every N messages
-            if not msg_count % RATOM_MSG_PROGRESS_STEP:
-                update_progress(RATOM_MSG_PROGRESS_STEP)
-
-        # Update progress with remaining message count
-        update_progress(msg_count % RATOM_MSG_PROGRESS_STEP)
 
     except KeyboardInterrupt:
         logger.warning("Cancelling running task")
