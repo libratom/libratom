@@ -172,9 +172,9 @@ def test_ratom_entities(cli_runner, params, expected):
     ],
 )
 def test_ratom_entities_enron_001(
-    isolated_cli_runner, enron_dataset_part027, params, expected
+    isolated_cli_runner, enron_dataset_part001, params, expected
 ):
-    extract_entities(params, enron_dataset_part027, isolated_cli_runner, expected)
+    extract_entities(params, enron_dataset_part001, isolated_cli_runner, expected)
 
 
 @pytest.mark.parametrize(
@@ -186,10 +186,10 @@ def test_ratom_entities_enron_001(
         )
     ],
 )
-def test_ratom_report_enron_001(
-    isolated_cli_runner, enron_dataset_part001, params, expected
+def test_ratom_report_enron_027(
+    isolated_cli_runner, enron_dataset_part027, params, expected
 ):
-    generate_report(params, enron_dataset_part001, isolated_cli_runner, expected)
+    generate_report(params, enron_dataset_part027, isolated_cli_runner, expected)
 
 
 @pytest.mark.parametrize(
