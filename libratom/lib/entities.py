@@ -29,6 +29,7 @@ def process_message(
     filepath: str,
     message_id: int,
     message: str,
+    date: datetime,
     attachments: List[AttachmentMetadata],
     spacy_model: Language,
 ) -> Tuple[Dict, Optional[str]]:
@@ -40,6 +41,7 @@ def process_message(
     res = {
         "filepath": filepath,
         "message_id": message_id,
+        "date": date,
         "processing_start_time": datetime.utcnow(),
         "attachments": attachments,
     }

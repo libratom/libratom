@@ -426,6 +426,7 @@ def test_process_message():
         {
             "filepath": filepath,
             "message_id": message_id,
+            "date": datetime.datetime.utcnow(),
             "message": "hello",
             "spacy_model": None,
             "attachments": None,
