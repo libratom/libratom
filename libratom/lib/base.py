@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from collections import namedtuple
+from datetime import datetime
 from typing import Any, Generator, Iterable, Optional
 
 AttachmentMetadata = namedtuple("AttachmentMetadata", ["name", "mime_type", "size"])
@@ -41,4 +42,9 @@ class Archive(ABC):  # pragma: no cover
     @staticmethod
     @abstractmethod
     def get_attachment_metadata(message: Any) -> Iterable[AttachmentMetadata]:
+        ...
+
+    @staticmethod
+    @abstractmethod
+    def get_message_date(message: Any) -> datetime:
         ...

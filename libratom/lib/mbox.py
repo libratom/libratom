@@ -5,7 +5,9 @@ mbox parsing utilities
 
 import mailbox
 from copy import deepcopy
+from datetime import datetime
 from email.message import Message
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Generator, List, Optional, Union
 
@@ -128,3 +130,7 @@ class MboxArchive(Archive):
             return self.tree.get_node(message_id).data
         except AttributeError:
             return None
+
+    @staticmethod
+    def get_message_date(message: Message) -> datetime:
+        return parsedate_to_datetime(message["Date"])

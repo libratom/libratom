@@ -5,6 +5,7 @@ PFF parsing utilities. Requires libpff.
 
 import logging
 from collections import deque
+from datetime import datetime
 from io import IOBase
 from pathlib import Path
 from typing import Generator, List, Optional, Union
@@ -233,6 +234,10 @@ class PffArchive(Archive):
             )
             for attachment in message.attachments
         ]
+
+    @staticmethod
+    def get_message_date(message: pypff.message) -> datetime:
+        return message.get_client_submit_time()
 
 
 def pff_msg_to_string(message: pypff.message) -> str:

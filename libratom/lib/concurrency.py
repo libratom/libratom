@@ -37,6 +37,18 @@ def get_messages(
                             "attachments": archive.get_attachment_metadata(message),
                         }
 
+                        try:
+                            res["date"] = archive.get_message_date(message)
+                        except Exception as exc:
+                            res["date"] = None
+
+                            logger.info(
+                                "Unable to extract date from message: {message_id} in file: {filepath}".format(
+                                    **res
+                                )
+                            )
+                            logger.debug(exc, exc_info=True)
+
                         if with_content:
                             res["message"] = archive.format_message(
                                 message, with_headers=False

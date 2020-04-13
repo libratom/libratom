@@ -11,6 +11,7 @@ class Message(Base):
 
     id = Column(Integer, primary_key=True)
     pff_identifier = Column(Integer)
+    date = Column(DateTime)
     processing_start_time = Column(DateTime)
     processing_end_time = Column(DateTime)
     file_report_id = Column(Integer, ForeignKey("file_report.id"))
