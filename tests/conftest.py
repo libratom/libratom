@@ -152,6 +152,21 @@ def enron_dataset_part012() -> Path:
 
 
 @pytest.fixture(scope="session")
+def enron_dataset_part027() -> Path:
+    """
+    Returns:
+        A directory with one PST file:
+        drew_fossum_000_1_1.pst
+    """
+
+    name = "drew_fossum"
+    files = ["drew_fossum_000_1_1.pst"]
+    url = f"{ENRON_DATASET_URL}/drew_fossum.zip"
+
+    yield fetch_enron_dataset(name, files, url)
+
+
+@pytest.fixture(scope="session")
 def enron_dataset_part044() -> Path:
     """
     Returns:
