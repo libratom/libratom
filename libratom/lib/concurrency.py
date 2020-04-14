@@ -34,7 +34,7 @@ def get_messages(
                         res = {
                             "filepath": str(file),
                             "message_id": getattr(message, "identifier", None),
-                            "attachments": archive.get_attachment_metadata(message),
+                            "attachments": archive.get_attachment_metadata(message, file),
                         }
 
                         try:

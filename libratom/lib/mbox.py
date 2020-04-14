@@ -69,7 +69,9 @@ class MboxArchive(Archive):
         return ""
 
     @staticmethod
-    def get_attachment_metadata(message: Message) -> List[AttachmentMetadata]:
+    def get_attachment_metadata(
+        message: Message, filepath: Path = None
+    ) -> List[AttachmentMetadata]:
         """
         Returns the metadata of all attachments in a given message
         """

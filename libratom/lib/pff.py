@@ -185,7 +185,9 @@ class PffArchive(Archive):
         return f"{message.transport_headers if with_headers else ''}Body-Type: plain-text\r\n\r\n{body.strip()}"
 
     @staticmethod
-    def get_attachment_metadata(message: pypff.message) -> List[AttachmentMetadata]:
+    def get_attachment_metadata(
+        message: pypff.message, filepath: Path = None
+    ) -> List[AttachmentMetadata]:
         """
         Returns the metadata of all attachments in a given message
         """
@@ -219,11 +221,12 @@ class PffArchive(Archive):
                 return mime_type
 
             except Exception as exc:
-                # Info to avoid false positives while this is WIP
-                logger.info(
-                    f"Error extracting attachment from message id: {message.identifier}"
+                # Debug to avoid false positives while this is WIP
+                file_info = f" in file: {filepath}" if filepath else ""
+                logger.debug(
+                    f"Error extracting attachment from message id: {message.identifier}{file_info}"
                 )
-                logger.info(exc, exc_info=True)
+                logger.debug(exc, exc_info=True)
                 return ""
 
         return [
