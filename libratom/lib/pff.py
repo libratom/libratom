@@ -17,6 +17,19 @@ from libratom.lib.base import Archive, AttachmentMetadata
 
 logger = logging.getLogger(__name__)
 
+MIME_TYPE_REGISTRIES = {
+            "application",
+            "audio",
+            "font",
+            "example",
+            "image",
+            "message",
+            "model",
+            "multipart",
+            "text",
+            "video",
+        }
+
 
 class PffArchive(Archive):
     """Wrapper class around pypff.file
@@ -192,50 +205,13 @@ class PffArchive(Archive):
         Returns the metadata of all attachments in a given message
         """
 
-        type_registries = {
-            "application",
-            "audio",
-            "font",
-            "example",
-            "image",
-            "message",
-            "model",
-            "multipart",
-            "text",
-            "video",
-        }
-
-        def get_mime_type(attachment):
-            # pylint: disable=broad-except
-            try:
-                mime_type = (
-                    attachment.record_sets[0]
-                    .entries[14]
-                    .data.decode("utf-16")
-                    .rstrip("\0")
-                )
-
-                if mime_type.split("/", maxsplit=1)[0] not in type_registries:
-                    raise ValueError(f"Invalid mime type: {mime_type}")
-
-                return mime_type
-
-            except Exception as exc:
-                # Debug to avoid false positives while this is WIP
-                file_info = f" in file: {filepath}" if filepath else ""
-                logger.debug(
-                    f"Error extracting attachment from message id: {message.identifier}{file_info}"
-                )
-                logger.debug(exc, exc_info=True)
-                return ""
-
         return [
             AttachmentMetadata(
                 name=attachment.name,
-                mime_type=get_mime_type(attachment),
+                mime_type=_get_mime_type(attachment, filepath=filepath, message_id=message.identifier),
                 size=attachment.size,
             )
-            for attachment in message.attachments
+            for attachment in message.attachments if attachment.name
         ]
 
     @staticmethod
@@ -255,3 +231,58 @@ def pff_msg_to_string(message: pypff.message) -> str:
         body = str(body, encoding="utf-8", errors="replace")
 
     return f"{headers.strip()}\r\n\r\n{body.strip()}"
+
+
+def _get_mime_type(attachment: pypff.attachment, **info) -> str:
+    # pylint: disable=broad-except
+
+    candidate_functions = [
+        lambda x: x.entries[7].data.decode(),
+        lambda x: x.entries[9].data.decode(),
+        lambda x: x.entries[10].data.decode(),
+        lambda x: x.entries[12].data.decode(),
+        lambda x: x.entries[14].data.decode('utf-16').rstrip("\0")
+    ]
+
+    for func in candidate_functions:
+        try:
+            mime_type = func(attachment.record_sets[0])
+
+            if mime_type.split("/", maxsplit=1)[0].lower() in MIME_TYPE_REGISTRIES:
+                return mime_type
+
+        except Exception:
+            continue
+
+    logger.debug(f"Error retrieving MIME type for attachment: {attachment.name}")
+    for key, value in info.items():
+        logger.debug(f"{key}: {value}")
+    logger.debug(f"---")
+    return ""
+
+    # try:
+    #     mime_type = (
+    #         attachment.record_sets[0]
+    #             .entries[14]
+    #             .data.decode("utf-16")
+    #             .rstrip("\0")
+    #     )
+    #
+    #     if mime_type.split("/", maxsplit=1)[0] not in MIME_TYPE_REGISTRIES:
+    #         # Truncate mime type string in error message
+    #         mime_type = (
+    #             f"{mime_type[:77]}..." if len(mime_type) > 80 else mime_type
+    #         )
+    #
+    #         raise ValueError(f"Invalid mime type: {mime_type}")
+    #
+    #     return mime_type
+    #
+    # except Exception as exc:
+    #     # Debug to avoid false positives while this is WIP
+    #     file_info = f" in file: {filepath}" if filepath else ""
+    #     logger.debug(
+    #         f"Error extracting attachment from message id: {message.identifier}{file_info}"
+    #     )
+    #     logger.debug(exc, exc_info=True)
+    #     return ""
