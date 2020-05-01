@@ -314,6 +314,7 @@
     "application/rtx",
     "application/samlassertion+xml",
     "application/samlmetadata+xml",
+    "application/sbe",
     "application/sbml+xml",
     "application/scaip+xml",
     "application/scim+json",
