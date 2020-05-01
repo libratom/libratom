@@ -17,6 +17,8 @@ with resources.path(__name__, "media_types.json") as media_types_file, open(
 ) as fp:
     MIME_TYPES = set(json.load(fp))
 
+MIME_TYPE_REGISTRIES = {mime_type.split("/", maxsplit=1)[0] for mime_type in MIME_TYPES}
+
 with resources.path(__name__, "eml_dump_input.schema.json") as schema_file, open(
     schema_file
 ) as schema_fp:

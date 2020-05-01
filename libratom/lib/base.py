@@ -3,7 +3,6 @@
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from datetime import datetime
-from pathlib import Path
 from typing import Any, Generator, Iterable, Optional
 
 AttachmentMetadata = namedtuple("AttachmentMetadata", ["name", "mime_type", "size"])
@@ -30,6 +29,10 @@ class Archive(ABC):  # pragma: no cover
     def get_message_by_id(self, message_id: int) -> Optional[Any]:
         ...
 
+    @abstractmethod
+    def get_attachment_metadata(self, message: Any) -> Iterable[AttachmentMetadata]:
+        ...
+
     @property
     @abstractmethod
     def message_count(self) -> int:
@@ -38,13 +41,6 @@ class Archive(ABC):  # pragma: no cover
     @staticmethod
     @abstractmethod
     def format_message(message: Any, with_headers: bool) -> str:
-        ...
-
-    @staticmethod
-    @abstractmethod
-    def get_attachment_metadata(
-        message: Any, filepath: Path
-    ) -> Iterable[AttachmentMetadata]:
         ...
 
     @staticmethod
