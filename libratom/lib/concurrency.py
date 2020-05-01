@@ -32,11 +32,9 @@ def get_messages(
                     try:
                         # Keyword arguments for process_message()
                         res = {
-                            "filepath": str(file),
+                            "filepath": archive.filepath,
                             "message_id": getattr(message, "identifier", None),
-                            "attachments": archive.get_attachment_metadata(
-                                message, file
-                            ),
+                            "attachments": archive.get_attachment_metadata(message),
                         }
 
                         try:

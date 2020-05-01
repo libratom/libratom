@@ -19,10 +19,15 @@ from libratom.lib.base import Archive, AttachmentMetadata
 class MboxArchive(Archive):
     """
     Wrapper class around mailbox.mbox for use in libratom code alongside other email formats.
+
+    Attributes:
+        tree: A tree representation of the folders/messages hierarchy
+        filepath: The source file path
     """
 
     def __init__(self, file: Union[Path, str]):
         self.mailbox = mailbox.mbox(file)
+        self.filepath = str(file)
 
     def __enter__(self):
         return self
@@ -68,10 +73,7 @@ class MboxArchive(Archive):
 
         return ""
 
-    @staticmethod
-    def get_attachment_metadata(
-        message: Message, filepath: Path = None
-    ) -> List[AttachmentMetadata]:
+    def get_attachment_metadata(self, message: Message) -> List[AttachmentMetadata]:
         """
         Returns the metadata of all attachments in a given message
         """

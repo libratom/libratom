@@ -4,7 +4,7 @@ PFF parsing utilities. Requires libpff.
 """
 
 import logging
-from collections import deque
+from collections import defaultdict, deque
 from datetime import datetime
 from io import IOBase
 from pathlib import Path
@@ -13,22 +13,10 @@ from typing import Generator, List, Optional, Union
 import pypff
 from treelib import Tree
 
+from libratom.data import MIME_TYPE_REGISTRIES
 from libratom.lib.base import Archive, AttachmentMetadata
 
 logger = logging.getLogger(__name__)
-
-MIME_TYPE_REGISTRIES = {
-            "application",
-            "audio",
-            "font",
-            "example",
-            "image",
-            "message",
-            "model",
-            "multipart",
-            "text",
-            "video",
-        }
 
 
 class PffArchive(Archive):
@@ -38,10 +26,14 @@ class PffArchive(Archive):
 
     Attributes:
         tree: A tree representation of the folders/messages hierarchy
+        filepath: The source file path
     """
 
     def __init__(self, file: Union[Path, IOBase, str] = None) -> None:
-        self.data = pypff.file()
+        self._data = pypff.file()
+        self.filepath = None
+        self._encodings = ["utf-8", "utf-16"]
+        self._mime_indices = defaultdict(int)
 
         if file:
             self.load(file)
@@ -50,7 +42,7 @@ class PffArchive(Archive):
         return self
 
     def __exit__(self, *_):
-        self.data.close()
+        self._data.close()
 
     def _build_tree(self) -> None:
         """Builds the internal tree structure
@@ -93,11 +85,13 @@ class PffArchive(Archive):
         """
 
         if isinstance(file, IOBase):
-            self.data.open_file_object(file)
+            self._data.open_file_object(file)
         elif isinstance(file, (Path, str)):
-            self.data.open(str(file), "rb")
+            self._data.open(str(file), "rb")
         else:
             raise TypeError(f"Unable to load {file} of type {type(file)}")
+
+        self.filepath = str(file)
 
     def folders(self, bfs: bool = True) -> Generator[pypff.folder, None, None]:
         """Generator function to iterate over the archive's folders
@@ -109,7 +103,7 @@ class PffArchive(Archive):
             A pypff.folder object
         """
 
-        folders = deque([self.data.root_folder])
+        folders = deque([self._data.root_folder])
 
         while folders:
             folder = folders.pop()
@@ -197,22 +191,101 @@ class PffArchive(Archive):
 
         return f"{message.transport_headers if with_headers else ''}Body-Type: plain-text\r\n\r\n{body.strip()}"
 
-    @staticmethod
     def get_attachment_metadata(
-        message: pypff.message, filepath: Path = None
+        self, message: pypff.message
     ) -> List[AttachmentMetadata]:
         """
         Returns the metadata of all attachments in a given message
         """
+        # pylint: disable=broad-except
 
-        return [
-            AttachmentMetadata(
-                name=attachment.name,
-                mime_type=_get_mime_type(attachment, filepath=filepath, message_id=message.identifier),
-                size=attachment.size,
-            )
-            for attachment in message.attachments if attachment.name
-        ]
+        res = []
+
+        for attachment in message.attachments:
+            if attachment.name:
+                try:
+                    mime_type = self._get_mime_type(attachment)
+
+                    if not mime_type:
+                        # Expected, low severity
+                        logger.debug(
+                            f"No MIME type found for attachment {attachment.name} in file {self.filepath}, message {message.identifier}"
+                        )
+
+                except Exception as exc:
+                    mime_type = None
+
+                    # Unexpected, higher severity
+                    logger.info(
+                        f"Error retrieving MIME type for attachment {attachment.name} in file {self.filepath}, message {message.identifier}"
+                    )
+                    logger.debug(exc, exc_info=True)
+
+                res.append(
+                    AttachmentMetadata(
+                        name=attachment.name, mime_type=mime_type, size=attachment.size,
+                    )
+                )
+
+        return res
+
+    def _get_mime_type(self, attachment: pypff.attachment) -> Optional[str]:
+
+        entries = attachment.record_sets[0].entries
+
+        for i in self._mime_indices:
+            try:
+                res = self._decode_mime_type(entries[i].data)
+                if res:
+                    self._mime_indices[i] += 1
+                    self._sort_mime_indices()
+
+                    return res
+
+            # If i is out of bounds pypff raises ValueError instead of IndexError
+            except ValueError:
+                pass
+
+        for i, entry in enumerate(entries):
+            if i not in self._mime_indices:
+                res = self._decode_mime_type(entry.data)
+                if res:
+                    self._mime_indices[i] += 1
+                    self._sort_mime_indices()
+
+                    return res
+
+        return None
+
+    def _decode_mime_type(self, data: bytes) -> Optional[str]:
+
+        for encoding in self._encodings:
+            try:
+                mime_type = data.decode(encoding).rstrip("\0")
+
+                if mime_type.split("/", maxsplit=1)[0].lower() in MIME_TYPE_REGISTRIES:
+
+                    # re-order encodings to try this one first
+                    if self._encodings[0] != encoding:
+                        self._encodings = [
+                            encoding,
+                            *[e for e in self._encodings if e != encoding],
+                        ]
+
+                    return mime_type
+
+            except AttributeError:
+                return None
+
+            except UnicodeDecodeError:
+                pass
+
+        return None
+
+    def _sort_mime_indices(self):
+        self._mime_indices = defaultdict(
+            int, sorted(self._mime_indices.items(), key=lambda x: x[1], reverse=True)
+        )
 
     @staticmethod
     def get_message_date(message: pypff.message) -> datetime:
@@ -231,58 +304,3 @@ def pff_msg_to_string(message: pypff.message) -> str:
         body = str(body, encoding="utf-8", errors="replace")
 
     return f"{headers.strip()}\r\n\r\n{body.strip()}"
-
-
-def _get_mime_type(attachment: pypff.attachment, **info) -> str:
-    # pylint: disable=broad-except
-
-    candidate_functions = [
-        lambda x: x.entries[7].data.decode(),
-        lambda x: x.entries[9].data.decode(),
-        lambda x: x.entries[10].data.decode(),
-        lambda x: x.entries[12].data.decode(),
-        lambda x: x.entries[14].data.decode('utf-16').rstrip("\0")
-    ]
-
-    for func in candidate_functions:
-        try:
-            mime_type = func(attachment.record_sets[0])
-
-            if mime_type.split("/", maxsplit=1)[0].lower() in MIME_TYPE_REGISTRIES:
-                return mime_type
-
-        except Exception:
-            continue
-
-    logger.debug(f"Error retrieving MIME type for attachment: {attachment.name}")
-    for key, value in info.items():
-        logger.debug(f"{key}: {value}")
-    logger.debug(f"---")
-    return ""
-
-    # try:
-    #     mime_type = (
-    #         attachment.record_sets[0]
-    #             .entries[14]
-    #             .data.decode("utf-16")
-    #             .rstrip("\0")
-    #     )
-    #
-    #     if mime_type.split("/", maxsplit=1)[0] not in MIME_TYPE_REGISTRIES:
-    #         # Truncate mime type string in error message
-    #         mime_type = (
-    #             f"{mime_type[:77]}..." if len(mime_type) > 80 else mime_type
-    #         )
-    #
-    #         raise ValueError(f"Invalid mime type: {mime_type}")
-    #
-    #     return mime_type
-    #
-    # except Exception as exc:
-    #     # Debug to avoid false positives while this is WIP
-    #     file_info = f" in file: {filepath}" if filepath else ""
-    #     logger.debug(
-    #         f"Error extracting attachment from message id: {message.identifier}{file_info}"
-    #     )
-    #     logger.debug(exc, exc_info=True)
-    #     return ""
