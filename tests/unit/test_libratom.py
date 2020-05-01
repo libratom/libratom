@@ -84,7 +84,7 @@ def test_get_transport_headers_from_sent_items(enron_dataset_part004):
                 try:
                     name = folder.name.lower()
                 except AttributeError:
-                    if folder.identifier != archive.data.root_folder.identifier:
+                    if folder.identifier != archive._data.root_folder.identifier:
                         raise
                     continue
                 if "sent mail" in name or "sent items" in name:
