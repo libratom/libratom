@@ -206,20 +206,20 @@ class PffArchive(Archive):
                 try:
                     mime_type = self._get_mime_type(attachment)
 
-                    if not mime_type:
+                    if mime_type is None:
                         # Expected, low severity
                         logger.debug(
                             f"No MIME type found for attachment {attachment.name} in file {self.filepath}, message {message.identifier}"
                         )
 
                 except Exception as exc:
-                    mime_type = None
-
                     # Unexpected, higher severity
                     logger.info(
                         f"Error retrieving MIME type for attachment {attachment.name} in file {self.filepath}, message {message.identifier}"
                     )
                     logger.debug(exc, exc_info=True)
+
+                    mime_type = None
 
                 res.append(
                     AttachmentMetadata(
@@ -233,6 +233,7 @@ class PffArchive(Archive):
 
         entries = attachment.record_sets[0].entries
 
+        # Try known positions first
         for i in self._mime_indices:
             try:
                 res = self._decode_mime_type(entries[i].data)
@@ -246,6 +247,7 @@ class PffArchive(Archive):
             except ValueError:
                 pass
 
+        # Try the rest
         for i, entry in enumerate(entries):
             if i not in self._mime_indices:
                 res = self._decode_mime_type(entry.data)
