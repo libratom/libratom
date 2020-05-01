@@ -200,7 +200,7 @@ def report(out, jobs, src, progress):
     required=False,
     metavar=VERSION_METAVAR,
     callback=validate_version_string,
-    help=f"If used alongside -i/--install, install a given model version. Otherwise this has no effect.",
+    help="If used alongside -i/--install, install a given model version. Otherwise this has no effect.",
 )
 def model(_list, install, upgrade, version):
     """
