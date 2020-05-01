@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring,invalid-name,no-member,unused-import
+# pylint: disable=missing-docstring,invalid-name,no-member,unused-import,protected-access
 import email
 import hashlib
 import logging
@@ -6,7 +6,7 @@ import os
 from email import policy
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
@@ -352,7 +352,8 @@ def test_get_mbox_message_by_id_with_bad_id(sample_mbox_file):
         assert archive.get_message_by_id(1234) is None
 
 
-def test_get_attachment_metadata():
-    message = MagicMock(identifier=123, attachments=[MagicMock(name="foo", size="0")])
+@pytest.mark.parametrize("mock_cls", [MagicMock, Mock])
+def test_get_attachment_metadata(mock_cls):
+    message = MagicMock(identifier=123, attachments=[mock_cls(name="foo", size="0")])
 
     assert PffArchive().get_attachment_metadata(message)[0].mime_type is None
