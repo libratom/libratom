@@ -355,4 +355,4 @@ def test_get_mbox_message_by_id_with_bad_id(sample_mbox_file):
 def test_get_attachment_metadata():
     message = MagicMock(identifier=123, attachments=[MagicMock(name="foo", size="0")])
 
-    assert PffArchive.get_attachment_metadata(message)[0].mime_type == ""
+    assert PffArchive().get_attachment_metadata(message)[0].mime_type is None
