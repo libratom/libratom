@@ -30,8 +30,8 @@ class PffArchive(Archive):
     """
 
     def __init__(self, file: Union[Path, IOBase, str] = None) -> None:
-        self._data = pypff.file()
         self.filepath = None
+        self._data = pypff.file()
         self._encodings = ["utf-8", "utf-16"]
         self._mime_indices = defaultdict(int)
 
