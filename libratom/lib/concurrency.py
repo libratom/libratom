@@ -42,7 +42,7 @@ def get_messages(
                         except Exception as exc:
                             res["date"] = None
 
-                            logger.info(
+                            logger.debug(
                                 "Unable to extract date from message: {message_id} in file: {filepath}".format(
                                     **res
                                 )
