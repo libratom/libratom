@@ -119,11 +119,7 @@ def extract_entities(
                             **res
                         )
                     )
-                    logger.debug(
-                        "File: {filepath}, message ID: {message_id}, {error}".format(
-                            **res, error=error
-                        )
-                    )
+                    logger.debug(error)
 
                     continue
 
