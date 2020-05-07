@@ -65,7 +65,7 @@ def get_messages(
                         message_str = (
                             f"message {message_id}" if message_id else "a message"
                         )
-                        logger.info(f"Skipping {message_str} from file {file}")
+                        logger.info(f"Skipping {message_str} from {file}")
                         logger.debug(exc, exc_info=True)
 
                     finally:
