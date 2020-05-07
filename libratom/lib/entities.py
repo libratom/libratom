@@ -115,9 +115,7 @@ def extract_entities(
 
                 if error:
                     logger.info(
-                        "Skipping message {message_id} from file {filepath}".format(
-                            **res
-                        )
+                        "Skipping message {message_id} from {filepath}".format(**res)
                     )
                     logger.debug(error)
 
