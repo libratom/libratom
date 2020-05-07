@@ -61,7 +61,11 @@ def get_messages(
 
                     except Exception as exc:
                         # Log and move on to the next message
-                        logger.info(f"Invalid message in file {file}")
+                        message_id = getattr(message, "identifier", None)
+                        message_str = (
+                            f"message {message_id}" if message_id else "a message"
+                        )
+                        logger.info(f"Skipping {message_str} from file {file}")
                         logger.debug(exc, exc_info=True)
 
                     finally:
