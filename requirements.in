@@ -11,3 +11,5 @@ psutil
 tabulate
 packaging
 jsonschema
+beautifulsoup4
+striprtf
