@@ -5,6 +5,7 @@ Set of utility functions that use spaCy to perform named entity recognition
 
 import logging
 import multiprocessing
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
@@ -18,6 +19,7 @@ from libratom.lib.core import (
     RATOM_DB_COMMIT_BATCH_SIZE,
     RATOM_MSG_BATCH_SIZE,
     RATOM_MSG_PROGRESS_STEP,
+    RATOM_SPACY_MODEL_MAX_LENGTH,
 )
 from libratom.models import Attachment, Entity, FileReport, Message
 
@@ -47,6 +49,17 @@ def process_message(
     }
 
     try:
+        if len(message) > RATOM_SPACY_MODEL_MAX_LENGTH:
+
+            # Strip uuencoded attachments
+            for attachment in attachments:
+                message = re.sub(
+                    f"begin [0-7]{{3}} {attachment.name}.*end",
+                    "",
+                    message,
+                    flags=re.DOTALL,
+                )
+
         # Extract entities from the message
         doc = spacy_model(message)
         res["entities"] = [(ent.text, ent.label_) for ent in doc.ents]

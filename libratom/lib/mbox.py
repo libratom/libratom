@@ -73,6 +73,13 @@ class MboxArchive(Archive):
 
         return ""
 
+    @staticmethod
+    def get_plain_text(message: Message) -> str:
+        """
+        WIP...
+        """
+        return MboxArchive.format_message(message)
+
     def get_attachment_metadata(self, message: Message) -> List[AttachmentMetadata]:
         """
         Returns the metadata of all attachments in a given message
