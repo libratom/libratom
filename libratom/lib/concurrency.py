@@ -9,11 +9,7 @@ import signal
 from pathlib import Path
 from typing import Callable, Dict, Generator, Iterable
 
-from libratom.lib.core import (
-    RATOM_MSG_PROGRESS_STEP,
-    RATOM_SPACY_MODEL_MAX_LENGTH,
-    open_mail_archive,
-)
+from libratom.lib.core import RATOM_MSG_PROGRESS_STEP, open_mail_archive
 
 logger = logging.getLogger(__name__)
 
@@ -54,15 +50,7 @@ def get_messages(
                             logger.debug(exc, exc_info=True)
 
                         if with_content:
-                            content = archive.format_message(
-                                message, with_headers=False
-                            )
-
-                            if len(content) > RATOM_SPACY_MODEL_MAX_LENGTH:
-                                raise ValueError(
-                                    f"Message content length exceeds {RATOM_SPACY_MODEL_MAX_LENGTH} characters."
-                                )
-
+                            content = archive.get_plain_text(message)
                             res["message"] = content
 
                         # Add any optional arguments
