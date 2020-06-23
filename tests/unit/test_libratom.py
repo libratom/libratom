@@ -13,8 +13,8 @@ import pytest
 import libratom
 from libratom.data import MIME_TYPES
 from libratom.lib.concurrency import get_messages
+from libratom.lib.constants import SPACY_MODELS
 from libratom.lib.core import (
-    SPACY_MODELS,
     extract_message_from_archive,
     get_set_of_files,
     load_spacy_model,

@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring,invalid-name,too-few-public-methods,misplaced-comparison-constant,no-value-for-parameter
+# pylint: disable=missing-docstring,invalid-name,too-few-public-methods,misplaced-comparison-constant,no-value-for-parameter,no-member
 
 import datetime
 import os
@@ -22,7 +22,8 @@ from libratom.cli.utils import (
     validate_existing_dir,
     validate_version_string,
 )
-from libratom.lib.core import SPACY_MODELS, load_spacy_model
+from libratom.lib.constants import SPACY_MODELS
+from libratom.lib.core import load_spacy_model
 from libratom.lib.database import db_session
 from libratom.lib.entities import process_message
 from libratom.models import Entity, FileReport
