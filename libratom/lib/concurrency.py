@@ -9,7 +9,8 @@ import signal
 from pathlib import Path
 from typing import Callable, Dict, Generator, Iterable
 
-from libratom.lib.core import RATOM_MSG_PROGRESS_STEP, open_mail_archive
+from libratom.lib.constants import RATOM_MSG_PROGRESS_STEP
+from libratom.lib.core import open_mail_archive
 
 logger = logging.getLogger(__name__)
 
@@ -50,8 +51,9 @@ def get_messages(
                             logger.debug(exc, exc_info=True)
 
                         if with_content:
-                            content = archive.get_plain_text(message)
-                            res["message"] = content
+                            body, body_type = archive.get_plain_text(message)
+                            res["message_body"] = body
+                            res["message_body_type"] = body_type
 
                         # Add any optional arguments
                         res.update(kwargs)

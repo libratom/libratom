@@ -8,15 +8,14 @@ from collections import defaultdict, deque
 from datetime import datetime
 from io import IOBase
 from pathlib import Path
-from typing import AnyStr, Generator, List, Optional, Union
+from typing import Generator, List, Optional, Tuple, Union
 
 import pypff
-from bs4 import BeautifulSoup
-from striprtf.striprtf import rtf_to_text
 from treelib import Tree
 
 from libratom.data import MIME_TYPE_REGISTRIES
 from libratom.lib.base import Archive, AttachmentMetadata
+from libratom.lib.utils import BodyType, decode
 
 logger = logging.getLogger(__name__)
 
@@ -182,7 +181,7 @@ class PffArchive(Archive):
             A string
         """
 
-        body = message.plain_text_body or message.html_body or message.rtf_body
+        body = message.plain_text_body or message.rtf_body or message.html_body
 
         if not body:
             # Return headers only
@@ -194,38 +193,32 @@ class PffArchive(Archive):
             )
 
         headers = message.transport_headers if with_headers else ""
-        body = _decode(body).strip()
+        body = decode(body).strip()
 
         return f"{headers}Body-Type: plain-text\r\n\r\n{body}"
 
     @staticmethod
-    def get_plain_text(message: pypff.message) -> str:
+    def get_plain_text(message: pypff.message) -> Tuple[str, Optional[BodyType]]:
         """Takes a pypff.message object and returns the text without formatting
 
         Args:
             message: A pypff.message object
 
         Returns:
-            A string
+            A string and a body type
         """
 
         # Try the plain text body first
         if message.plain_text_body:
-            return _decode(message.plain_text_body)
+            return message.plain_text_body, BodyType.PLAIN
 
         if message.rtf_body:
-            body = _decode(message.rtf_body)
-
-            # Strip formatting
-            return rtf_to_text(body)
+            return message.rtf_body, BodyType.RTF
 
         if message.html_body:
-            body = _decode(message.html_body)
+            return message.html_body, BodyType.HTML
 
-            # Strip markup
-            return BeautifulSoup(body, "html.parser").get_text()
-
-        return ""
+        return "", None
 
     def get_attachment_metadata(
         self, message: pypff.message
@@ -336,13 +329,6 @@ def pff_msg_to_string(message: pypff.message) -> str:
     """
 
     headers = message.transport_headers or ""
-    body = _decode(message.plain_text_body or "")
+    body = decode(message.plain_text_body or "")
 
     return f"{headers.strip()}\r\n\r\n{body.strip()}"
-
-
-def _decode(content: AnyStr) -> str:
-    if isinstance(content, bytes):
-        return str(content, encoding="utf-8", errors="replace")
-
-    return content

@@ -26,7 +26,7 @@ from libratom.cli.utils import (
     validate_out_path,
     validate_version_string,
 )
-from libratom.lib.core import SPACY_MODEL_NAMES, SPACY_MODELS
+from libratom.lib.constants import SPACY_MODEL_NAMES, SPACY_MODELS
 
 logger = logging.getLogger(__name__)
 

@@ -5,7 +5,6 @@ Set of utility functions that use spaCy to perform named entity recognition
 
 import logging
 import multiprocessing
-import re
 from datetime import datetime
 from pathlib import Path
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
@@ -15,12 +14,12 @@ from sqlalchemy.orm.session import Session
 
 from libratom.lib.base import AttachmentMetadata
 from libratom.lib.concurrency import get_messages, imap_job, worker_init
-from libratom.lib.core import (
+from libratom.lib.constants import (
     RATOM_DB_COMMIT_BATCH_SIZE,
     RATOM_MSG_BATCH_SIZE,
     RATOM_MSG_PROGRESS_STEP,
-    RATOM_SPACY_MODEL_MAX_LENGTH,
 )
+from libratom.lib.utils import BodyType, sanitize_message_body
 from libratom.models import Attachment, Entity, FileReport, Message
 
 logger = logging.getLogger(__name__)
@@ -30,7 +29,8 @@ logger = logging.getLogger(__name__)
 def process_message(
     filepath: str,
     message_id: int,
-    message: str,
+    message_body: str,
+    message_body_type: BodyType,
     date: datetime,
     attachments: List[AttachmentMetadata],
     spacy_model: Language,
@@ -49,19 +49,9 @@ def process_message(
     }
 
     try:
-        if len(message) > RATOM_SPACY_MODEL_MAX_LENGTH:
-
-            # Strip uuencoded attachments
-            for attachment in attachments:
-                message = re.sub(
-                    f"begin [0-7]{{3}} {attachment.name}.*end",
-                    "",
-                    message,
-                    flags=re.DOTALL,
-                )
-
         # Extract entities from the message
-        doc = spacy_model(message)
+        message_body = sanitize_message_body(message_body, message_body_type)
+        doc = spacy_model(message_body)
         res["entities"] = [(ent.text, ent.label_) for ent in doc.ents]
 
         res["processing_end_time"] = datetime.utcnow()
