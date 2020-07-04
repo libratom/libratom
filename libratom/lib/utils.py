@@ -1,19 +1,12 @@
 # pylint: disable=missing-docstring
 
 import re
-from enum import Enum, auto
 from typing import AnyStr
 
 from bs4 import BeautifulSoup
 from striprtf.striprtf import rtf_to_text
 
-from libratom.lib.constants import RATOM_SPACY_MODEL_MAX_LENGTH
-
-
-class BodyType(Enum):
-    PLAIN = auto()
-    RTF = auto()
-    HTML = auto()
+from libratom.lib.constants import RATOM_SPACY_MODEL_MAX_LENGTH, BodyType
 
 
 def decode(content: AnyStr) -> str:

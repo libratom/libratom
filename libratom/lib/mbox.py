@@ -14,7 +14,7 @@ from typing import Generator, List, Optional, Tuple, Union
 from treelib import Tree
 
 from libratom.lib.base import Archive, AttachmentMetadata
-from libratom.lib.utils import BodyType
+from libratom.lib.constants import BodyType
 
 
 class MboxArchive(Archive):

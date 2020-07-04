@@ -2,6 +2,7 @@
 
 import os
 from collections import namedtuple
+from enum import Enum, auto
 
 # Allow these to be set through the environment
 RATOM_MSG_BATCH_SIZE = int(os.environ.get("RATOM_MSG_BATCH_SIZE", 1000))
@@ -53,3 +54,9 @@ SPACY_MODEL_NAMES = [
 ]
 
 SPACY_MODELS = namedtuple("SpacyModels", SPACY_MODEL_NAMES)(*SPACY_MODEL_NAMES)
+
+
+class BodyType(Enum):
+    PLAIN = auto()
+    RTF = auto()
+    HTML = auto()
