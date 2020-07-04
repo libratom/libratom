@@ -18,8 +18,9 @@ from libratom.lib.constants import (
     RATOM_DB_COMMIT_BATCH_SIZE,
     RATOM_MSG_BATCH_SIZE,
     RATOM_MSG_PROGRESS_STEP,
+    BodyType,
 )
-from libratom.lib.utils import BodyType, sanitize_message_body
+from libratom.lib.utils import sanitize_message_body
 from libratom.models import Attachment, Entity, FileReport, Message
 
 logger = logging.getLogger(__name__)

@@ -15,7 +15,8 @@ from treelib import Tree
 
 from libratom.data import MIME_TYPE_REGISTRIES
 from libratom.lib.base import Archive, AttachmentMetadata
-from libratom.lib.utils import BodyType, decode
+from libratom.lib.constants import BodyType
+from libratom.lib.utils import decode
 
 logger = logging.getLogger(__name__)
 

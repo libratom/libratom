@@ -3,7 +3,9 @@
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from datetime import datetime
-from typing import Any, Generator, Iterable, Optional
+from typing import Any, Generator, Iterable, Optional, Tuple
+
+from libratom.lib.constants import BodyType
 
 AttachmentMetadata = namedtuple("AttachmentMetadata", ["name", "mime_type", "size"])
 
@@ -41,6 +43,11 @@ class Archive(ABC):  # pragma: no cover
     @staticmethod
     @abstractmethod
     def format_message(message: Any, with_headers: bool) -> str:
+        ...
+
+    @staticmethod
+    @abstractmethod
+    def get_plain_text(message: Any) -> Tuple[str, Optional[BodyType]]:
         ...
 
     @staticmethod
