@@ -26,6 +26,7 @@ from libratom.lib.constants import SPACY_MODELS
 from libratom.lib.core import load_spacy_model
 from libratom.lib.database import db_session
 from libratom.lib.entities import process_message
+from libratom.lib.utils import BodyType
 from libratom.models import Entity, FileReport
 
 
@@ -428,7 +429,8 @@ def test_process_message():
             "filepath": filepath,
             "message_id": message_id,
             "date": datetime.datetime.utcnow(),
-            "message": "hello",
+            "message_body": "hello",
+            "message_body_type": BodyType.PLAIN,
             "spacy_model": None,
             "attachments": None,
         }
