@@ -9,11 +9,12 @@ from datetime import datetime
 from email.message import Message
 from email.utils import parsedate_to_datetime
 from pathlib import Path
-from typing import Generator, List, Optional, Union
+from typing import Generator, List, Optional, Tuple, Union
 
 from treelib import Tree
 
 from libratom.lib.base import Archive, AttachmentMetadata
+from libratom.lib.utils import BodyType
 
 
 class MboxArchive(Archive):
@@ -74,11 +75,11 @@ class MboxArchive(Archive):
         return ""
 
     @staticmethod
-    def get_plain_text(message: Message) -> str:
+    def get_plain_text(message: Message) -> Tuple[str, Optional[BodyType]]:
         """
         WIP...
         """
-        return MboxArchive.format_message(message)
+        return MboxArchive.format_message(message), BodyType.PLAIN
 
     def get_attachment_metadata(self, message: Message) -> List[AttachmentMetadata]:
         """
