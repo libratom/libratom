@@ -28,12 +28,16 @@ def sanitize_message_body(body: AnyStr, body_type: BodyType) -> str:
         # Strip markup
         body = BeautifulSoup(body, "html.parser").get_text()
 
+    # Strip base64 encoded lines
     if len(body) > RATOM_SPACY_MODEL_MAX_LENGTH:
-        # Strip uuencoded attachments
+        body = re.sub(r"^[>\s]*[A-Za-z0-9+/]{76,}\n?", "", body, flags=re.MULTILINE)
+
+    # Strip uuencoded attachments
+    if len(body) > RATOM_SPACY_MODEL_MAX_LENGTH:
         body = re.sub("begin [0-7]{3}.*?end", "", body, flags=re.DOTALL)
 
+    # Strip notes/calendar data
     if len(body) > RATOM_SPACY_MODEL_MAX_LENGTH:
-        # Strip base64 encoded lines
-        body = re.sub(r"^[>\s]*[A-Za-z0-9+/]{76,}\n?", "", body, flags=re.MULTILINE)
+        body = re.sub("<OMNI>.*?</OMNI>", "", body, flags=re.DOTALL)
 
     return body
