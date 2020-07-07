@@ -47,7 +47,7 @@ class Archive(ABC):  # pragma: no cover
 
     @staticmethod
     @abstractmethod
-    def get_plain_text(message: Any) -> Tuple[str, Optional[BodyType]]:
+    def get_message_body(message: Any) -> Tuple[str, Optional[BodyType]]:
         ...
 
     @staticmethod

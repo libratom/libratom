@@ -32,4 +32,8 @@ def sanitize_message_body(body: AnyStr, body_type: BodyType) -> str:
         # Strip uuencoded attachments
         body = re.sub("begin [0-7]{3}.*?end", "", body, flags=re.DOTALL)
 
+    if len(body) > RATOM_SPACY_MODEL_MAX_LENGTH:
+        # Strip base64 encoded lines
+        body = re.sub(r"^[>\s]*[A-Za-z0-9+/]{76,}\n?", "", body, flags=re.MULTILINE)
+
     return body

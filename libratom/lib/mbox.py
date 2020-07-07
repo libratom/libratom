@@ -75,7 +75,7 @@ class MboxArchive(Archive):
         return ""
 
     @staticmethod
-    def get_plain_text(message: Message) -> Tuple[str, Optional[BodyType]]:
+    def get_message_body(message: Message) -> Tuple[str, Optional[BodyType]]:
         """
         WIP...
         """

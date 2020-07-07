@@ -51,7 +51,7 @@ def get_messages(
                             logger.debug(exc, exc_info=True)
 
                         if with_content:
-                            body, body_type = archive.get_plain_text(message)
+                            body, body_type = archive.get_message_body(message)
                             res["message_body"] = body
                             res["message_body_type"] = body_type
 

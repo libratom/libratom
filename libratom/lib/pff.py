@@ -199,8 +199,8 @@ class PffArchive(Archive):
         return f"{headers}Body-Type: plain-text\r\n\r\n{body}"
 
     @staticmethod
-    def get_plain_text(message: pypff.message) -> Tuple[str, Optional[BodyType]]:
-        """Takes a pypff.message object and returns the text without formatting
+    def get_message_body(message: pypff.message) -> Tuple[str, Optional[BodyType]]:
+        """Takes a pypff.message object and returns a body and body type
 
         Args:
             message: A pypff.message object
