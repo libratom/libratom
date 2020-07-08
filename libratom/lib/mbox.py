@@ -15,6 +15,7 @@ from treelib import Tree
 
 from libratom.lib.base import Archive, AttachmentMetadata
 from libratom.lib.constants import BodyType
+from libratom.lib.utils import guess_mime_type
 
 
 class MboxArchive(Archive):
@@ -89,7 +90,8 @@ class MboxArchive(Archive):
         return [
             AttachmentMetadata(
                 name=part.get_filename(),
-                mime_type=part.get_content_type(),
+                mime_type=part.get_content_type()
+                or guess_mime_type(part.get_filename()),
                 size=len(part.get_payload()),
             )
             for part in message.walk()

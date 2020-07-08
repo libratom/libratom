@@ -1,5 +1,6 @@
 # pylint: disable=missing-docstring
 
+import mimetypes
 import re
 from typing import AnyStr
 
@@ -7,6 +8,8 @@ from bs4 import BeautifulSoup
 from striprtf.striprtf import rtf_to_text
 
 from libratom.lib.constants import RATOM_SPACY_MODEL_MAX_LENGTH, BodyType
+
+mimetypes.init()
 
 
 def decode(content: AnyStr) -> str:
@@ -38,6 +41,12 @@ def cleanup_message_body(body: AnyStr, body_type: BodyType) -> str:
 
     # Strip notes/calendar data
     if len(body) > RATOM_SPACY_MODEL_MAX_LENGTH:
-        body = re.sub(r"<OMNI([^>]*?)>.*?</OMNI\1>(\s)*", "", body, flags=re.DOTALL)
+        body = re.sub(
+            r"<(OMNI|omni)([^>]*?)>.*?</\1\2>(\s)*", "", body, flags=re.DOTALL
+        )
 
     return body
+
+
+def guess_mime_type(name: str) -> str:
+    return mimetypes.guess_type(name, strict=False)[0]
