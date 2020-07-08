@@ -70,6 +70,7 @@
     "application/calendar+xml",
     "application/call-completion",
     "application/cap+xml",
+    "application/captive+json",
     "application/cbor",
     "application/cbor-seq",
     "application/cccex",
