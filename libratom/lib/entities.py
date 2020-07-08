@@ -20,7 +20,7 @@ from libratom.lib.constants import (
     RATOM_MSG_PROGRESS_STEP,
     BodyType,
 )
-from libratom.lib.utils import sanitize_message_body
+from libratom.lib.utils import cleanup_message_body
 from libratom.models import Attachment, Entity, FileReport, Message
 
 logger = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ def process_message(
 
     try:
         # Extract entities from the message
-        message_body = sanitize_message_body(message_body, message_body_type)
+        message_body = cleanup_message_body(message_body, message_body_type)
         doc = spacy_model(message_body)
         res["entities"] = [(ent.text, ent.label_) for ent in doc.ents]
 

@@ -16,7 +16,7 @@ def decode(content: AnyStr) -> str:
     return content
 
 
-def sanitize_message_body(body: AnyStr, body_type: BodyType) -> str:
+def cleanup_message_body(body: AnyStr, body_type: BodyType) -> str:
     # Decode first
     body = decode(body)
 
@@ -28,16 +28,16 @@ def sanitize_message_body(body: AnyStr, body_type: BodyType) -> str:
         # Strip markup
         body = BeautifulSoup(body, "html.parser").get_text()
 
-    # Strip base64 encoded lines
+    # Strip what might be lines of base64 encoded data
     if len(body) > RATOM_SPACY_MODEL_MAX_LENGTH:
         body = re.sub(r"^[>\s]*[A-Za-z0-9+/]{76,}\n?", "", body, flags=re.MULTILINE)
 
     # Strip uuencoded attachments
     if len(body) > RATOM_SPACY_MODEL_MAX_LENGTH:
-        body = re.sub("begin [0-7]{3}.*?end", "", body, flags=re.DOTALL)
+        body = re.sub(r"begin [0-7]{3}.*?end", "", body, flags=re.DOTALL)
 
     # Strip notes/calendar data
     if len(body) > RATOM_SPACY_MODEL_MAX_LENGTH:
-        body = re.sub("<OMNI>.*?</OMNI>", "", body, flags=re.DOTALL)
+        body = re.sub(r"<OMNI([^>]*?)>.*?</OMNI\1>(\s)*", "", body, flags=re.DOTALL)
 
     return body
