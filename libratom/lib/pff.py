@@ -16,7 +16,7 @@ from treelib import Tree
 from libratom.data import MIME_TYPE_REGISTRIES
 from libratom.lib.base import Archive, AttachmentMetadata
 from libratom.lib.constants import BodyType
-from libratom.lib.utils import decode
+from libratom.lib.utils import decode, guess_mime_type
 
 logger = logging.getLogger(__name__)
 
@@ -234,7 +234,9 @@ class PffArchive(Archive):
         for attachment in message.attachments:
             if attachment.name:
                 try:
-                    mime_type = self._get_mime_type(attachment)
+                    mime_type = self._get_mime_type(attachment) or guess_mime_type(
+                        attachment.name
+                    )
 
                     if mime_type is None:
                         # Expected, low severity
