@@ -1,8 +1,7 @@
-# pylint: disable=missing-docstring,invalid-name,no-member,unused-import,protected-access
+# pylint: disable=missing-docstring,invalid-name,no-member,protected-access
 import email
 import hashlib
 import logging
-import os
 from email import policy
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -13,7 +12,7 @@ import pytest
 import libratom
 from libratom.data import MIME_TYPES
 from libratom.lib.concurrency import get_messages
-from libratom.lib.constants import SPACY_MODELS
+from libratom.lib.constants import SPACY_MODELS, BodyType
 from libratom.lib.core import (
     extract_message_from_archive,
     get_set_of_files,
@@ -27,6 +26,7 @@ from libratom.lib.exceptions import FileTypeError
 from libratom.lib.mbox import MboxArchive
 from libratom.lib.pff import PffArchive
 from libratom.lib.report import get_file_info, scan_files
+from libratom.lib.utils import cleanup_message_body
 from libratom.models import FileReport
 
 logger = logging.getLogger(__name__)
@@ -153,44 +153,6 @@ def test_get_message_by_id(sample_pst_file):
 def test_get_message_by_id_with_bad_id(sample_pst_file):
     with PffArchive(sample_pst_file) as archive:
         assert archive.get_message_by_id(1234) is None
-
-
-@pytest.mark.skip()
-def test_get_messages_with_bad_messages(enron_dataset_part012, mock_progress_callback):
-
-    _count = 0
-    for _count, res in enumerate(
-        get_messages(
-            files=enron_dataset_part012.glob("*.pst"),
-            progress_callback=mock_progress_callback,
-        ),
-        start=1,
-    ):
-        assert res
-
-    assert _count == 11262
-
-
-@pytest.mark.skip()
-def test_extract_entities_with_bad_messages(enron_dataset_part012):
-
-    tmp_filename = "test.sqlite3"
-
-    with TemporaryDirectory() as tmpdir:
-
-        destination = Path(tmpdir) / tmp_filename
-        Session = db_init(destination)
-
-        with db_session(Session) as session:
-
-            status = extract_entities(
-                files=enron_dataset_part012.glob("*.pst"),
-                session=session,
-                spacy_model=load_spacy_model(SPACY_MODELS.en_core_web_sm)[0],
-                jobs=2,
-            )
-
-        assert status == 0
 
 
 def test_file_report_with_empty_relationship():
@@ -354,3 +316,20 @@ def test_get_attachment_metadata(mock_cls):
     message = MagicMock(identifier=123, attachments=[mock_cls(name="foo", size="0")])
 
     assert PffArchive().get_attachment_metadata(message)[0].mime_type is None
+
+
+@pytest.mark.parametrize(
+    "body, body_type, result",
+    [
+        (
+            r"{\rtf {\fonttbl {\f0 Times New Roman;}} \f0\fs60 foo} ",
+            BodyType.RTF,
+            "foo",
+        ),
+        ("<body><table><tr><td>foo</td></tr></table></body>", BodyType.HTML, "foo"),
+    ],
+)
+def test_cleanup_message_body(monkeypatch, body, body_type, result):
+    monkeypatch.setenv("RATOM_SPACY_MODEL_MAX_LENGTH", "1")
+
+    assert cleanup_message_body(body, body_type) == result
