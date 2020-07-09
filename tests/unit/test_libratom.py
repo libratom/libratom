@@ -155,6 +155,7 @@ def test_get_message_by_id_with_bad_id(sample_pst_file):
         assert archive.get_message_by_id(1234) is None
 
 
+@pytest.mark.skip()
 def test_get_messages_with_bad_messages(enron_dataset_part012, mock_progress_callback):
 
     _count = 0
@@ -170,11 +171,7 @@ def test_get_messages_with_bad_messages(enron_dataset_part012, mock_progress_cal
     assert _count == 11262
 
 
-@pytest.mark.skipif(
-    not os.getenv("CONTINUOUS_INTEGRATION", None)
-    or os.getenv("TRAVIS_OS_NAME", None) == "osx",
-    reason="Keep local test runs and OSX travis runs reasonably short",
-)
+@pytest.mark.skip()
 def test_extract_entities_with_bad_messages(enron_dataset_part012):
 
     tmp_filename = "test.sqlite3"
