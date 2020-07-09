@@ -45,7 +45,7 @@ def cleanup_message_body(body: AnyStr, body_type: BodyType) -> str:
             r"<(OMNI|omni)([^>]*?)>.*?</\1\2>(\s)*", "", body, flags=re.DOTALL
         )
 
-    return body
+    return body.strip()
 
 
 def guess_mime_type(name: str) -> str:
