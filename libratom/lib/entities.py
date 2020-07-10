@@ -35,6 +35,8 @@ def process_message(
     date: datetime,
     attachments: List[AttachmentMetadata],
     spacy_model: Language,
+    message_headers: Optional[str] = None,
+    include_msg_contents: bool = False,
 ) -> Tuple[Dict, Optional[str]]:
     """
     Job function for the worker processes

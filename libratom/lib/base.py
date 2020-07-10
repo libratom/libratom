@@ -52,5 +52,10 @@ class Archive(ABC):  # pragma: no cover
 
     @staticmethod
     @abstractmethod
+    def get_message_headers(message: Any) -> Optional[str]:
+        ...
+
+    @staticmethod
+    @abstractmethod
     def get_message_date(message: Any) -> datetime:
         ...

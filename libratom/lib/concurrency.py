@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_messages(
-    files: Iterable[Path], progress_callback: Callable, with_content=True, **kwargs
+    files: Iterable[Path], progress_callback: Callable, with_content=True, with_headers=False, **kwargs
 ) -> Generator[Dict, None, None]:
     """
     Message generator to feed a pool of processes from a directory of PST files
@@ -54,6 +54,9 @@ def get_messages(
                             body, body_type = archive.get_message_body(message)
                             res["message_body"] = body
                             res["message_body_type"] = body_type
+
+                        if with_headers:
+                            res["message_headers"] = archive.get_message_headers(message)
 
                         # Add any optional arguments
                         res.update(kwargs)

@@ -221,6 +221,19 @@ class PffArchive(Archive):
 
         return "", None
 
+    @staticmethod
+    def get_message_headers(message: pypff.message) -> Optional[str]:
+        """Takes a pypff.message object and returns its headers
+
+        Args:
+            message: A pypff.message object
+
+        Returns:
+            A string
+        """
+
+        return message.transport_headers
+
     def get_attachment_metadata(
         self, message: pypff.message
     ) -> List[AttachmentMetadata]:
