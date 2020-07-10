@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring,invalid-name,no-member,protected-access
+# pylint: disable=missing-docstring,invalid-name,protected-access
 import email
 import hashlib
 import logging
@@ -84,6 +84,7 @@ def test_get_transport_headers_from_sent_items(enron_dataset_part004):
                 try:
                     name = folder.name.lower()
                 except AttributeError:
+                    # pylint: disable=no-member
                     if folder.identifier != archive._data.root_folder.identifier:
                         raise
                     continue

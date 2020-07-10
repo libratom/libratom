@@ -86,6 +86,12 @@ def ratom():
     default=SPACY_MODELS.en_core_web_sm,
 )
 @click.option(
+    "-m",
+    "--include-messages",
+    is_flag=True,
+    help="Include message headers and bodies in the output.",
+)
+@click.option(
     "-j",
     "--jobs",
     metavar=INT_METAVAR,
@@ -105,7 +111,7 @@ def ratom():
     expose_value=False,
 )
 @click.option("-p", "--progress", is_flag=True, help="Show progress.")
-def entities(out, spacy_model, jobs, src, progress):
+def entities(out, spacy_model, include_messages, jobs, src, progress):
     """
     Extract named entities from a PST or mbox file, or a directory of one or more PST and mbox files.
 
@@ -118,7 +124,12 @@ def entities(out, spacy_model, jobs, src, progress):
     """
 
     status = subcommands.entities(
-        out=out, spacy_model_name=spacy_model, jobs=jobs, src=src, progress=progress
+        out=out,
+        spacy_model_name=spacy_model,
+        jobs=jobs,
+        src=src,
+        include_messages=include_messages,
+        progress=progress,
     )
     sys.exit(status)
 

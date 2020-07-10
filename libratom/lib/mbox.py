@@ -88,7 +88,7 @@ class MboxArchive(Archive):
         Returns the message headers as one multiline string
         """
 
-        return '\n'.join([f'{key}: {value}' for key, value in message.items()])
+        return "\n".join([f"{key}: {value}" for key, value in message.items()])
 
     def get_attachment_metadata(self, message: Message) -> List[AttachmentMetadata]:
         """
