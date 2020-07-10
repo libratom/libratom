@@ -78,9 +78,17 @@ class MboxArchive(Archive):
     @staticmethod
     def get_message_body(message: Message) -> Tuple[str, Optional[BodyType]]:
         """
-        WIP...
+        Returns the message body along with a plain body type
         """
         return MboxArchive.format_message(message), BodyType.PLAIN
+
+    @staticmethod
+    def get_message_headers(message: Message) -> str:
+        """
+        Returns the message headers as one multiline string
+        """
+
+        return '\n'.join([f'{key}: {value}' for key, value in message.items()])
 
     def get_attachment_metadata(self, message: Message) -> List[AttachmentMetadata]:
         """

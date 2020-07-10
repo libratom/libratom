@@ -1,6 +1,6 @@
 # pylint: disable=too-few-public-methods,missing-docstring,invalid-name
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from libratom.lib.database import Base
@@ -12,6 +12,8 @@ class Message(Base):
     id = Column(Integer, primary_key=True)
     pff_identifier = Column(Integer)
     date = Column(DateTime)
+    headers = Column(String)
+    body = Column(String)
     processing_start_time = Column(DateTime)
     processing_end_time = Column(DateTime)
     file_report_id = Column(Integer, ForeignKey("file_report.id"))
