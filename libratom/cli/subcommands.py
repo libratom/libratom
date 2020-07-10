@@ -32,7 +32,12 @@ OUTPUT_FILENAME_TEMPLATE = "{}_{}_{}.sqlite3"
 
 
 def entities(
-    out: Path, spacy_model_name: str, jobs: Optional[int], src: Path, progress: bool
+    out: Path,
+    spacy_model_name: str,
+    jobs: Optional[int],
+    src: Path,
+    include_messages: bool = False,
+    progress: bool = False,
 ) -> int:
     """
     Click sub command function called by `ratom entities`

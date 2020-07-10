@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring,invalid-name,too-few-public-methods,misplaced-comparison-constant,no-value-for-parameter,no-member
+# pylint: disable=missing-docstring,invalid-name,too-few-public-methods,misplaced-comparison-constant
 
 import datetime
 import os
@@ -392,7 +392,7 @@ def test_file_report(enron_dataset_part012):
         session = sessionmaker(bind=engine)()
 
         # There should be one FileReport instance fir this run
-        file_report = session.query(FileReport).one()
+        file_report = session.query(FileReport).one()  # pylint: disable=no-member
 
         # Path
         assert file_report.path == str(file)
@@ -422,6 +422,8 @@ def test_file_report(enron_dataset_part012):
 
 
 def test_process_message():
+    # pylint:disable=no-value-for-parameter
+
     filepath, message_id = "/foo/bar", 1234
     res, error = process_message(
         # Must use dictionary form if function is called explicitly
