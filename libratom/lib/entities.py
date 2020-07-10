@@ -36,7 +36,7 @@ def process_message(
     attachments: List[AttachmentMetadata],
     spacy_model: Language,
     message_headers: Optional[str] = None,
-    include_msg_contents: bool = False,
+    include_message_contents: bool = False,
 ) -> Tuple[Dict, Optional[str]]:
     """
     Job function for the worker processes
@@ -59,6 +59,10 @@ def process_message(
 
         res["processing_end_time"] = datetime.utcnow()
 
+        if include_message_contents:
+            res["message_body"] = message_body
+            res["message_headers"] = message_headers
+
         return res, None
 
     except Exception as exc:
@@ -69,6 +73,7 @@ def extract_entities(
     files: Iterable[Path],
     session: Session,
     spacy_model: Language,
+    include_message_contents: bool = False,
     jobs: int = None,
     processing_progress_callback: Callable = None,
     reporting_progress_callback: Callable = None,
@@ -101,7 +106,6 @@ def extract_entities(
         msg_count = 0
 
         try:
-
             for msg_count, worker_output in enumerate(
                 pool.imap_unordered(
                     process_message,
@@ -109,6 +113,8 @@ def extract_entities(
                         files,
                         spacy_model=spacy_model,
                         progress_callback=processing_update_progress,
+                        include_message_contents=include_message_contents,
+                        with_headers=include_message_contents,
                         **kwargs,
                     ),
                     chunksize=RATOM_MSG_BATCH_SIZE,

@@ -36,7 +36,7 @@ def entities(
     spacy_model_name: str,
     jobs: Optional[int],
     src: Path,
-    include_messages: bool = False,
+    include_message_contents: bool = False,
     progress: bool = False,
 ) -> int:
     """
@@ -134,6 +134,7 @@ def entities(
                 files=good_files,
                 session=session,
                 spacy_model=spacy_model,
+                include_message_contents=include_message_contents,
                 jobs=jobs,
                 processing_progress_callback=processing_msg_bar.update,
                 reporting_progress_callback=reporting_msg_bar.update,
