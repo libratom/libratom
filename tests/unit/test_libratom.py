@@ -330,7 +330,5 @@ def test_get_attachment_metadata(mock_cls):
         ("<body><table><tr><td>foo</td></tr></table></body>", BodyType.HTML, "foo"),
     ],
 )
-def test_cleanup_message_body(monkeypatch, body, body_type, result):
-    monkeypatch.setenv("RATOM_SPACY_MODEL_MAX_LENGTH", "1")
-
+def test_cleanup_message_body(body, body_type, result):
     assert cleanup_message_body(body, body_type) == result
