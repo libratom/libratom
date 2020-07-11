@@ -18,6 +18,7 @@ from libratom.lib.constants import (
     RATOM_DB_COMMIT_BATCH_SIZE,
     RATOM_MSG_BATCH_SIZE,
     RATOM_MSG_PROGRESS_STEP,
+    RATOM_SPACY_MODEL_MAX_LENGTH,
     BodyType,
 )
 from libratom.lib.utils import cleanup_message_body
@@ -53,7 +54,9 @@ def process_message(
 
     try:
         # Extract entities from the message
-        message_body = cleanup_message_body(message_body, message_body_type)
+        message_body = cleanup_message_body(
+            message_body, message_body_type, RATOM_SPACY_MODEL_MAX_LENGTH
+        )
         doc = spacy_model(message_body)
         res["entities"] = [(ent.text, ent.label_) for ent in doc.ents]
 
