@@ -280,7 +280,7 @@ def directory_of_mbox_files() -> Path:
 
 @pytest.fixture(scope="session")
 def sample_mbox_file(directory_of_mbox_files) -> Path:
-    yield next(directory_of_mbox_files.glob("*.mbox"))
+    yield sorted(directory_of_mbox_files.glob("*.mbox"))[0]
 
 
 @pytest.fixture(scope="session")
