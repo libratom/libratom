@@ -301,10 +301,14 @@ def test_attachments_mime_type_validation(enron_dataset, mock_progress_callback)
 
 def test_get_mbox_message_by_id(sample_mbox_file):
     with open_mail_archive(sample_mbox_file) as archive:
+
+        assert archive.message_count == 113
+
         for index, message in enumerate(archive.messages(), start=1):
             msg = archive.get_message_by_id(index)
             assert extract_message_from_archive(archive, index)
             assert archive.format_message(msg) == archive.format_message(message)
+            assert archive.get_message_headers(message)
 
 
 def test_get_mbox_message_by_id_with_bad_id(sample_mbox_file):
