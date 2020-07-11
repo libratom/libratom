@@ -168,7 +168,7 @@ def test_ratom_entities(cli_runner, params, expected):
     "params, expected",
     [
         (
-            ["-vvp", "-j2"],
+            ["-vvpm", "-j2"],
             Expected(status=0, tokens=["Creating database file", "All done"]),
         )
     ],
