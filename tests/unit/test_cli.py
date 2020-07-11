@@ -431,8 +431,8 @@ def test_process_message():
             "filepath": filepath,
             "message_id": message_id,
             "date": datetime.datetime.utcnow(),
-            "message_body": "hello",
-            "message_body_type": BodyType.PLAIN,
+            "body": "hello",
+            "body_type": BodyType.PLAIN,
             "spacy_model": None,
             "attachments": None,
         }
