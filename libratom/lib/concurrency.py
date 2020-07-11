@@ -56,13 +56,11 @@ def get_messages(
 
                         if with_content:
                             body, body_type = archive.get_message_body(message)
-                            res["message_body"] = body
-                            res["message_body_type"] = body_type
+                            res["body"] = body
+                            res["body_type"] = body_type
 
                         if with_headers:
-                            res["message_headers"] = archive.get_message_headers(
-                                message
-                            )
+                            res["headers"] = archive.get_message_headers(message)
 
                         # Add any optional arguments
                         res.update(kwargs)

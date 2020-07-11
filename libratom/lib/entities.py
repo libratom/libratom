@@ -31,12 +31,12 @@ logger = logging.getLogger(__name__)
 def process_message(
     filepath: str,
     message_id: int,
-    message_body: str,
-    message_body_type: BodyType,
+    body: str,
+    body_type: BodyType,
     date: datetime,
     attachments: List[AttachmentMetadata],
     spacy_model: Language,
-    message_headers: Optional[str] = None,
+    headers: Optional[str] = None,
     include_message_contents: bool = False,
 ) -> Tuple[Dict, Optional[str]]:
     """
@@ -55,7 +55,7 @@ def process_message(
     try:
         # Extract entities from the message
         message_body = cleanup_message_body(
-            message_body, message_body_type, RATOM_SPACY_MODEL_MAX_LENGTH
+            body, body_type, RATOM_SPACY_MODEL_MAX_LENGTH
         )
         doc = spacy_model(message_body)
         res["entities"] = [(ent.text, ent.label_) for ent in doc.ents]
@@ -63,8 +63,8 @@ def process_message(
         res["processing_end_time"] = datetime.utcnow()
 
         if include_message_contents:
-            res["message_body"] = message_body
-            res["message_headers"] = message_headers
+            res["body"] = message_body
+            res["headers"] = headers
 
         return res, None
 
