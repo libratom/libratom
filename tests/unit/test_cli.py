@@ -178,10 +178,14 @@ def test_ratom_entities(cli_runner, params, expected):
 
 
 @pytest.mark.parametrize(
-    "params, expected", [([], Expected(status=2, tokens=["Usage"]))],
+    "params, expected",
+    [
+        ([], Expected(status=2, tokens=["Usage"])),
+        ([tempfile.gettempdir()], Expected(status=0, tokens=["Not Implemented"])),
+    ],
 )
 def test_ratom_messages(cli_runner, params, expected):
-    extract_entities(params, None, cli_runner, expected)
+    extract_messages(params, None, cli_runner, expected)
 
 
 @pytest.mark.parametrize(
