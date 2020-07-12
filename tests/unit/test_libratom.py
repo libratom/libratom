@@ -324,6 +324,18 @@ def test_get_attachment_metadata(mock_cls):
 
 
 @pytest.mark.parametrize(
+    "message, body_type",
+    [
+        (Mock(), BodyType.PLAIN),
+        (Mock(plain_text_body=None), BodyType.RTF),
+        (Mock(plain_text_body=None, rtf_body=None), BodyType.HTML),
+    ],
+)
+def test_get_message_body(message, body_type):
+    assert PffArchive().get_message_body(message)[1] is body_type
+
+
+@pytest.mark.parametrize(
     "body, body_type, result",
     [
         (
