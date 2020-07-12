@@ -329,6 +329,7 @@ def test_get_attachment_metadata(mock_cls):
         (Mock(), BodyType.PLAIN),
         (Mock(plain_text_body=None), BodyType.RTF),
         (Mock(plain_text_body=None, rtf_body=None), BodyType.HTML),
+        (Mock(plain_text_body=None, rtf_body=None, html_body=None), None),
     ],
 )
 def test_get_message_body(message, body_type):
