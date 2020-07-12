@@ -89,6 +89,19 @@ def extract_entities(
     return run_ratom_subcommand("entities", options, args, runner, expected)
 
 
+def extract_messages(
+    options: List,
+    args: Union[Path, str, None],
+    runner: CliRunner,
+    expected: Optional[Expected],
+) -> Result:
+    """
+    Block of code to run a message extraction job as part of a test
+    """
+
+    return run_ratom_subcommand("messages", options, args, runner, expected)
+
+
 def generate_report(
     options: List,
     args: Union[Path, str, None],
@@ -161,6 +174,13 @@ def test_ratom(cli_runner, params, expected):
     ],
 )
 def test_ratom_entities(cli_runner, params, expected):
+    extract_entities(params, None, cli_runner, expected)
+
+
+@pytest.mark.parametrize(
+    "params, expected", [([], Expected(status=2, tokens=["Usage"]))],
+)
+def test_ratom_messages(cli_runner, params, expected):
     extract_entities(params, None, cli_runner, expected)
 
 
