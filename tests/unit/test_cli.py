@@ -156,6 +156,9 @@ def test_ratom(cli_runner, params, expected):
     assert result.exit_code == 0
     assert expected in result.output
 
+    with pytest.raises(ValueError):
+        db_session_from_cmd_out(result)
+
 
 @pytest.mark.parametrize(
     "params, expected",

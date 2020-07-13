@@ -52,13 +52,10 @@ def db_session(session_factory: sessionmaker) -> ContextManager[Session]:
         session.close()
 
 
-@contextmanager
 def db_session_from_cmd_out(result: Result) -> ContextManager[Session]:
     """
     Convenience function to inspect the DB output of a ratom command
     """
-    # TODO: DRY with db_session above
-    # pylint: disable=no-member
 
     # Find DB file in command result
     db_file = None
@@ -70,18 +67,6 @@ def db_session_from_cmd_out(result: Result) -> ContextManager[Session]:
     if not (db_file and db_file.is_file()):
         raise ValueError(f"Invalid database file: {db_file}")
 
-    # Open DB session
+    # Return session factory
     engine = create_engine(f"sqlite:///{db_file}")
-    session = sessionmaker(bind=engine)()
-
-    try:
-        yield session
-        if session.new or session.dirty or session.deleted:
-            session.commit()
-
-    except SQLAlchemyError as exc:
-        logger.exception(exc)
-        session.rollback()
-
-    finally:
-        session.close()
+    return db_session(sessionmaker(bind=engine))
