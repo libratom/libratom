@@ -13,6 +13,7 @@ import pytest
 import requests
 from requests.exceptions import ChunkedEncodingError, HTTPError
 
+from libratom.cli.utils import get_installed_model_version, install_spacy_model
 from libratom.lib.download import download_file, download_files
 
 # Skip load tests
@@ -358,3 +359,19 @@ def bad_eml_export_input(eml_export_input_json) -> Path:
             json.dump(eml_export_input_json, json_file)
 
         yield json_file_path
+
+
+@pytest.fixture(scope="function")
+def en_core_web_sm_2_3_1() -> None:
+    model, version = "en_core_web_sm", "2.3.1"
+
+    existing_version = get_installed_model_version(model)
+
+    # Install version 2.3.1
+    assert install_spacy_model(model, version) == 0
+
+    yield
+
+    # Reinstall previous version
+    if existing_version:
+        assert install_spacy_model(model, existing_version) == 0
