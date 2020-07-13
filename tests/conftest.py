@@ -368,10 +368,11 @@ def en_core_web_sm_2_3_1() -> None:
     existing_version = get_installed_model_version(model)
 
     # Install version 2.3.1
-    assert install_spacy_model(model, version) == 0
+    if existing_version != version:
+        assert install_spacy_model(model, version) == 0
 
     yield
 
     # Reinstall previous version
-    if existing_version:
+    if existing_version and existing_version != version:
         assert install_spacy_model(model, existing_version) == 0
