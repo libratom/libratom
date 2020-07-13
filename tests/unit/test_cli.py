@@ -10,7 +10,7 @@ from typing import List, Optional, Union
 import click
 import pytest
 from click.testing import CliRunner, Result
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
 
 import libratom
@@ -27,7 +27,7 @@ from libratom.lib.core import load_spacy_model
 from libratom.lib.database import db_session
 from libratom.lib.entities import process_message
 from libratom.lib.utils import BodyType
-from libratom.models import Entity, FileReport
+from libratom.models import Configuration, Entity, FileReport
 
 
 @contextmanager
@@ -294,7 +294,11 @@ def test_ratom_entities_from_mbox_files(
     ],
 )
 def test_ratom_entities_enron_004(
-    isolated_cli_runner, enron_dataset_part004, params, expected
+    isolated_cli_runner,
+    enron_dataset_part004,
+    en_core_web_sm_2_3_1,  # pylint: disable=unused-argument
+    params,
+    expected,
 ):
     result = extract_entities(
         params, enron_dataset_part004, isolated_cli_runner, expected
@@ -319,35 +323,46 @@ def test_ratom_entities_enron_004(
             assert str(entity)
 
         # Verify total entity count
-        assert session.query(Entity).count() >= 100_000
+        assert session.query(Entity).count() == 173_736
 
-        # Verify entity types found
-        results = session.query(Entity.label_).all()
+        # Verify count per entity type
+        results = (
+            session.query(Entity.label_, func.count(Entity.label_))
+            .group_by(Entity.label_)
+            .all()
+        )
 
-        # Expected entity types
-        entity_types = {
-            "CARDINAL",
-            "DATE",
-            "EVENT",
-            "FAC",
-            "GPE",
-            "LANGUAGE",
-            "LAW",
-            "LOC",
-            "MONEY",
-            "NORP",
-            "ORDINAL",
-            "ORG",
-            "PERCENT",
-            "PERSON",
-            "PRODUCT",
-            "QUANTITY",
-            "TIME",
-            "WORK_OF_ART",
+        assert results
+
+        expected_counts = {
+            "CARDINAL": 25984,
+            "DATE": 9947,
+            "EVENT": 1490,
+            "FAC": 1441,
+            "GPE": 10749,
+            "LANGUAGE": 4,
+            "LAW": 12953,
+            "LOC": 371,
+            "MONEY": 1900,
+            "NORP": 559,
+            "ORDINAL": 593,
+            "ORG": 84406,
+            "PERCENT": 1070,
+            "PERSON": 15865,
+            "PRODUCT": 1400,
+            "QUANTITY": 553,
+            "TIME": 3566,
+            "WORK_OF_ART": 885,
         }
 
-        # Confirm all types have been found
-        assert entity_types == {entity_type for entity_type, in results}
+        for entity_type, count in results:
+            assert expected_counts[entity_type] == count
+
+        # Confirm spaCy model version for this job
+        config = (
+            session.query(Configuration).filter_by(name="spacy_model_version").one()
+        )
+        assert config.value == "2.3.1"
 
 
 @pytest.mark.skipif(
