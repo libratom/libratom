@@ -23,11 +23,11 @@ from libratom.cli.utils import (
     validate_version_string,
 )
 from libratom.lib.constants import SPACY_MODELS
-from libratom.lib.core import load_spacy_model
-from libratom.lib.database import db_session
+from libratom.lib.core import load_spacy_model, open_mail_archive
+from libratom.lib.database import db_session_from_cmd_out
 from libratom.lib.entities import process_message
-from libratom.lib.utils import BodyType
-from libratom.models import Configuration, Entity, FileReport
+from libratom.lib.utils import BodyType, cleanup_message_body
+from libratom.models import Configuration, Entity, FileReport, Message
 
 
 @contextmanager
@@ -200,7 +200,24 @@ def test_ratom_messages(cli_runner, params, expected):
 def test_ratom_entities_enron_001(
     isolated_cli_runner, enron_dataset_part001, params, expected
 ):
-    extract_entities(params, enron_dataset_part001, isolated_cli_runner, expected)
+    msg_id = 2097572
+
+    # Run entity extraction job with message content flag on
+    result = extract_entities(
+        params, enron_dataset_part001, isolated_cli_runner, expected
+    )
+
+    # Get message contents from DB
+    with db_session_from_cmd_out(result) as session:
+        msg = session.query(Message).filter_by(pff_identifier=msg_id).one()
+        headers, body = msg.headers, msg.body
+
+    # Access message directly and compare
+    archive_file = list(enron_dataset_part001.glob("*.pst"))[0]
+    with open_mail_archive(archive_file) as archive:
+        message = archive.get_message_by_id(msg_id)
+        assert cleanup_message_body(*archive.get_message_body(message)) == body
+        assert archive.get_message_headers(message) == headers
 
 
 @pytest.mark.parametrize(
@@ -304,19 +321,7 @@ def test_ratom_entities_enron_004(
         params, enron_dataset_part004, isolated_cli_runner, expected
     )
 
-    # Validate output file
-    db_file = None
-    for line in result.output.splitlines():
-        if line.startswith("Creating database file:"):
-            db_file = Path(line.rsplit(maxsplit=1)[1].strip())
-
-    assert db_file.is_file()
-
-    # Open DB session
-    engine = create_engine(f"sqlite:///{db_file}")
-    Session = sessionmaker(bind=engine)
-
-    with db_session(Session) as session:
+    with db_session_from_cmd_out(result) as session:
 
         # Sanity check
         for entity in session.query(Entity)[:10]:

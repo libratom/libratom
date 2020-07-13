@@ -139,6 +139,7 @@ disable=print-statement,
         deprecated-sys-function,
         logging-fstring-interpolation,
         logging-format-interpolation,
+        fixme,
         line-too-long,  # formatting handled by black
         bad-continuation,  # formatting handled by black
         ungrouped-imports,  # import order handled by isort
