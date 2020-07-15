@@ -25,7 +25,7 @@ from libratom.lib.entities import extract_entities
 from libratom.lib.exceptions import FileTypeError
 from libratom.lib.mbox import MboxArchive
 from libratom.lib.pff import PffArchive
-from libratom.lib.report import get_file_info, scan_files
+from libratom.lib.report import get_file_info, scan_files, generate_report
 from libratom.lib.utils import cleanup_message_body
 from libratom.models import FileReport
 
@@ -185,7 +185,23 @@ def test_extract_entities_from_mbox_files(directory_of_mbox_files):
         assert status == 0
 
 
-def test_extract_entities_with_interrupt(directory_of_mbox_files):
+@pytest.mark.parametrize(
+    "function, patched, kwargs",
+    [
+        (
+            extract_entities,
+            "libratom.lib.entities.Message",
+            {
+                "spacy_model": load_spacy_model(SPACY_MODELS.en_core_web_sm)[0],
+                "jobs": 2,
+            },
+        ),
+        (generate_report, "libratom.lib.report.Message", {}),
+    ],
+)
+def test_run_function_with_interrupt(
+    directory_of_mbox_files, function, patched, kwargs
+):
 
     tmp_filename = "test.sqlite3"
 
@@ -195,15 +211,13 @@ def test_extract_entities_with_interrupt(directory_of_mbox_files):
         Session = db_init(destination)
 
         with db_session(Session) as session, patch(
-            "libratom.lib.entities.Message",
-            new=MagicMock(side_effect=KeyboardInterrupt),
+            patched, new=MagicMock(side_effect=KeyboardInterrupt),
         ):
 
-            status = extract_entities(
+            status = function(
                 files=get_set_of_files(directory_of_mbox_files),
                 session=session,
-                spacy_model=load_spacy_model(SPACY_MODELS.en_core_web_sm)[0],
-                jobs=2,
+                **kwargs,
             )
 
         assert status == 1
