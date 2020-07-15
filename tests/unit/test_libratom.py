@@ -25,7 +25,7 @@ from libratom.lib.entities import extract_entities
 from libratom.lib.exceptions import FileTypeError
 from libratom.lib.mbox import MboxArchive
 from libratom.lib.pff import PffArchive
-from libratom.lib.report import get_file_info, scan_files, generate_report
+from libratom.lib.report import generate_report, get_file_info, scan_files
 from libratom.lib.utils import cleanup_message_body
 from libratom.models import FileReport
 
