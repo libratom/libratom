@@ -145,7 +145,13 @@ def entities(
     return status
 
 
-def report(out: Path, jobs: Optional[int], src: Path, progress: bool) -> int:
+def report(
+    out: Path,
+    jobs: Optional[int],
+    src: Path,
+    include_message_contents: bool = False,
+    progress: bool = False,
+) -> int:
     """
     Click sub command function called by `ratom report`
     """
@@ -215,7 +221,10 @@ def report(out: Path, jobs: Optional[int], src: Path, progress: bool) -> int:
         ) as msg_bar:
 
             status = generate_report(
-                files=good_files, session=session, progress_callback=msg_bar.update,
+                files=good_files,
+                session=session,
+                include_message_contents=include_message_contents,
+                progress_callback=msg_bar.update,
             )
 
     logger.info("All done")

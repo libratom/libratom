@@ -16,6 +16,7 @@ from sqlalchemy.orm.session import Session
 import libratom
 from libratom.lib.concurrency import get_messages, imap_job, worker_init
 from libratom.lib.core import get_ratom_settings, open_mail_archive
+from libratom.lib.utils import cleanup_message_body
 from libratom.models import Attachment, Configuration, FileReport, Message
 
 logger = logging.getLogger(__name__)
@@ -141,6 +142,7 @@ def store_configuration_in_db(
 def generate_report(
     files: Iterable[Path],
     session: Session,
+    include_message_contents: bool = False,
     progress_callback: Optional[Callable] = None,
 ) -> int:
     """
@@ -160,13 +162,20 @@ def generate_report(
     try:
 
         for msg_info in get_messages(
-            files, progress_callback=update_progress, with_content=False
+            files,
+            progress_callback=update_progress,
+            with_content=include_message_contents,
         ):
 
             # Extract results
             message_id = msg_info.pop("message_id")
             filepath = msg_info.pop("filepath")
             attachments = msg_info.pop("attachments")
+
+            if include_message_contents:
+                msg_info["body"] = cleanup_message_body(
+                    msg_info["body"], msg_info.pop("body_type")
+                )
 
             # Create new message instance
             message = Message(pff_identifier=message_id, **msg_info)

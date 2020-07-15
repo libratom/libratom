@@ -135,54 +135,6 @@ def entities(out, spacy_model, include_message_contents, jobs, src, progress):
 
 
 @ratom.command(
-    context_settings=CONTEXT_SETTINGS, short_help="Extract message headers and bodies."
-)
-@click.option(
-    "-o",
-    "--out",
-    metavar=PATH_METAVAR,
-    default=Path.cwd,
-    callback=validate_out_path,
-    type=PathPath(resolve_path=True),
-    help=f"Write the output to {PATH_METAVAR}.",
-)
-@click.option(
-    "-j",
-    "--jobs",
-    metavar=INT_METAVAR,
-    type=click.INT,
-    help=f"Use {INT_METAVAR} concurrent jobs.",
-    default=cpu_count(),
-)
-@click.argument(
-    "src", metavar="[SOURCE]", type=PathPath(exists=True, resolve_path=True),
-)
-@click.option(
-    "-v",
-    "--verbose",
-    count=True,
-    callback=set_log_level_from_verbose,
-    help="Increase verbosity (can be repeated).",
-    expose_value=False,
-)
-@click.option("-p", "--progress", is_flag=True, help="Show progress.")
-def messages(out, jobs, src, progress):
-    """
-    Extract message headers and bodies from a PST or mbox file, or a directory of one or more PST and mbox files.
-
-    If SOURCE is a directory it will be walked recursively. Non-PST and non-mbox files will be skipped.
-
-    Upon success the result will be a new .sqlite3 database file. If an output path is provided
-    it will be either the output file's parent directory or the file itself.
-
-    If no output path is provided the file will be written in the current working directory.
-    """
-
-    click.echo(click.style("Not Implemented", fg="blue"))
-    sys.exit(0)
-
-
-@ratom.command(
     context_settings=CONTEXT_SETTINGS, short_help="Generate mailbox contents report."
 )
 @click.option(
@@ -195,6 +147,12 @@ def messages(out, jobs, src, progress):
     help=f"Write the output to {PATH_METAVAR}.",
 )
 @click.option(
+    "-m",
+    "--include-message-contents",
+    is_flag=True,
+    help="Also extract message headers and bodies.",
+)
+@click.option(
     "-j",
     "--jobs",
     metavar=INT_METAVAR,
@@ -214,7 +172,7 @@ def messages(out, jobs, src, progress):
     expose_value=False,
 )
 @click.option("-p", "--progress", is_flag=True, help="Show progress.")
-def report(out, jobs, src, progress):
+def report(out, include_message_contents, jobs, src, progress):
     """
     Generate a report (file metadata, message count, and attachment metadata)
     from a PST or mbox file, or a directory of one or more PST and mbox files.
@@ -230,7 +188,13 @@ def report(out, jobs, src, progress):
     working directory.
     """
 
-    status = subcommands.report(out=out, jobs=jobs, src=src, progress=progress)
+    status = subcommands.report(
+        out=out,
+        jobs=jobs,
+        src=src,
+        include_message_contents=include_message_contents,
+        progress=progress,
+    )
     sys.exit(status)
 
 
