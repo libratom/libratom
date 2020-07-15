@@ -165,6 +165,7 @@ def generate_report(
             files,
             progress_callback=update_progress,
             with_content=include_message_contents,
+            with_headers=include_message_contents,
         ):
 
             # Extract results
