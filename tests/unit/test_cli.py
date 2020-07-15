@@ -40,9 +40,12 @@ class Expected:
     Result object type for parametrized tests. Expand as necessary...
     """
 
-    def __init__(self, status: int, tokens: List[str]):
+    def __init__(self, status: int, tokens: List[str], **kwargs):
         self.status = status
         self.tokens = tokens
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
 
 def run_ratom_subcommand(
@@ -204,14 +207,50 @@ def test_ratom_entities_enron_001(
     [
         (
             ["-vvp", "-j2"],
-            Expected(status=0, tokens=["Creating database file", "All done"]),
-        )
+            Expected(
+                status=0,
+                tokens=["Creating database file", "All done"],
+                with_messages=False,
+            ),
+        ),
+        (
+            ["-vvpm", "-j2"],
+            Expected(
+                status=0,
+                tokens=["Creating database file", "All done"],
+                with_messages=True,
+            ),
+        ),
     ],
 )
 def test_ratom_report_enron_027(
     isolated_cli_runner, enron_dataset_part027, params, expected
 ):
-    generate_report(params, enron_dataset_part027, isolated_cli_runner, expected)
+    msg_id = 2390436
+
+    result = generate_report(
+        params, enron_dataset_part027, isolated_cli_runner, expected
+    )
+
+    with db_session_from_cmd_out(result) as session:
+        # Verify total message count
+        assert session.query(Message).count() == 9297
+
+        # Get message contents from DB
+        msg = session.query(Message).filter_by(pff_identifier=msg_id).one()
+        headers, body = msg.headers, msg.body
+
+        if expected.with_messages:
+            # Access message directly and compare
+            archive_file = list(enron_dataset_part027.glob("*.pst"))[0]
+            with open_mail_archive(archive_file) as archive:
+                message = archive.get_message_by_id(msg_id)
+                assert cleanup_message_body(*archive.get_message_body(message)) == body
+                assert archive.get_message_headers(message) == headers
+
+        else:
+            assert headers is None
+            assert body is None
 
 
 @pytest.mark.parametrize(
@@ -414,7 +453,7 @@ def test_file_report(enron_dataset_part012):
         engine = create_engine(f"sqlite:////{out}")
         session = sessionmaker(bind=engine)()
 
-        # There should be one FileReport instance fir this run
+        # There should be one FileReport instance for this run
         file_report = session.query(FileReport).one()  # pylint: disable=no-member
 
         # Path
