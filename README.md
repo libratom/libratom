@@ -67,7 +67,7 @@ To run the extractor with default settings over a PST or mbox file, or a directo
 
 Progress is displayed in a bar at the bottom of the window. To terminate a job early and shut down all workers, type Ctrl-C.
 
-The -m flag can be added to this command to write message bodies (stripped of inline attachments and HTML) and message headers to the message table:
+The -m flag can be added to this command to write message bodies (stripped of inline attachments and markup) and message headers to the message table:
 
 ```shell
 (venv) user@host:~$ ratom entities -p -m /path/to/PST-or-mbox-file-or-directory
@@ -111,7 +111,7 @@ To change the name or location used for the sqlite3 output file, use the -o flag
 (venv) user@host:~$ ratom entities -pv -o /path/to/directory/filename.db /path/to/PST-or-mbox-file-or-directory
 ```
 
-These options can all be composed. The following example specifies that progress will be shown, the second level of verbosity will be used, message headers and bodies (stripped of inline attachments and HTML) will be written to the database, 4 jobs will be run concurrently and the sqlite3 database will be named filename.db:
+These options can all be composed. The following example specifies that progress will be shown, the second level of verbosity will be used, message headers and bodies (stripped of inline attachments and markup) will be written to the database, 4 jobs will be run concurrently and the sqlite3 database will be named filename.db:
 
 ```shell
 (venv) user@host:~$ ratom entities -pvvm -j 4 -o /path/to/directory/filename.db /path/to/PST-or-mbox-file-or-directory
@@ -157,7 +157,7 @@ As an example, the following command generates a report (showing progress while 
 (venv) user@host:~$ ratom report -p /path/to/PST-or-mbox-file-or-directory
 ```
 
-Similar to the entities command, adding the -m flag will cause message bodies (stripped of inline attachments and HTML) and headers to be written to the message table:
+Similar to the entities command, adding the -m flag will cause message bodies (stripped of inline attachments and markup) and headers to be written to the message table:
 
 ```shell
 (venv) user@host:~$ ratom report -p -m /path/to/PST-or-mbox-file-or-directory
