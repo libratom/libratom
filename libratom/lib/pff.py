@@ -202,6 +202,7 @@ class PffArchive(Archive):
         body = decode(body).strip()
 
         return f"{headers}Body-Type: plain-text\r\n\r\n{body}"
+    
     @staticmethod
     def format_message_with_attachments(message: pypff.message) -> str:
         """reconstruct EML (with all attachments and inline images)
@@ -211,7 +212,6 @@ class PffArchive(Archive):
                 Returns:
                     A string
                 """
-
         def my_format_message(message: pypff.message, with_headers: bool = True) -> str:
             """Formats a pypff.message object into an RFC822 compliant string (behavior changed)
             Args:
@@ -227,7 +227,6 @@ class PffArchive(Archive):
             if isinstance(body, bytes):
                 body = str(body, encoding="utf-8", errors="replace")
             return f"{message.transport_headers if with_headers else ''}Body-Type: plain-text\r\n\r\n{body.strip()}"
-
         def try_decode_b64(html) -> str:
             html1 = html
             if html:
@@ -278,8 +277,7 @@ class PffArchive(Archive):
                     except Exception as exc:
                         cid = ""
                     msg.attach(msg_image)
-        eml = msg.as_string()
-        return eml
+        return = msg.as_string()
 
     @staticmethod
     def get_message_body(message: pypff.message) -> Tuple[str, Optional[BodyType]]:
