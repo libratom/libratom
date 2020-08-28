@@ -279,7 +279,7 @@ class PffArchive(Archive):
                         ).group(1)
                         msg_image.add_header("Content-ID", "<" + cid + ">")
                         msg_image.add_header("X-Attachment-Id", cid)
-                    except Exception:
+                    except (NameError, RuntimeError):
                         cid = ""
                     msg.attach(msg_image)
         return msg.as_string()
