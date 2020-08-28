@@ -193,10 +193,10 @@ class PffArchive(Archive):
         if not body:
             # Return headers only
             return (
-                    with_headers
-                    and message.transport_headers
-                    and message.transport_headers.strip()
-                    or ""
+                with_headers
+                and message.transport_headers
+                and message.transport_headers.strip()
+                or ""
             )
 
         headers = message.transport_headers if with_headers else ""
@@ -225,7 +225,11 @@ class PffArchive(Archive):
             # changed body type priority in favor of html
             body = message.html_body or message.rtf_body or message.plain_text_body
             if not body:
-                return message.transport_headers and message.transport_headers.strip() or ""
+                return (
+                    message.transport_headers
+                    and message.transport_headers.strip()
+                    or ""
+                )
             if isinstance(body, bytes):
                 body = str(body, encoding="utf-8", errors="replace")
             return f"{message.transport_headers if with_headers else ''}Body-Type: plain-text\r\n\r\n{body.strip()}"
@@ -250,13 +254,13 @@ class PffArchive(Archive):
         for item in eml.keys():
             if item not in ("Content-Type", "Content-Transfer-Encoding", "Body-Type"):
                 msg[item] = eml[item]
-        content = eml.get('content')
+        content = eml.get("content")
         if content is not None:
             msg.set_content(content)
         html = eml.get_payload()
         # workaround
         html = try_decode_b64(html)
-        msg.add_alternative(html, subtype='html')
+        msg.add_alternative(html, subtype="html")
         # add attachments to new object
         if message.number_of_attachments > 0:
             msg.make_mixed()
@@ -265,18 +269,26 @@ class PffArchive(Archive):
                 att_name = str(em.get_name())
                 siz = em.get_size()
                 encoded_content = em.read_buffer(siz)
-                if ('.jpg' not in att_name) and ('.png' not in att_name) and ('.jpeg' not in att_name):
+                if (
+                    (".jpg" not in att_name)
+                    and (".png" not in att_name)
+                    and (".jpeg" not in att_name)
+                ):
                     att1 = MIMEApplication(encoded_content)
                     # workaround for national characters support
-                    att1.add_header('Content-Disposition', 'attachment; filename="%s"' % att_name)
+                    att1.add_header(
+                        "Content-Disposition", 'attachment; filename="%s"' % att_name
+                    )
                     msg.attach(att1)
                 else:
                     # this is image, check if we need to add additional headers (CID)
                     msg_image = MIMEImage(encoded_content, name=att_name)
                     try:
-                        cid = att_name + re.search('cid:' + att_name + '(.+?)\" alt', html).group(1)
-                        msg_image.add_header('Content-ID', '<' + cid + '>')
-                        msg_image.add_header('X-Attachment-Id', cid)
+                        cid = att_name + re.search(
+                            "cid:" + att_name + '(.+?)" alt', html
+                        ).group(1)
+                        msg_image.add_header("Content-ID", "<" + cid + ">")
+                        msg_image.add_header("X-Attachment-Id", cid)
                     except Exception as exc:
                         cid = ""
                     msg.attach(msg_image)
@@ -319,7 +331,7 @@ class PffArchive(Archive):
         return message.transport_headers
 
     def get_attachment_metadata(
-            self, message: pypff.message
+        self, message: pypff.message
     ) -> List[AttachmentMetadata]:
         """
         Returns the metadata of all attachments in a given message
