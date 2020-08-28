@@ -277,7 +277,7 @@ class PffArchive(Archive):
                     except Exception as exc:
                         cid = ""
                     msg.attach(msg_image)
-        return = msg.as_string()
+        return msg.as_string()
 
     @staticmethod
     def get_message_body(message: pypff.message) -> Tuple[str, Optional[BodyType]]:
