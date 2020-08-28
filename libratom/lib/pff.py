@@ -136,6 +136,7 @@ class PffArchive(Archive):
         for folder in self.folders(bfs):
             for message in folder.sub_messages:
                 yield message
+
     # fmt: on
 
     def get_message_by_id(self, message_id: int) -> Optional[pypff.message]:
@@ -192,17 +193,17 @@ class PffArchive(Archive):
         if not body:
             # Return headers only
             return (
-                with_headers
-                and message.transport_headers
-                and message.transport_headers.strip()
-                or ""
+                    with_headers
+                    and message.transport_headers
+                    and message.transport_headers.strip()
+                    or ""
             )
 
         headers = message.transport_headers if with_headers else ""
         body = decode(body).strip()
 
         return f"{headers}Body-Type: plain-text\r\n\r\n{body}"
-    
+
     @staticmethod
     def format_message_with_attachments(message: pypff.message) -> str:
         """reconstruct EML (with all attachments and inline images)
@@ -212,6 +213,7 @@ class PffArchive(Archive):
                 Returns:
                     A string
                 """
+
         def my_format_message(message: pypff.message, with_headers: bool = True) -> str:
             """Formats a pypff.message object into an RFC822 compliant string (behavior changed)
             Args:
@@ -227,6 +229,7 @@ class PffArchive(Archive):
             if isinstance(body, bytes):
                 body = str(body, encoding="utf-8", errors="replace")
             return f"{message.transport_headers if with_headers else ''}Body-Type: plain-text\r\n\r\n{body.strip()}"
+
         def try_decode_b64(html) -> str:
             html1 = html
             if html:
@@ -316,7 +319,7 @@ class PffArchive(Archive):
         return message.transport_headers
 
     def get_attachment_metadata(
-        self, message: pypff.message
+            self, message: pypff.message
     ) -> List[AttachmentMetadata]:
         """
         Returns the metadata of all attachments in a given message
