@@ -239,7 +239,7 @@ class PffArchive(Archive):
             if html:
                 try:
                     html = base64.b64decode(html, validate=True)
-                except Exception as exc:
+                except Exception:
                     print("no correct base64")
                     print(html1)
                     html = html1
@@ -289,7 +289,7 @@ class PffArchive(Archive):
                         ).group(1)
                         msg_image.add_header("Content-ID", "<" + cid + ">")
                         msg_image.add_header("X-Attachment-Id", cid)
-                    except Exception as exc:
+                    except Exception:
                         cid = ""
                     msg.attach(msg_image)
         return msg.as_string()
