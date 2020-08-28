@@ -204,6 +204,7 @@ class PffArchive(Archive):
 
         return f"{headers}Body-Type: plain-text\r\n\r\n{body}"
 
+    # noinspection PyBroadException
     @staticmethod
     def format_message_with_attachments(message: pypff.message) -> str:
         """reconstruct EML (with all attachments and inline images)
@@ -234,17 +235,6 @@ class PffArchive(Archive):
                 body = str(body, encoding="utf-8", errors="replace")
             return f"{message.transport_headers if with_headers else ''}Body-Type: plain-text\r\n\r\n{body.strip()}"
 
-        def try_decode_b64(html) -> str:
-            html1 = html
-            if html:
-                try:
-                    html = base64.b64decode(html, validate=True)
-                except Exception:
-                    print("no correct base64")
-                    print(html1)
-                    html = html1
-            return html
-
         email1 = my_format_message(message, True)
         #  parse to EmailMessage object
         eml = email.message_from_string(email1, policy=email.policy.default)
@@ -259,16 +249,16 @@ class PffArchive(Archive):
             msg.set_content(content)
         html = eml.get_payload()
         # workaround
-        html = try_decode_b64(html)
+        # html = try_decode_b64(html)
         msg.add_alternative(html, subtype="html")
         # add attachments to new object
         if message.number_of_attachments > 0:
             msg.make_mixed()
             for i in range(0, message.number_of_attachments):
-                em = message.get_attachment(i)
-                att_name = str(em.get_name())
-                siz = em.get_size()
-                encoded_content = em.read_buffer(siz)
+                eml_attachment = message.get_attachment(i)
+                att_name = str(eml_attachment.get_name())
+                siz = eml_attachment.get_size()
+                encoded_content = eml_attachment.read_buffer(siz)
                 if (
                     (".jpg" not in att_name)
                     and (".png" not in att_name)
