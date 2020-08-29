@@ -2,7 +2,6 @@
 """
 PFF parsing utilities. Requires libpff.
 """
-import base64
 import email
 import logging
 import re
