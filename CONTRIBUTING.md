@@ -33,7 +33,7 @@ You will also need to run `isort -rc libratom tests` before committing, also pos
 Type hints are optional but we encourage you to use them, as we do in most of the codebase. In situations where importing types causes cyclic imports you can use [forward references](https://www.python.org/dev/peps/pep-0484/#forward-references) or [delayed evaluation](https://www.python.org/dev/peps/pep-0563/).
 
 #### Docstrings
-##### Modules Docstrings
+##### Module Docstrings
 Required. Please write a brief description of the module's contents unless its name is self-explanatory, e.g. `constants.py`.
 
 ##### Class and Method Docstrings
