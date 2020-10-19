@@ -14,7 +14,7 @@ Python library and supporting utilities to parse and process PST and mbox email 
 
 Libratom requires Python 3.6 or newer, and can be installed from the Python Package Index. Installing with **pip** will automatically install all required dependencies. These dependencies include a version of **libpff** that will be compiled automatically with C tooling during install. A selection of environments we have tested follows:
 
-*   Ubuntu 16.04LTS, 18.04LTS (and newer) releases require build-essential, python3, python3-pip, and python3-venv packages
+*   Ubuntu 16.04LTS, 18.04LTS, and 20.04LTS releases require build-essential, python3, python3-pip, and python3-venv packages
 *   macOS 10.13 (and newer) releases require Xcode 9.4.1 (or newer), Xcode CLI tools, and Python 3 installed using Homebrew (or your preferred method)
 *   Windows 10 releases require Visual Studio Code, Build Tools for Visual Studio, and Python 3 installed using Anaconda 3 (or your preferred method)
 
@@ -62,16 +62,10 @@ To see detailed help for the entity extraction command, type:
 To run the extractor with default settings over a PST or mbox file, or a directory containing one or more PST and mbox files, type the following:
 
 ```shell
-(venv) user@host:~$ ratom entities -p /path/to/PST-or-mbox-file-or-directory
-```
-
-Progress is displayed in a bar at the bottom of the window. To terminate a job early and shut down all workers, type Ctrl-C.
-
-The -m flag can be added to this command to write message bodies (stripped of inline attachments and markup) and message headers to the message table:
-
-```shell
 (venv) user@host:~$ ratom entities -p -m /path/to/PST-or-mbox-file-or-directory
 ```
+
+Note that the -m flag has been added to this command to write message bodies (stripped of inline attachments and markup) and message headers to the message table. If the -m flag is omitted, these entries will be null. Progress (enabled using the -p flag) is displayed in a bar at the bottom of the window. To terminate a job early and shut down all workers, type Ctrl-C.
 
 By default, the tool will install and use the spaCy en\_core\_web\_sm model (see the [model management](#model-management) section for how to list and install model versions). It will start as many concurrent jobs as there are virtual cores available. Entities are written to a sqlite3 file automatically named using the existing file or directory name and current datetime stamp, and with the following schema:
 
@@ -88,7 +82,7 @@ The CLI provides additional flags to tune performance, output location, and verb
 The CLI is "quiet" and produces minimal output by default. A single -v flag enables some basic output about job status. To view more detailed output (for example, if you encounter unexpected failures), you can increase the level of output verbosity with -vv (verbosity level 2):
 
 ```shell
-(venv) user@host:~$ ratom entities -p -vv /path/to/PST-or-mbox-file-or-directory
+(venv) user@host:~$ ratom entities -p -m -vv /path/to/PST-or-mbox-file-or-directory
 ```
 
 All remaining examples are presented with verbosity level 1 enabled.
@@ -96,22 +90,22 @@ All remaining examples are presented with verbosity level 1 enabled.
 To use the latest version of a different entity model, use the --spacy-model flag. The following example directs the tool to use the multi-language model:
 
 ```shell
-(venv) user@host:~$ ratom entities -pv --spacy-model xx_ent_wiki_sm /path/to/PST-or-mbox-file-or-directory
+(venv) user@host:~$ ratom entities -p -m -v --spacy-model xx_ent_wiki_sm /path/to/PST-or-mbox-file-or-directory
 ```
 
 The tool will optimize the number of jobs that may be run concurrently on your system by default, using all available processor cores. To manually set the number of jobs that may be run concurrently, use the -j flag. The following example sets the number of concurrent jobs to 2:
 
 ```shell
-(venv) user@host:~$ ratom entities -pv -j 2 /path/to/PST-or-mbox-file-or-directory
+(venv) user@host:~$ ratom entities -p -m -v -j 2 /path/to/PST-or-mbox-file-or-directory
 ```
 
 To change the name or location used for the sqlite3 output file, use the -o flag. Specifying a directory will result in the automatically named file being written to that path. Specifying a path that includes a filename will force the use of that filename. In the following example, the sqlite3 database will be named filename.db:
 
 ```shell
-(venv) user@host:~$ ratom entities -pv -o /path/to/directory/filename.db /path/to/PST-or-mbox-file-or-directory
+(venv) user@host:~$ ratom entities -p -m -v -o /path/to/directory/filename.db /path/to/PST-or-mbox-file-or-directory
 ```
 
-These options can all be composed. The following example specifies that progress will be shown, the second level of verbosity will be used, message headers and bodies (stripped of inline attachments and markup) will be written to the database, 4 jobs will be run concurrently and the sqlite3 database will be named filename.db:
+As noted earlier, some of these options can be chained for convenience. The following example specifies that progress will be shown, the second level of verbosity will be used, message headers and bodies (stripped of inline attachments and markup) will be written to the database, 4 jobs will be run concurrently and the sqlite3 database will be named filename.db:
 
 ```shell
 (venv) user@host:~$ ratom entities -pvvm -j 4 -o /path/to/directory/filename.db /path/to/PST-or-mbox-file-or-directory
@@ -219,7 +213,7 @@ Download and run the Build Tools for Visual Studio 2019 installer from <https://
 
 In the Workloads tab, check the box for "C++ build tools". Click the Install button at the bottom right of the window. Once you see "Installation Succeeded!", close the window.
 
-Visit <https://www.anaconda.com/distribution/> to download and install the 64-bit Python 3.7 Anaconda distribution. Follow the prompts, accepting all default selections.
+Visit <https://www.anaconda.com/products/individual> to download and install the 64-bit Python 3.8 Anaconda distribution. Find and double-click the downloaded executable and follow the prompts, accepting all default selections.
 
 Open the Windows Start Menu, select Anaconda3 (64-bit) and click "Anaconda Prompt (Anaconda3)".
 
@@ -260,6 +254,8 @@ To remove the environment completely, type:
 ```shell
 (base) C:\Users\username>conda env remove -n ratomenv
 ```
+
+Need additional help getting started with conda? You can find a 20-minute starter guide at <https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html>.
 
 ### macOS environment setup
 
