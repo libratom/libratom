@@ -5,6 +5,7 @@ git:
 install:
   - pip3 install --upgrade pip
   - pip3 install tox-travis codecov click click-log
+  - pip3 install --index-url https://test.pypi.org/simple/ libpff-python-ratom
   - pip3 install -e ./
 before_script: python3 ./libratom/scripts/download_edrm_zipped_files.py
 script: tox
