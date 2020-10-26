@@ -30,7 +30,8 @@ importlib-metadata==1.7.0  # via catalogue, flake8, jsonschema, pluggy, pytest, 
 isort==4.3.21             # via -r requirements-dev.in, pylint
 jsonschema==3.2.0         # via -r requirements.in
 lazy-object-proxy==1.4.3  # via astroid
-libpff-python-ratom==20190725  # via -r requirements.in
+-i https://test.pypi.org/simple/
+libpff-python-ratom  # via -r requirements.in
 mccabe==0.6.1             # via flake8, pylint
 mock==4.0.2               # via -r requirements-dev.in
 more-itertools==8.4.0     # via pytest
