@@ -20,7 +20,7 @@ humanfriendly==8.2        # via -r requirements.in
 idna==2.10                # via requests
 importlib-metadata==1.7.0  # via catalogue, jsonschema
 jsonschema==3.2.0         # via -r requirements.in
-libpff-python-ratom==20190725  # via -r requirements.in
+# libpff-python-ratom==20190725  # via -r requirements.in
 murmurhash==1.0.2         # via preshed, spacy, thinc
 numpy==1.19.0             # via blis, spacy, thinc
 packaging==20.4           # via -r requirements.in
