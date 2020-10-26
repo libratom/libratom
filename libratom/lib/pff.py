@@ -10,9 +10,9 @@ from io import IOBase
 from pathlib import Path
 from typing import Generator, List, Optional, Tuple, Union
 
-import pypff
 from treelib import Tree
 
+import pypff
 from libratom.data import MIME_TYPE_REGISTRIES
 from libratom.lib.base import Archive, AttachmentMetadata
 from libratom.lib.constants import BodyType
