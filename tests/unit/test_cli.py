@@ -316,8 +316,9 @@ def test_ratom_entities_from_mbox_files(
 
 
 @pytest.mark.skipif(
-    not os.getenv("CONTINUOUS_INTEGRATION", None),
-    reason="Keep local test runs reasonably short",
+    not os.getenv("CONTINUOUS_INTEGRATION", None)
+    or os.getenv("TRAVIS_OS_NAME", None) == "osx",
+    reason="Keep local test runs and OSX travis runs reasonably short",
 )
 @pytest.mark.parametrize(
     "params, expected",
