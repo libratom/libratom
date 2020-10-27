@@ -94,8 +94,7 @@ def test_get_transport_headers_from_sent_items(enron_dataset_part004):
 
 
 def test_extract_message_attachments(enron_dataset_part002):
-    """Checking 3 known attachments, to validate the attachment extraction process
-    """
+    """Checking 3 known attachments, to validate the attachment extraction process"""
 
     digests = {
         47685: "d48232614b01e56014293854abbb5db3",
@@ -211,7 +210,8 @@ def test_run_function_with_interrupt(
         Session = db_init(destination)
 
         with db_session(Session) as session, patch(
-            patched, new=MagicMock(side_effect=KeyboardInterrupt),
+            patched,
+            new=MagicMock(side_effect=KeyboardInterrupt),
         ):
 
             status = function(

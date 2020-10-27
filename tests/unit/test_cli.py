@@ -254,7 +254,8 @@ def test_ratom_report_enron_027(
 
 
 @pytest.mark.parametrize(
-    "params, expected", [(["-v"], Expected(status=0, tokens=["No PST file found"]))],
+    "params, expected",
+    [(["-v"], Expected(status=0, tokens=["No PST file found"]))],
 )
 def test_ratom_report_empty(isolated_cli_runner, params, expected):
     # Make new empty dir

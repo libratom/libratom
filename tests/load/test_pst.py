@@ -35,8 +35,7 @@ def test_extract_enron_messages(enron_dataset):
 
 
 def test_extract_enron_messages_from_file(enron_dataset_file):
-    """Similar to test_extract_enron_messages but with parametrized fixture
-    """
+    """Similar to test_extract_enron_messages but with parametrized fixture"""
     try:
         # Iterate over messages and copy message string
         with PffArchive(enron_dataset_file) as archive:

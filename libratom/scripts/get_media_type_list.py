@@ -41,8 +41,7 @@ click_log.basic_config(logging.getLogger())
     help=f"Write the output to {PATH_METAVAR}.",
 )
 def download_media_type_files(out) -> None:
-    """Download media type files from https://www.iana.org/ and write a JSON file of all media types.
-    """
+    """Download media type files from https://www.iana.org/ and write a JSON file of all media types."""
 
     media_types = []
 

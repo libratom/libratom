@@ -266,7 +266,8 @@ def emldump(out: Path, location: Path, src: Path) -> int:
 
         except Exception as exc:
             logger.warning(
-                f"Skipping {location / filename}, reason: {exc}", exc_info=True,
+                f"Skipping {location / filename}, reason: {exc}",
+                exc_info=True,
             )
 
     return 0
