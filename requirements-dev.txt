@@ -6,81 +6,81 @@
 #
 appdirs==1.4.4            # via black, virtualenv
 astroid==2.4.2            # via pylint
-attrs==19.3.0             # via black, flake8-bugbear, jsonschema, pytest
-beautifulsoup4==4.9.1     # via -r requirements.in
-black==19.10b0            # via -r requirements-dev.in
-blessed==1.17.8           # via enlighten
+attrs==20.2.0             # via flake8-bugbear, jsonschema, pytest
+beautifulsoup4==4.9.3     # via -r requirements.in
+black==20.8b1             # via -r requirements-dev.in
+blessed==1.17.11          # via enlighten
 blis==0.4.1               # via spacy, thinc
 catalogue==1.0.0          # via spacy, thinc
 certifi==2020.6.20        # via requests
 chardet==3.0.4            # via requests
 click-log==0.3.2          # via -r requirements.in
 click==7.1.2              # via -r requirements.in, black, click-log, pip-tools, pytest-click
-coverage==5.2             # via pytest-cov
+coverage==5.3             # via pytest-cov
 cymem==2.0.3              # via preshed, spacy, thinc
 distlib==0.3.1            # via virtualenv
-enlighten==1.6.0          # via -r requirements.in
+enlighten==1.6.2          # via -r requirements.in
 filelock==3.0.12          # via tox, virtualenv
 flake8-bugbear==20.1.4    # via -r requirements-dev.in
-flake8==3.8.3             # via -r requirements-dev.in, flake8-bugbear
+flake8==3.8.4             # via -r requirements-dev.in, flake8-bugbear
 future==0.18.2            # via treelib
 humanfriendly==8.2        # via -r requirements.in
 idna==2.10                # via requests
-importlib-metadata==1.7.0  # via catalogue, flake8, jsonschema, pluggy, pytest, tox, virtualenv
-isort==4.3.21             # via -r requirements-dev.in, pylint
+iniconfig==1.1.1          # via pytest
+isort==5.6.4              # via -r requirements-dev.in, pylint
 jsonschema==3.2.0         # via -r requirements.in
 lazy-object-proxy==1.4.3  # via astroid
 libpff-python-ratom==20200808  # via -r requirements.in
 mccabe==0.6.1             # via flake8, pylint
 mock==4.0.2               # via -r requirements-dev.in
-more-itertools==8.4.0     # via pytest
 murmurhash==1.0.2         # via preshed, spacy, thinc
-numpy==1.19.0             # via blis, spacy, thinc
+mypy-extensions==0.4.3    # via black
+numpy==1.19.2             # via blis, spacy, thinc
 packaging==20.4           # via -r requirements.in, pytest, pytest-sugar, tox
 pathspec==0.8.0           # via black
-pbr==5.4.5                # via -r requirements.in
-pip-tools==5.2.1          # via -r requirements-dev.in
+pbr==5.5.1                # via -r requirements.in
+pip-tools==5.3.1          # via -r requirements-dev.in
 plac==1.1.3               # via spacy, thinc
 pluggy==0.13.1            # via pytest, tox
 preshed==3.0.2            # via spacy, thinc
-psutil==5.7.0             # via -r requirements.in
+psutil==5.7.3             # via -r requirements.in
 py-cpuinfo==7.0.0         # via pytest-benchmark
 py==1.9.0                 # via pytest, tox
 pycodestyle==2.6.0        # via flake8
 pyflakes==2.2.0           # via flake8
-pylint==2.5.3             # via -r requirements-dev.in
+pylint==2.6.0             # via -r requirements-dev.in
 pyparsing==2.4.7          # via packaging
-pyrsistent==0.16.0        # via jsonschema
-pysnooper==0.4.1          # via -r requirements-dev.in
+pyrsistent==0.17.3        # via jsonschema
+pysnooper==0.4.2          # via -r requirements-dev.in
 pytest-benchmark==3.2.3   # via -r requirements-dev.in
-pytest-click==0.3         # via -r requirements-dev.in
-pytest-cov==2.10.0        # via -r requirements-dev.in
-pytest-mock==3.2.0        # via -r requirements-dev.in
+pytest-click==1.0.2       # via -r requirements-dev.in
+pytest-cov==2.10.1        # via -r requirements-dev.in
+pytest-mock==3.3.1        # via -r requirements-dev.in
 pytest-sugar==0.9.4       # via -r requirements-dev.in
-pytest==5.4.3             # via -r requirements-dev.in, pytest-benchmark, pytest-click, pytest-cov, pytest-mock, pytest-sugar
-regex==2020.6.8           # via black
+pytest==6.1.1             # via -r requirements-dev.in, pytest-benchmark, pytest-click, pytest-cov, pytest-mock, pytest-sugar
+regex==2020.10.23         # via black
 requests==2.24.0          # via -r requirements-dev.in, spacy
-six==1.15.0               # via astroid, blessed, jsonschema, packaging, pip-tools, pyrsistent, tox, virtualenv
+six==1.15.0               # via astroid, blessed, jsonschema, packaging, pip-tools, tox, virtualenv
 soupsieve==2.0.1          # via beautifulsoup4
-spacy==2.3.1              # via -r requirements.in
-sqlalchemy==1.3.18        # via -r requirements.in
+spacy==2.3.2              # via -r requirements.in
+sqlalchemy==1.3.20        # via -r requirements.in
 srsly==1.0.2              # via spacy, thinc
-striprtf==0.0.10          # via -r requirements.in
+striprtf==0.0.11          # via -r requirements.in
 tabulate==0.8.7           # via -r requirements.in
 termcolor==1.1.0          # via pytest-sugar
 thinc==7.4.1              # via spacy
-toml==0.10.1              # via black, pylint, tox
-tox==3.16.1               # via -r requirements-dev.in
-tqdm==4.47.0              # via spacy, thinc
+toml==0.10.1              # via black, pylint, pytest, tox
+tox==3.20.1               # via -r requirements-dev.in
+tqdm==4.51.0              # via spacy, thinc
 treelib==1.6.1            # via -r requirements.in
-typed-ast==1.4.1          # via astroid, black
-urllib3==1.25.9           # via requests
-virtualenv==20.0.26       # via tox
-wasabi==0.7.0             # via spacy, thinc
-wcwidth==0.2.5            # via blessed, pytest
-wheel==0.34.2             # via -r requirements-dev.in
+typed-ast==1.4.1          # via black
+typing-extensions==3.7.4.3  # via black
+urllib3==1.25.11          # via requests
+virtualenv==20.1.0        # via tox
+wasabi==0.8.0             # via spacy, thinc
+wcwidth==0.2.5            # via blessed
+wheel==0.35.1             # via -r requirements-dev.in
 wrapt==1.12.1             # via astroid
-zipp==3.1.0               # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
