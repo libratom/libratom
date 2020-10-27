@@ -1,8 +1,10 @@
+## Contributing Guidelines
+
 Thank you for your interest in contributing to libratom. We look forward to your pull request. This document describes the main aspects of our development and review process.
 
 Whenever a pull request is submitted or updated it triggers a build in our [CI environment](https://travis-ci.org/github/libratom/libratom). The build must be successful before the pull request can be reviewed.
 
-#### Environment
+#### Local setup
 The first thing you will likely want to do after you've forked libratom and cloned it locally is to set up a development environment. You can follow or adapt the steps below (from the root libratom directory):
 1. Create and activate a virtual environment
     ```
@@ -27,7 +29,7 @@ We use [tox](https://tox.readthedocs.io/en/latest/) to run our test suite. We re
 #### Code Style
 We use [black](https://black.readthedocs.io/en/stable/) as our code formatter. You can run it locally before committing or set it as a pre-commit hook. If necessary you can turn off formatting for a specific block of code with `# fmt: off` and back on with `# fmt: on`.
 
-You will also need to run `isort -rc libratom tests` before committing, also possibly as a pre-commit hook. See isort's [documentation](https://pycqa.github.io/isort/) for more information.
+You will also need to run `isort libratom tests` before committing, also possibly as a pre-commit hook. See isort's [documentation](https://pycqa.github.io/isort/) for more information.
 
 #### Type Hints
 Type hints are optional but we encourage you to use them, as we do in most of the codebase. In situations where importing types causes cyclic imports you can use [forward references](https://www.python.org/dev/peps/pep-0484/#forward-references) or [delayed evaluation](https://www.python.org/dev/peps/pep-0563/).
@@ -50,7 +52,7 @@ This can mean fixing the code or adjusting the linter. Especially with pylint. A
 Where to include linter silencing comments is up to you. Technically it is preferable to have them inline or at the block level to limit their scope, but some might argue that it clutters the code. Having them at the top of the module keeps the code cleaner at the expense of granularity. It's also fine to use a mix of the two: some issues silenced module-wide and some inline.
 
 #### Unit Tests
-Any new code is expected to come tested and covered. If you need to test an internal piece of code that depends on its context, don't hesitate to use mock objects/functions for the context.
+Any new code is expected to come tested and covered. If you need to test an internal piece of code that depends on its context or a hard to reach code path, don't hesitate to use mock objects/functions for the context.
 
 The coverage targets are 90% overall, 85% for the code introduced in a pull request. The few parts of the codebase currently not covered are mostly hard to reach exception handling code.
 
