@@ -100,7 +100,9 @@ def ratom():
     default=cpu_count(),
 )
 @click.argument(
-    "src", metavar="[SOURCE]", type=PathPath(exists=True, resolve_path=True),
+    "src",
+    metavar="[SOURCE]",
+    type=PathPath(exists=True, resolve_path=True),
 )
 @click.option(
     "-v",
@@ -161,7 +163,9 @@ def entities(out, spacy_model, include_message_contents, jobs, src, progress):
     default=cpu_count(),
 )
 @click.argument(
-    "src", metavar="[SOURCE]", type=PathPath(exists=True, resolve_path=True),
+    "src",
+    metavar="[SOURCE]",
+    type=PathPath(exists=True, resolve_path=True),
 )
 @click.option(
     "-v",

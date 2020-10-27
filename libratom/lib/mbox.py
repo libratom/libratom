@@ -123,13 +123,15 @@ class MboxArchive(Archive):
         # Set up children
         for i, message in enumerate(self.messages(), start=1):
             self._tree.create_node(
-                f"Message index: {i}", i, parent=0, data=message,
+                f"Message index: {i}",
+                i,
+                parent=0,
+                data=message,
             )
 
     @property
     def tree(self) -> Tree:
-        """Returns the object's internal tree structure
-        """
+        """Returns the object's internal tree structure"""
 
         try:
             return self._tree

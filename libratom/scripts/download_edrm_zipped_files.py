@@ -33,8 +33,7 @@ click_log.basic_config(logging.getLogger())
     expose_value=False,
 )
 def download_edrm_zipped_files() -> None:
-    """Download edrm files into CACHED_ENRON_DATA_DIR.
-    """
+    """Download edrm files into CACHED_ENRON_DATA_DIR."""
 
     names = [
         "albert_meyers",

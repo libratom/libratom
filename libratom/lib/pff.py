@@ -151,8 +151,7 @@ class PffArchive(Archive):
 
     @property
     def tree(self) -> Tree:
-        """Returns the object's internal tree structure
-        """
+        """Returns the object's internal tree structure"""
 
         try:
             return self._tree
@@ -268,7 +267,9 @@ class PffArchive(Archive):
 
                 res.append(
                     AttachmentMetadata(
-                        name=attachment.name, mime_type=mime_type, size=attachment.size,
+                        name=attachment.name,
+                        mime_type=mime_type,
+                        size=attachment.size,
                     )
                 )
 
