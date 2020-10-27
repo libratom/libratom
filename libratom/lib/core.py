@@ -37,8 +37,8 @@ def open_mail_archive(path: Path, **kwargs) -> Optional[Union[PffArchive, MboxAr
 
     try:
         archive_class = extension_type_mapping[path.suffix]
-    except KeyError:
-        raise FileTypeError(f"Unable to open {path}. Unsupported file type.")
+    except KeyError as exc:
+        raise FileTypeError(f"Unable to open {path}. Unsupported file type.") from exc
 
     return archive_class(path, **kwargs)
 
