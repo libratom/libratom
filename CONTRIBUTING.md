@@ -4,7 +4,7 @@ Thank you for your interest in contributing to libratom. We look forward to your
 
 Whenever a pull request is submitted or updated it triggers a build in our [CI environment](https://travis-ci.org/github/libratom/libratom). The build must be successful before the pull request can be reviewed.
 
-#### Local setup
+#### Local Setup
 The first thing you will likely want to do after you've forked libratom and cloned it locally is to set up a development environment. You can follow or adapt the steps below (from the root libratom directory):
 1. Create and activate a virtual environment
     ```
@@ -44,7 +44,7 @@ Required for classes and public methods. For method docstrings please describe t
 ##### Function Docstrings
 Optional. Function docstrings can help the code review process, but for internal code that's subject to change we don't require them. We prefer that you use type hints and keep the functions short and simple. 
 
-#### Static analysis
+#### Static Analysis
 Both flake8 and pylint must run without issue (meaning a pylint score of 10/10).
 
 This can mean fixing the code or adjusting the linter. Especially with pylint. As long as you can provide a rationale for it you are welcome to edit the rules in .pylintrc, or to silence it temporarily with `# pylint: disable=XXX` comments.
