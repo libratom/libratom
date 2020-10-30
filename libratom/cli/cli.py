@@ -26,7 +26,7 @@ from libratom.cli.utils import (
     validate_out_path,
     validate_version_string,
 )
-from libratom.lib.constants import SPACY_MODEL_NAMES, SPACY_MODELS
+from libratom.lib.constants import ASCII_ART_NAME, SPACY_MODEL_NAMES, SPACY_MODELS
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +40,7 @@ def set_log_level_from_verbose(ctx, param, value):
     """
     if value > 1:
         level = logging.DEBUG
+        click.echo(ASCII_ART_NAME)
     elif value > 0:
         level = logging.INFO
     else:
