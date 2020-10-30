@@ -1,6 +1,7 @@
 # pylint: disable=missing-docstring
 
 import os
+import textwrap
 from collections import namedtuple
 from enum import Enum, auto
 
@@ -89,3 +90,16 @@ class BodyType(Enum):
     PLAIN = auto()
     RTF = auto()
     HTML = auto()
+
+
+# fmt: off
+ASCII_ART_NAME = textwrap.dedent("""
+ ___      ___  _______  ______    _______  _______  _______  __   __ 
+|   |    |   ||  _    ||    _ |  |   _   ||       ||       ||  |_|  |
+|   |    |   || |_|   ||   | ||  |  |_|  ||_     _||   _   ||       |
+|   |    |   ||       ||   |_||_ |       |  |   |  |  | |  ||       |
+|   |___ |   ||  _   | |    __  ||       |  |   |  |  |_|  ||       |
+|       ||   || |_|   ||   |  | ||   _   |  |   |  |       || ||_|| |
+|_______||___||_______||___|  |_||__| |__|  |___|  |_______||_|   |_|
+""")
+# fmt: on
