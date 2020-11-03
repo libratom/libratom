@@ -31,7 +31,7 @@ def get_ratom_settings() -> List[Tuple[str, Union[int, str]]]:
     ]
 
 
-def open_mail_archive(path: Path, **kwargs) -> Optional[Union[PffArchive, MboxArchive]]:
+def open_mail_archive(path: Path) -> Optional[Union[PffArchive, MboxArchive]]:
 
     extension_type_mapping = {".pst": PffArchive, ".mbox": MboxArchive}
 
@@ -40,7 +40,7 @@ def open_mail_archive(path: Path, **kwargs) -> Optional[Union[PffArchive, MboxAr
     except KeyError as exc:
         raise FileTypeError(f"Unable to open {path}. Unsupported file type.") from exc
 
-    return archive_class(path, **kwargs)
+    return archive_class(path)
 
 
 def get_set_of_files(path: Path) -> Set[Path]:
