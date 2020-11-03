@@ -129,8 +129,11 @@ class PffArchive(Archive):
         """
 
         for folder in self.folders(bfs):
-            for message in folder.sub_messages:
-                yield message
+            try:
+                for message in folder.sub_messages:
+                    yield message
+            except OSError as exc:
+                logger.debug(exc, exc_info=True)
     # fmt: on
 
     def get_message_by_id(self, message_id: int) -> Optional[pypff.message]:
@@ -167,7 +170,14 @@ class PffArchive(Archive):
             An int
         """
 
-        return sum(folder.number_of_sub_messages for folder in self.folders())
+        def safe_count(folder: pypff.folder) -> int:
+            try:
+                return folder.number_of_sub_messages
+            except OSError as exc:
+                logger.debug(exc, exc_info=True)
+            return 0
+
+        return sum(safe_count(folder) for folder in self.folders())
 
     @staticmethod
     def format_message(message: pypff.message, with_headers: bool = True) -> str:
