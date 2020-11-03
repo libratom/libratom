@@ -33,7 +33,11 @@ def get_ratom_settings() -> List[Tuple[str, Union[int, str]]]:
 
 def open_mail_archive(path: Path) -> Optional[Union[PffArchive, MboxArchive]]:
 
-    extension_type_mapping = {".pst": PffArchive, ".mbox": MboxArchive}
+    extension_type_mapping = {
+        ".pst": PffArchive,
+        ".ost": PffArchive,
+        ".mbox": MboxArchive,
+    }
 
     try:
         archive_class = extension_type_mapping[path.suffix]
