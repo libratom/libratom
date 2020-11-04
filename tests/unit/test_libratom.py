@@ -32,6 +32,20 @@ from libratom.models import FileReport
 logger = logging.getLogger(__name__)
 
 
+class BadPffFolder(MagicMock):
+    """
+    Mock folder class to simulate libpff errors
+    """
+
+    @property
+    def number_of_sub_messages(self):
+        raise OSError
+
+    @property
+    def sub_messages(self):
+        raise OSError
+
+
 def test_version():
     assert libratom.__version__
 
@@ -363,3 +377,13 @@ def test_get_message_body(message, body_type):
 )
 def test_cleanup_message_body(body, body_type, result):
     assert cleanup_message_body(body, body_type) == result
+
+
+def test_pff_archive_with_bad_folders(sample_pst_file):
+    with PffArchive(sample_pst_file) as archive:
+        with patch.object(archive, "folders") as mock_folders:
+            mock_folders.return_value = [BadPffFolder()]
+
+            # No uncaught exception
+            assert archive.message_count == 0
+            assert not list(archive.messages())
