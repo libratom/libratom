@@ -27,6 +27,9 @@ jobs:
     - os: linux
       dist: bionic
       python: 3.8
+    - os: linux
+      dist: focal
+      python: 3.9
     - os: osx
       osx_image: xcode11.2
       language: generic
