@@ -34,7 +34,7 @@ class PathPath(click.Path):
 
 class MockContext(AbstractContextManager):
     """
-    A no-op context manager for use in python 3.6 and newer
+    A no-op context manager
     It accepts an arbitrary number of keyword arguments and returns an object whose attributes are all None
 
     Modified from https://github.com/python/cpython/blob/v3.7.4/Lib/contextlib.py#L685-L703
