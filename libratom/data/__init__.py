@@ -3,12 +3,7 @@ Non-code files
 """
 
 import json
-
-try:
-    from importlib import resources
-except ImportError:
-    # backport version for Python 3.6
-    import importlib_resources as resources
+from importlib import resources
 
 
 # Load JSON data for direct access

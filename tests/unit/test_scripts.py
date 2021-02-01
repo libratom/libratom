@@ -1,6 +1,7 @@
 # pylint: disable=missing-docstring
 import filecmp
 import os
+from importlib import resources
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -8,12 +9,6 @@ import pytest
 
 from libratom import data
 from libratom.scripts.get_media_type_list import download_media_type_files
-
-try:
-    from importlib import resources
-except ImportError:
-    # backport version for Python 3.6
-    import importlib_resources as resources
 
 
 @pytest.mark.parametrize("params, expected", [(["-h"], "Usage"), (["--help"], "Usage")])
