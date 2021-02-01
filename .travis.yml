@@ -35,9 +35,17 @@ jobs:
       language: generic
       env: TOXENV=py37
     - os: osx
+      osx_image: xcode11.6
+      language: generic
+      env: TOXENV=py38
+    - os: osx
       osx_image: xcode12
       language: generic
       env: TOXENV=py38
+    - os: osx
+      osx_image: xcode12.2
+      language: generic
+      env: TOXENV=py39
 
     # RELEASE
     - stage: release
