@@ -97,7 +97,7 @@ spacy-legacy==3.0.1
     # via spacy
 spacy==3.0.0
     # via -r requirements.in
-sqlalchemy==1.3.22
+sqlalchemy==1.3.23
     # via -r requirements.in
 srsly==2.4.0
     # via
@@ -128,7 +128,3 @@ wcwidth==0.2.5
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
-
-
-# PY36
-importlib_resources; python_version < '3.7'
