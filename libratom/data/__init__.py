@@ -5,7 +5,6 @@ Non-code files
 import json
 from importlib import resources
 
-
 # Load JSON data for direct access
 with resources.path(__name__, "media_types.json") as media_types_file, open(
     media_types_file, "r"
