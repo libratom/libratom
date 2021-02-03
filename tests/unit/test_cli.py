@@ -385,7 +385,10 @@ def test_ratom_entities_enron_004(
 
         # Confirm spaCy model version for this job
         assert (
-            session.query(Configuration).filter_by(name="spacy_model_version").one()
+            session.query(Configuration)
+            .filter_by(name="spacy_model_version")
+            .one()
+            .value
             == "3.0.0"
         )
 
