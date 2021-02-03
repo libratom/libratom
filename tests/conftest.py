@@ -362,12 +362,12 @@ def bad_eml_export_input(eml_export_input_json) -> Path:
 
 
 @pytest.fixture(scope="function")
-def en_core_web_sm_2_3_1() -> None:
-    model, version = "en_core_web_sm", "2.3.1"
+def en_core_web_sm_3_0_0() -> None:
+    model, version = "en_core_web_sm", "3.0.0"
 
     existing_version = get_installed_model_version(model)
 
-    # Install version 2.3.1
+    # Install version 3.0.0
     if existing_version != version:
         assert install_spacy_model(model, version) == 0
 

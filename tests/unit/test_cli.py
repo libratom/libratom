@@ -333,7 +333,7 @@ def test_ratom_entities_from_mbox_files(
 def test_ratom_entities_enron_004(
     isolated_cli_runner,
     enron_dataset_part004,
-    en_core_web_sm_2_3_1,  # pylint: disable=unused-argument
+    en_core_web_sm_3_0_0,  # pylint: disable=unused-argument
     params,
     expected,
 ):
@@ -348,7 +348,7 @@ def test_ratom_entities_enron_004(
             assert str(entity)
 
         # Verify total entity count
-        assert session.query(Entity).count() == 173_736
+        assert session.query(Entity).count() == 188276
 
         # Verify count per entity type
         results = (
@@ -360,34 +360,34 @@ def test_ratom_entities_enron_004(
         assert results
 
         expected_counts = {
-            "CARDINAL": 25984,
-            "DATE": 9947,
-            "EVENT": 1490,
-            "FAC": 1441,
-            "GPE": 10749,
-            "LANGUAGE": 4,
-            "LAW": 12953,
-            "LOC": 371,
-            "MONEY": 1900,
-            "NORP": 559,
-            "ORDINAL": 593,
-            "ORG": 84406,
-            "PERCENT": 1070,
-            "PERSON": 15865,
-            "PRODUCT": 1400,
-            "QUANTITY": 553,
-            "TIME": 3566,
-            "WORK_OF_ART": 885,
+            "CARDINAL": 29954,
+            "DATE": 8078,
+            "EVENT": 54,
+            "FAC": 234,
+            "GPE": 6539,
+            "LANGUAGE": 1,
+            "LAW": 191,
+            "LOC": 306,
+            "MONEY": 1609,
+            "NORP": 431,
+            "ORDINAL": 520,
+            "ORG": 120699,
+            "PERCENT": 827,
+            "PERSON": 14532,
+            "PRODUCT": 660,
+            "QUANTITY": 95,
+            "TIME": 2976,
+            "WORK_OF_ART": 570,
         }
 
         for entity_type, count in results:
             assert expected_counts[entity_type] == count
 
         # Confirm spaCy model version for this job
-        config = (
+        assert (
             session.query(Configuration).filter_by(name="spacy_model_version").one()
+            == "3.0.0"
         )
-        assert config.value == "2.3.1"
 
 
 @pytest.mark.skipif(
