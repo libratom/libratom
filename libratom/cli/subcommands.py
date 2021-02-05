@@ -90,11 +90,12 @@ def entities(
 
     # Get spaCy model
     logger.info(f"Loading spaCy model: {spacy_model_name}")
-    spacy_model, spacy_model_version = load_spacy_model(spacy_model_name)
+    spacy_model = load_spacy_model(spacy_model_name)
     if not spacy_model:
         return 1
 
     # Try to see if we're using a stale model version
+    spacy_model_version = spacy_model.meta.get("version")
     try:
         latest_version = get_spacy_models()[spacy_model_name][0]
         if parse(latest_version) > parse(spacy_model_version):

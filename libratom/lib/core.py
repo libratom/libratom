@@ -89,7 +89,7 @@ def get_spacy_models() -> Dict[str, List[str]]:
     return releases
 
 
-def load_spacy_model(spacy_model_name: str) -> Tuple[Optional[Language], Optional[str]]:
+def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
     """
     Loads and returns a given spaCy model
 
@@ -115,7 +115,7 @@ def load_spacy_model(spacy_model_name: str) -> Tuple[Optional[Language], Optiona
                 spacy.cli.download(spacy_model_name, False, "--quiet")
             except SystemExit:
                 logger.error(f"Unable to install spacy model {spacy_model_name}")
-                return None, None
+                return None
 
             # Now try loading it again
             reload(pkg_resources)
@@ -123,21 +123,12 @@ def load_spacy_model(spacy_model_name: str) -> Tuple[Optional[Language], Optiona
 
         else:
             logger.exception(exc)
-            return None, None
-
-    # Try to get spaCy model version
-    try:
-        spacy_model_version = pkg_resources.get_distribution(spacy_model_name).version
-    except Exception as exc:
-        spacy_model_version = None
-        logger.info(
-            f"Unable to get spaCy model version for {spacy_model_name}, error: {exc}"
-        )
+            return None
 
     # Set text length limit for model
     spacy_model.max_length = RATOM_SPACY_MODEL_MAX_LENGTH
 
-    return spacy_model, spacy_model_version
+    return spacy_model
 
 
 def extract_message_from_archive(archive: Archive, msg_id: int) -> Message:
