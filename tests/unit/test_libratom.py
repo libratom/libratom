@@ -191,7 +191,7 @@ def test_extract_entities_from_mbox_files(directory_of_mbox_files):
             status = extract_entities(
                 files=get_set_of_files(directory_of_mbox_files),
                 session=session,
-                spacy_model=load_spacy_model(SPACY_MODELS.en_core_web_sm)[0],
+                spacy_model=load_spacy_model(SPACY_MODELS.en_core_web_sm),
                 jobs=2,
             )
 
@@ -205,7 +205,7 @@ def test_extract_entities_from_mbox_files(directory_of_mbox_files):
             extract_entities,
             "libratom.lib.entities.Message",
             {
-                "spacy_model": load_spacy_model(SPACY_MODELS.en_core_web_sm)[0],
+                "spacy_model": load_spacy_model(SPACY_MODELS.en_core_web_sm),
                 "jobs": 2,
             },
         ),
