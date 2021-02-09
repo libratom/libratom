@@ -6,6 +6,7 @@ import tempfile
 from contextlib import contextmanager
 from pathlib import Path
 from typing import List, Optional, Union
+from unittest.mock import MagicMock, patch
 
 import click
 import pytest
@@ -17,6 +18,7 @@ import libratom
 import libratom.cli.subcommands as subcommands
 from libratom.cli.cli import ratom
 from libratom.cli.utils import (
+    install_spacy_model,
     list_spacy_models,
     validate_eml_export_input,
     validate_existing_dir,
@@ -560,3 +562,9 @@ def test_ratom_emldump(cli_runner, enron_dataset_part004, good_eml_export_input)
         ]
 
         dump_eml_files(params, None, cli_runner, expected)
+
+
+def test_install_spacy_model():
+    with patch("spacy.cli.download", new=MagicMock(side_effect=SystemExit)):
+        # Pick a model not yet installed so spaCy tries to download it
+        assert install_spacy_model(SPACY_MODELS.zh_core_web_sm) == -1
