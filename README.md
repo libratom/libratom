@@ -12,7 +12,7 @@ Python library and supporting utilities to parse and process PST and mbox email 
 
 ## Installation
 
-Libratom requires Python 3.6 or newer, and can be installed from the Python Package Index. Installing with **pip** will automatically install all required dependencies. These dependencies include a version of **libpff** that will be compiled automatically with C tooling during install. A selection of environments we have tested follows:
+Libratom requires Python 3.7 or newer, and can be installed from the Python Package Index. Installing with **pip** will automatically install all required dependencies. These dependencies include a version of **libpff** that will be compiled automatically with C tooling during install. A selection of environments we have tested follows:
 
 *   Ubuntu 16.04LTS, 18.04LTS, and 20.04LTS releases require build-essential, python3, python3-pip, and python3-venv packages
 *   macOS 10.13 (and newer) releases require Xcode 9.4.1 (or newer), Xcode CLI tools, and Python 3 installed using Homebrew (or your preferred method)
@@ -290,7 +290,7 @@ Follow the remaining instructions in the Installation section at the top of this
 
 To install and test this software in a new Python virtual environment in Ubuntu 16.04LTS or newer:
 
-Make sure Python 3.6 or newer, python3-pip, and python3-venv are installed. Open a terminal and type the following command:
+Make sure Python 3.7 or newer, python3-pip, and python3-venv are installed. Open a terminal and type the following command:
 
 ```shell
 sudo apt install python3 python3-pip python3-venv
@@ -309,7 +309,7 @@ Follow the remaining instructions in the Installation section at the top of this
 
 Logos, documentation, and other non-software products of the RATOM team are distributed under the terms of Creative Commons 4.0 Attribution. Software items in RATOM repositories are distributed under the terms of the MIT License. See the LICENSE file for additional details.
 
-&copy; 2020, The University of North Carolina at Chapel Hill.
+&copy; 2021, The University of North Carolina at Chapel Hill.
 
 ## Development Team and Support
 
