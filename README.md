@@ -14,8 +14,8 @@ Python library and supporting utilities to parse and process PST and mbox email 
 
 Libratom requires Python 3.7 or newer, and can be installed from the Python Package Index. Installing with **pip** will automatically install all required dependencies. These dependencies include a version of **libpff** that will be compiled automatically with C tooling during install. A selection of environments we have tested follows:
 
-*   Ubuntu 16.04LTS, 18.04LTS, and 20.04LTS releases require build-essential, python3, python3-pip, and python3-venv packages
-*   macOS 10.13 (and newer) releases require Xcode 9.4.1 (or newer), Xcode CLI tools, and Python 3 installed using Homebrew (or your preferred method)
+*   Ubuntu 18.04LTS and 20.04LTS releases require build-essential, python3, python3-pip, and python3-venv packages
+*   macOS 10.14 (and newer) releases require Xcode 11 (or newer), Xcode CLI tools, and Python 3 installed using Homebrew (or your preferred method)
 *   Windows 10 releases require Visual Studio Code, Build Tools for Visual Studio, and Python 3 installed using Anaconda 3 (or your preferred method)
 
 Need guidance setting up an environment on your platform? Navigate to one of the linked sections below before continuing.
@@ -67,7 +67,7 @@ To run the extractor with default settings over a PST or mbox file, or a directo
 
 Note that the -m flag has been added to this command to write message bodies (stripped of inline attachments and markup) and message headers to the message table. If the -m flag is omitted, these entries will be null. Progress (enabled using the -p flag) is displayed in a bar at the bottom of the window. To terminate a job early and shut down all workers, type Ctrl-C.
 
-By default, the tool will install and use the spaCy en\_core\_web\_sm model (see the [model management](#model-management) section for how to list and install model versions). It will start as many concurrent jobs as there are virtual cores available. Entities are written to a sqlite3 file automatically named using the existing file or directory name and current datetime stamp, and with the following schema:
+By default, the tool will install and use the latest spaCy 3 en\_core\_web\_sm model (see the [model management](#model-management) section for how to list and install model versions). It will start as many concurrent jobs as there are virtual cores available. Entities are written to a sqlite3 file automatically named using the existing file or directory name and current datetime stamp, and with the following schema:
 
 ![RATOM database schema](https://libratom.github.io/ratom-db-schema.svg)
 
@@ -127,10 +127,10 @@ To see a list of available models, type:
 (venv) user@host:~$ ratom model -l
 ```
 
-To install a specific version of an available model, use the -i and --version flags. For example, to install the 2.2.0 version of en\_core\_web\_sm, type:
+To install a specific version of an available model, use the -i and --version flags. For example, to install the 3.0.0 version of en\_core\_web\_sm, type:
 
 ```shell
-(venv) user@host:~$ ratom model -i en_core_web_sm --version 2.2.0
+(venv) user@host:~$ ratom model -i en_core_web_sm --version 3.0.0
 ```
 
 Note that a request to install a specific version will replace any existing version of that model, even if the existing version is newer.
@@ -213,7 +213,7 @@ Download and run the Build Tools for Visual Studio 2019 installer from <https://
 
 In the Workloads tab, check the box for "C++ build tools". Click the Install button at the bottom right of the window. Once you see "Installation Succeeded!", close the window.
 
-Visit <https://www.anaconda.com/products/individual> to download and install the 64-bit Python 3.8 Anaconda distribution. Find and double-click the downloaded executable and follow the prompts, accepting all default selections.
+Visit <https://www.anaconda.com/products/individual> to download and install the 64-bit Python 3.8 or Python 3.9 Anaconda distribution. Find and double-click the downloaded executable and follow the prompts, accepting all default selections.
 
 Open the Windows Start Menu, select Anaconda3 (64-bit) and click "Anaconda Prompt (Anaconda3)".
 
@@ -275,7 +275,7 @@ user-macbook:~ user$ sudo xcodebuild -license
 
 Follow the instructions at the link below to check your system and install Python 3 if needed:
 
-<https://wsvincent.com/install-python3-mac/>
+<https://installpython3.com/mac/>
 
 Next, create a new Python 3 virtual environment. Use the instructions in the previous link or create and activate one in your home directory with the following commands:
 
@@ -290,10 +290,10 @@ Follow the remaining instructions in the Installation section at the top of this
 
 To install and test this software in a new Python virtual environment in Ubuntu 16.04LTS or newer:
 
-Make sure Python 3.7 or newer, python3-pip, and python3-venv are installed. Open a terminal and type the following command:
+Make sure Python 3.7 or newer, python3-pip, python3-venv, and build-essential are installed. Open a terminal and type the following command:
 
 ```shell
-sudo apt install python3 python3-pip python3-venv
+sudo apt install build-essential python3 python3-pip python3-venv
 ```
 
 Create and activate a Python virtual environment:
