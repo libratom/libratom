@@ -6,13 +6,12 @@ from email import policy
 from email.generator import Generator
 from email.message import Message
 from email.parser import Parser
-from importlib import reload
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Set, Tuple, Union
 
-import pkg_resources
 import requests
 import spacy
+from pkg_resources import load_entry_point
 from requests import HTTPError
 from spacy.language import Language
 
@@ -117,8 +116,13 @@ def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
                 logger.error(f"Unable to install spacy model {spacy_model_name}")
                 return None
 
-            # Now try loading it again
-            reload(pkg_resources)
+            # If we just installed a transformer model along with spacy-transformers in a child process
+            # we need to set up an entry point for spacy-transformers in the current process.
+            # This entry point will be registered as a pipeline factory function by the model's language class.
+            if spacy_model_name.endswith("_trf"):
+                load_entry_point("spacy-transformers", "spacy_factories", "transformer")
+
+            # Now try loading the model again
             spacy_model = spacy.load(spacy_model_name)
 
         else:
