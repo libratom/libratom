@@ -502,7 +502,7 @@ def test_process_message():
             "date": datetime.datetime.utcnow(),
             "body": "hello",
             "body_type": BodyType.PLAIN,
-            "spacy_model": None,
+            "spacy_model_name": None,
             "attachments": None,
         }
     )

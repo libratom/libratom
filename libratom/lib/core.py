@@ -23,6 +23,8 @@ from libratom.lib.pff import pff_msg_to_string
 
 logger = logging.getLogger(__name__)
 
+_cached_spacy_models = {}
+
 
 def get_ratom_settings() -> List[Tuple[str, Union[int, str]]]:
     return [
@@ -86,6 +88,18 @@ def get_spacy_models() -> Dict[str, List[str]]:
         releases = {name: [] for name in SPACY_MODEL_NAMES}
 
     return releases
+
+
+def get_cached_spacy_model(name: str) -> Optional[Language]:
+    """
+    Returns a cached preloaded spaCy model
+    """
+
+    try:
+        return _cached_spacy_models[name]
+    except KeyError:
+        model = _cached_spacy_models[name] = load_spacy_model(name)
+    return model
 
 
 def load_spacy_model(spacy_model_name: str) -> Optional[Language]:

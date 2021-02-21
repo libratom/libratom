@@ -4,12 +4,11 @@ Set of utility functions that use spaCy to perform named entity recognition
 """
 
 import logging
-import multiprocessing
 from datetime import datetime
+from multiprocessing import Pool, current_process
 from pathlib import Path
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
-from spacy.language import Language
 from sqlalchemy.orm.session import Session
 
 from libratom.lib.base import AttachmentMetadata
@@ -21,6 +20,7 @@ from libratom.lib.constants import (
     RATOM_SPACY_MODEL_MAX_LENGTH,
     BodyType,
 )
+from libratom.lib.core import get_cached_spacy_model
 from libratom.lib.utils import cleanup_message_body
 from libratom.models import Attachment, Entity, FileReport, Message
 
@@ -35,7 +35,7 @@ def process_message(
     body_type: BodyType,
     date: datetime,
     attachments: List[AttachmentMetadata],
-    spacy_model: Language,
+    spacy_model_name: str,
     headers: Optional[str] = None,
     include_message_contents: bool = False,
 ) -> Tuple[Dict, Optional[str]]:
@@ -57,6 +57,18 @@ def process_message(
         message_body = cleanup_message_body(
             body, body_type, RATOM_SPACY_MODEL_MAX_LENGTH
         )
+
+        # https://github.com/explosion/spaCy/issues/6662#issuecomment-753889021
+        if (
+            spacy_model_name.endswith("_trf")
+            and current_process().name != "MainProcess"
+        ):
+            # pylint: disable=all
+            import torch
+
+            torch.set_num_threads(1)
+
+        spacy_model = get_cached_spacy_model(spacy_model_name)
         doc = spacy_model(message_body)
         res["entities"] = [(ent.text, ent.label_) for ent in doc.ents]
 
@@ -75,7 +87,7 @@ def process_message(
 def extract_entities(
     files: Iterable[Path],
     session: Session,
-    spacy_model: Language,
+    spacy_model_name: str,
     include_message_contents: bool = False,
     jobs: int = None,
     processing_progress_callback: Callable = None,
@@ -101,7 +113,7 @@ def extract_entities(
     _file_reports = session.query(FileReport).all()  # noqa: F841
 
     # Start of multiprocessing
-    with multiprocessing.Pool(processes=jobs, initializer=worker_init) as pool:
+    with Pool(processes=jobs, initializer=worker_init) as pool:
 
         logger.debug(f"Starting pool with {pool._processes} processes")
 
@@ -114,7 +126,7 @@ def extract_entities(
                     process_message,
                     get_messages(
                         files,
-                        spacy_model=spacy_model,
+                        spacy_model_name=spacy_model_name,
                         progress_callback=processing_update_progress,
                         include_message_contents=include_message_contents,
                         with_headers=include_message_contents,
