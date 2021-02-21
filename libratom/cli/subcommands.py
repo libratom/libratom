@@ -88,7 +88,8 @@ def entities(
         logger.warning("Aborting")
         return status
 
-    # Get spaCy model
+    # Try loading the spaCy model in case we need to download it first,
+    # but don't cache it in the main process
     logger.info(f"Loading spaCy model: {spacy_model_name}")
     spacy_model = load_spacy_model(spacy_model_name)
     if not spacy_model:
@@ -134,7 +135,7 @@ def entities(
             status = extract_entities(
                 files=good_files,
                 session=session,
-                spacy_model=spacy_model,
+                spacy_model_name=spacy_model_name,
                 include_message_contents=include_message_contents,
                 jobs=jobs,
                 processing_progress_callback=processing_msg_bar.update,
