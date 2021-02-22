@@ -6,11 +6,14 @@ from email import policy
 from email.generator import Generator
 from email.message import Message
 from email.parser import Parser
+from importlib import reload
+from multiprocessing import current_process
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Set, Tuple, Union
 
 import requests
 import spacy
+import thinc
 from pkg_resources import load_entry_point
 from requests import HTTPError
 from spacy.language import Language
@@ -97,8 +100,24 @@ def get_cached_spacy_model(name: str) -> Optional[Language]:
 
     try:
         return _cached_spacy_models[name]
+
     except KeyError:
+
+        # Specific steps for transformer models (very brittle and likely not permanent)
+        if name.endswith("_trf"):
+            # In case pytorch was just installed as a dependency of the model
+            reload(thinc.util)
+            reload(thinc.shims.pytorch)
+
+            # https://github.com/explosion/spaCy/issues/6662#issuecomment-753889021
+            if current_process().name != "MainProcess":
+                # pylint: disable=all
+                import torch
+
+                torch.set_num_threads(1)
+
         model = _cached_spacy_models[name] = load_spacy_model(name)
+
     return model
 
 
