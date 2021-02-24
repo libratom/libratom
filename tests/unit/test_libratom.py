@@ -197,6 +197,8 @@ def test_apply_spacy_model(sample_pst_file, model_name, expected_entity_types):
     # Apply our model pretending to be in a forked process
     with patch("libratom.lib.entities.current_process") as mock_current_process:
         mock_current_process.return_value.name = "NotMainProcess"
+
+        # pylint:disable=no-value-for-parameter
         res, error = process_message(
             # Must use dictionary form if function is called explicitly
             {
