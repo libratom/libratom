@@ -179,7 +179,9 @@ def test_file_report_with_empty_relationship():
 
 @pytest.mark.parametrize("model_name", ["en_core_web_trf"])
 def test_load_spacy_model(model_name):
-    assert get_cached_spacy_model(model_name)
+    with patch("libratom.lib.core.current_process") as mock_current_process:
+        mock_current_process.return_value.name = "NotMainProcess"
+        assert get_cached_spacy_model(model_name)
 
 
 def test_extract_entities_from_mbox_files(directory_of_mbox_files):
