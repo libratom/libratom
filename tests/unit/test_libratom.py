@@ -1,4 +1,5 @@
 # pylint: disable=missing-docstring,invalid-name,protected-access
+import datetime
 import email
 import hashlib
 import logging
@@ -21,7 +22,7 @@ from libratom.lib.core import (
 )
 from libratom.lib.database import db_init, db_session
 from libratom.lib.download import download_files
-from libratom.lib.entities import extract_entities
+from libratom.lib.entities import extract_entities, process_message
 from libratom.lib.exceptions import FileTypeError
 from libratom.lib.mbox import MboxArchive
 from libratom.lib.pff import PffArchive
@@ -177,11 +178,42 @@ def test_file_report_with_empty_relationship():
     assert file_report.processing_wall_time is None
 
 
-@pytest.mark.parametrize("model_name", ["en_core_web_trf"])
-def test_load_spacy_model(model_name):
-    with patch("libratom.lib.core.current_process") as mock_current_process:
+@pytest.mark.parametrize(
+    "model_name, expected_entity_types",
+    [("en_core_web_trf", {"DATE", "GPE", "ORG", "PERSON", "QUANTITY"})],
+)
+def test_apply_spacy_model(sample_pst_file, model_name, expected_entity_types):
+    # Extract a known (short) message
+    msg_id = 2112164
+    with open_mail_archive(sample_pst_file) as archive:
+        msg_body = archive.get_message_body(archive.get_message_by_id(msg_id))[0]
+
+    # Sanity check
+    assert len(msg_body) == 564
+
+    # Pre-load our model to install any missing dependencies
+    assert get_cached_spacy_model(model_name)
+
+    # Apply our model pretending to be in a forked process
+    with patch("libratom.lib.entities.current_process") as mock_current_process:
         mock_current_process.return_value.name = "NotMainProcess"
-        assert get_cached_spacy_model(model_name)
+        res, error = process_message(
+            # Must use dictionary form if function is called explicitly
+            {
+                "filepath": sample_pst_file,
+                "message_id": msg_id,
+                "date": datetime.datetime.utcnow(),
+                "body": msg_body,
+                "body_type": BodyType.PLAIN,
+                "spacy_model_name": model_name,
+                "attachments": None,
+            }
+        )
+
+    assert res and not error
+
+    # Check that the expected entity types were found
+    assert expected_entity_types.issubset(set(entity[1] for entity in res["entities"]))
 
 
 def test_extract_entities_from_mbox_files(directory_of_mbox_files):
