@@ -15,6 +15,7 @@ from libratom.lib.concurrency import get_messages
 from libratom.lib.constants import SPACY_MODELS, BodyType
 from libratom.lib.core import (
     extract_message_from_archive,
+    get_cached_spacy_model,
     get_set_of_files,
     open_mail_archive,
 )
@@ -174,6 +175,11 @@ def test_file_report_with_empty_relationship():
     assert file_report.processing_start_time is None
     assert file_report.processing_end_time is None
     assert file_report.processing_wall_time is None
+
+
+@pytest.mark.parametrize("model_name", ["en_core_web_trf"])
+def test_load_spacy_model(model_name):
+    assert get_cached_spacy_model(model_name)
 
 
 def test_extract_entities_from_mbox_files(directory_of_mbox_files):
