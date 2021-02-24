@@ -7,7 +7,6 @@ from email.generator import Generator
 from email.message import Message
 from email.parser import Parser
 from importlib import reload
-from multiprocessing import current_process
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Set, Tuple, Union
 
@@ -100,22 +99,7 @@ def get_cached_spacy_model(name: str) -> Optional[Language]:
 
     try:
         return _cached_spacy_models[name]
-
     except KeyError:
-
-        # Specific steps for transformer models (very brittle and likely not permanent)
-        if name.endswith("_trf"):
-            # In case pytorch was just installed as a dependency of the model
-            reload(thinc.util)
-            reload(thinc.shims.pytorch)
-
-            # https://github.com/explosion/spaCy/issues/6662#issuecomment-753889021
-            if current_process().name != "MainProcess":
-                # pylint: disable=all
-                import torch
-
-                torch.set_num_threads(1)
-
         model = _cached_spacy_models[name] = load_spacy_model(name)
 
     return model
@@ -149,11 +133,18 @@ def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
                 logger.error(f"Unable to install spacy model {spacy_model_name}")
                 return None
 
-            # If we just installed a transformer model along with spacy-transformers in a child process
-            # we need to set up an entry point for spacy-transformers in the current process.
-            # This entry point will be registered as a pipeline factory function by the model's language class.
+            # Specific steps for transformer models (very brittle and likely not permanent)
             if spacy_model_name.endswith("_trf"):
+
+                # If we just installed a transformer model along with spacy-transformers in a child process
+                # we need to set up an entry point for spacy-transformers in the current process.
+                # This entry point will be registered as a pipeline factory function by the model's language class.
                 load_entry_point("spacy-transformers", "spacy_factories", "transformer")
+
+                # If Pytorch was also just installed, certain modules that depend on it
+                # may need reloading to work in the current process
+                reload(thinc.util)
+                reload(thinc.shims.pytorch)
 
             # Now try loading the model again
             spacy_model = spacy.load(spacy_model_name)
