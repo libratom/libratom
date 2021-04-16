@@ -7,7 +7,6 @@ from pathlib import Path
 import click
 import click_log
 
-from libratom.cli.cli import set_log_level_from_verbose
 from libratom.lib.download import download_files
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
@@ -18,6 +17,18 @@ CACHED_ENRON_DATA_DIR = Path("/tmp/libratom/test_data/RevisedEDRMv1_Complete")
 
 # Set configuration on the root logger
 click_log.basic_config(logging.getLogger())
+
+
+def set_log_level_from_verbose(ctx, param, value):
+    if value > 1:
+        level = logging.DEBUG
+    elif value > 0:
+        level = logging.INFO
+    else:
+        # Default
+        level = logging.WARNING
+    logging.getLogger().setLevel(level)
+    return level
 
 
 @click.command(
