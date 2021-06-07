@@ -17,7 +17,7 @@ attrs==21.2.0
     #   pytest
 beautifulsoup4==4.9.3
     # via -r requirements.in
-black==21.5b1
+black==21.5b2
     # via -r requirements-dev.in
 blessed==1.18.0
     # via enlighten
@@ -30,7 +30,7 @@ catalogue==2.0.4
     #   spacy
     #   srsly
     #   thinc
-certifi==2020.12.5
+certifi==2021.5.30
     # via requests
 chardet==4.0.0
     # via requests
@@ -44,14 +44,14 @@ click==7.1.2
     #   pip-tools
     #   pytest-click
     #   typer
-coverage[toml]==5.5
+coverage==5.5
     # via pytest-cov
 cymem==2.0.5
     # via
     #   preshed
     #   spacy
     #   thinc
-distlib==0.3.1
+distlib==0.3.2
     # via virtualenv
 enlighten==1.10.1
     # via -r requirements.in
@@ -150,7 +150,7 @@ pydantic==1.7.4
     #   thinc
 pyflakes==2.3.1
     # via flake8
-pylint==2.8.2
+pylint==2.8.3
     # via -r requirements-dev.in
 pyparsing==2.4.7
     # via packaging
@@ -162,7 +162,7 @@ pytest-benchmark==3.4.1
     # via -r requirements-dev.in
 pytest-click==1.0.2
     # via -r requirements-dev.in
-pytest-cov==2.12.0
+pytest-cov==2.12.1
     # via -r requirements-dev.in
 pytest-mock==3.6.1
     # via -r requirements-dev.in
@@ -196,7 +196,7 @@ spacy-legacy==3.0.5
     # via spacy
 spacy==3.0.6
     # via -r requirements.in
-sqlalchemy==1.4.15
+sqlalchemy==1.4.17
     # via -r requirements.in
 srsly==2.4.1
     # via
@@ -213,14 +213,14 @@ thinc==8.0.3
 toml==0.10.2
     # via
     #   black
-    #   coverage
     #   pep517
     #   pylint
     #   pytest
+    #   pytest-cov
     #   tox
 tox==3.23.1
     # via -r requirements-dev.in
-tqdm==4.60.0
+tqdm==4.61.0
     # via spacy
 treelib==1.6.1
     # via -r requirements.in
@@ -228,9 +228,9 @@ typer==0.3.2
     # via
     #   pathy
     #   spacy
-urllib3==1.26.4
+urllib3==1.26.5
     # via requests
-virtualenv==20.4.6
+virtualenv==20.4.7
     # via tox
 wasabi==0.8.2
     # via
