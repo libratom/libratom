@@ -19,7 +19,7 @@ catalogue==2.0.4
     #   spacy
     #   srsly
     #   thinc
-certifi==2020.12.5
+certifi==2021.5.30
     # via requests
 chardet==4.0.0
     # via requests
@@ -101,7 +101,7 @@ spacy-legacy==3.0.5
     # via spacy
 spacy==3.0.6
     # via -r requirements.in
-sqlalchemy==1.4.15
+sqlalchemy==1.4.17
     # via -r requirements.in
 srsly==2.4.1
     # via
@@ -113,7 +113,7 @@ tabulate==0.8.9
     # via -r requirements.in
 thinc==8.0.3
     # via spacy
-tqdm==4.60.0
+tqdm==4.61.0
     # via spacy
 treelib==1.6.1
     # via -r requirements.in
@@ -121,7 +121,7 @@ typer==0.3.2
     # via
     #   pathy
     #   spacy
-urllib3==1.26.4
+urllib3==1.26.5
     # via requests
 wasabi==0.8.2
     # via
