@@ -4,8 +4,8 @@ Set of utility functions that use spaCy to perform named entity recognition
 """
 
 import logging
+import multiprocessing
 from datetime import datetime
-from multiprocessing import Pool, current_process
 from pathlib import Path
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
@@ -58,16 +58,6 @@ def process_message(
             body, body_type, RATOM_SPACY_MODEL_MAX_LENGTH
         )
 
-        # https://github.com/explosion/spaCy/issues/6662#issuecomment-753889021
-        if (
-            spacy_model_name.endswith("_trf")
-            and current_process().name != "MainProcess"
-        ):
-            # pylint: disable=all
-            import torch
-
-            torch.set_num_threads(1)
-
         spacy_model = get_cached_spacy_model(spacy_model_name)
         doc = spacy_model(message_body)
         res["entities"] = [(ent.text, ent.label_) for ent in doc.ents]
@@ -113,7 +103,11 @@ def extract_entities(
     _file_reports = session.query(FileReport).all()  # noqa: F841
 
     # Start of multiprocessing
-    with Pool(processes=jobs, initializer=worker_init) as pool:
+    ctx = multiprocessing.get_context(
+        "spawn" if spacy_model_name.endswith("_trf") else None
+    )  # https://github.com/explosion/spaCy/issues/6662
+
+    with ctx.Pool(processes=jobs, initializer=worker_init) as pool:
 
         logger.debug(f"Starting pool with {pool._processes} processes")
 

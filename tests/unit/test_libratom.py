@@ -222,23 +222,20 @@ def test_apply_spacy_model(sample_pst_file, model_name, expected_entity_types):
     # Pre-load our model to install any missing dependencies
     assert get_cached_spacy_model(model_name)
 
-    # Apply our model pretending to be in a forked process
-    with patch("libratom.lib.entities.current_process") as mock_current_process:
-        mock_current_process.return_value.name = "NotMainProcess"
-
-        # pylint:disable=no-value-for-parameter
-        res, error = process_message(
-            # Must use dictionary form if function is called explicitly
-            {
-                "filepath": sample_pst_file,
-                "message_id": msg_id,
-                "date": datetime.datetime.utcnow(),
-                "body": msg_body,
-                "body_type": BodyType.PLAIN,
-                "spacy_model_name": model_name,
-                "attachments": None,
-            }
-        )
+    # Run worker function
+    # pylint:disable=no-value-for-parameter
+    res, error = process_message(
+        # Must use dictionary form if function is called explicitly
+        {
+            "filepath": sample_pst_file,
+            "message_id": msg_id,
+            "date": datetime.datetime.utcnow(),
+            "body": msg_body,
+            "body_type": BodyType.PLAIN,
+            "spacy_model_name": model_name,
+            "attachments": None,
+        }
+    )
 
     assert res and not error
 
