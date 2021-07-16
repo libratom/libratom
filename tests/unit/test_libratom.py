@@ -180,7 +180,7 @@ def test_file_report_with_empty_relationship():
 
 @pytest.mark.parametrize(
     "model_name, expected_entity_types",
-    [("en_core_web_trf", {"DATE", "GPE", "ORG", "PERSON", "QUANTITY"})],
+    [("en_core_web_trf", {"DATE", "MONEY", "ORG"})],
 )
 def test_apply_spacy_model(sample_pst_file, model_name, expected_entity_types):
     # Extract a known (short) message
