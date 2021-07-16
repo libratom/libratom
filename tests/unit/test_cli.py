@@ -15,7 +15,7 @@ from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
 
 import libratom
-import libratom.cli.subcommands as subcommands
+from libratom.cli import subcommands
 from libratom.cli.cli import ratom
 from libratom.cli.utils import (
     install_spacy_model,

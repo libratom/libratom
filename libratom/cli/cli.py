@@ -11,13 +11,13 @@ import click
 import click_log
 import psutil
 
-import libratom.cli.subcommands as subcommands
 from libratom.cli import (
     CONTEXT_SETTINGS,
     INT_METAVAR,
     MODEL_METAVAR,
     PATH_METAVAR,
     VERSION_METAVAR,
+    subcommands,
 )
 from libratom.cli.utils import (
     PathPath,

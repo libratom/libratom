@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring,unused-argument
 
 import logging
 from pathlib import Path

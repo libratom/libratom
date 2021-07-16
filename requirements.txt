@@ -8,7 +8,7 @@ attrs==21.2.0
     # via jsonschema
 beautifulsoup4==4.9.3
     # via -r requirements.in
-blessed==1.18.0
+blessed==1.18.1
     # via enlighten
 blis==0.7.4
     # via
@@ -21,7 +21,7 @@ catalogue==2.0.4
     #   thinc
 certifi==2021.5.30
     # via requests
-chardet==4.0.0
+charset-normalizer==2.0.3
     # via requests
 click-log==0.3.2
     # via -r requirements.in
@@ -41,9 +41,9 @@ future==0.18.2
     # via treelib
 greenlet==1.1.0
     # via sqlalchemy
-humanfriendly==9.1
+humanfriendly==9.2
     # via -r requirements.in
-idna==2.10
+idna==3.2
     # via requests
 jinja2==3.0.1
     # via spacy
@@ -58,16 +58,16 @@ murmurhash==1.0.5
     #   preshed
     #   spacy
     #   thinc
-numpy==1.20.3
+numpy==1.21.0
     # via
     #   blis
     #   spacy
     #   thinc
-packaging==20.9
+packaging==21.0
     # via
     #   -r requirements.in
     #   spacy
-pathy==0.5.2
+pathy==0.6.0
     # via spacy
 pbr==5.6.0
     # via -r requirements.in
@@ -79,29 +79,29 @@ preshed==3.0.5
     #   thinc
 psutil==5.8.0
     # via -r requirements.in
-pydantic==1.7.4
+pydantic==1.8.2
     # via
     #   spacy
     #   thinc
 pyparsing==2.4.7
     # via packaging
-pyrsistent==0.17.3
+pyrsistent==0.18.0
     # via jsonschema
-requests==2.25.1
+requests==2.26.0
     # via spacy
 six==1.16.0
     # via
     #   blessed
     #   jsonschema
-smart-open==3.0.0
+smart-open==5.1.0
     # via pathy
 soupsieve==2.2.1
     # via beautifulsoup4
-spacy-legacy==3.0.5
+spacy-legacy==3.0.8
     # via spacy
-spacy==3.0.6
+spacy==3.1.0
     # via -r requirements.in
-sqlalchemy==1.4.17
+sqlalchemy==1.4.21
     # via -r requirements.in
 srsly==2.4.1
     # via
@@ -111,9 +111,9 @@ striprtf==0.0.13
     # via -r requirements.in
 tabulate==0.8.9
     # via -r requirements.in
-thinc==8.0.3
+thinc==8.0.7
     # via spacy
-tqdm==4.61.0
+tqdm==4.61.2
     # via spacy
 treelib==1.6.1
     # via -r requirements.in
@@ -121,7 +121,9 @@ typer==0.3.2
     # via
     #   pathy
     #   spacy
-urllib3==1.26.5
+typing-extensions==3.10.0.0
+    # via pydantic
+urllib3==1.26.6
     # via requests
 wasabi==0.8.2
     # via
