@@ -82,4 +82,5 @@ def download_media_type_files(out) -> None:
 
 
 if __name__ == "__main__":
+    # pylint: disable=no-value-for-parameter
     download_media_type_files()
