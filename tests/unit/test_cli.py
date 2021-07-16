@@ -319,7 +319,7 @@ def test_ratom_entities_from_mbox_files(
 
 
 @pytest.mark.skipif(
-    not os.getenv("CONTINUOUS_INTEGRATION", None),
+    not os.getenv("CI", None),
     reason="Keep local test runs reasonably short",
 )
 @pytest.mark.parametrize(
@@ -395,7 +395,7 @@ def test_ratom_entities_enron_004(
 
 
 @pytest.mark.skipif(
-    not os.getenv("CONTINUOUS_INTEGRATION", None),
+    not os.getenv("CI", None),
     reason="Keep local test runs reasonably short",
 )
 @pytest.mark.parametrize(
