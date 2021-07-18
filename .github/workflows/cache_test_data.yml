@@ -1,0 +1,33 @@
+name: Cache Test Data
+
+on: workflow_dispatch
+
+jobs:
+  cache_enron_data:
+    name: Cache Enron data
+    runs-on: ubuntu-latest
+    env:
+      EDRM_DIR: /tmp/libratom/test_data/RevisedEDRMv1_Complete
+    strategy:
+      matrix:
+        edrm-part: [1, 2, 3, 4, 12, 44, 129]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install libratom
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r ./requirements-dev.txt
+        pip install -e ./
+    - name: Download Enron data from the web
+      run: python ./libratom/scripts/download_edrm_zipped_files.py -n ${{ matrix.edrm-part }}
+    - name: Check local dir
+      run: ls -al ${{ env.EDRM_DIR }}
+    - name: Upload Enron data into github storage
+      uses: actions/upload-artifact@v2
+      with:
+        name: EDRM_part_${{ matrix.edrm-part }}
+        path: /tmp/libratom/test_data/RevisedEDRMv1_Complete
+        retention-days: 90
