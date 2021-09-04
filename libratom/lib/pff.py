@@ -192,17 +192,17 @@ class PffArchive(Archive):
         """
 
         body = message.plain_text_body or message.rtf_body or message.html_body
+        headers = (
+            with_headers
+            and message.transport_headers
+            and message.transport_headers.strip()
+            or ""
+        )
 
+        # If there is no message body return a string with only the headers and no "Body-Type:" label
         if not body:
-            # Return headers only
-            return (
-                with_headers
-                and message.transport_headers
-                and message.transport_headers.strip()
-                or ""
-            )
+            return headers
 
-        headers = message.transport_headers if with_headers else ""
         body = decode(body).strip()
 
         return f"{headers}Body-Type: plain-text\r\n\r\n{body}"
