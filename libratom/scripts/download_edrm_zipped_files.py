@@ -65,7 +65,10 @@ def download_edrm_zipped_files(part_number) -> None:
     if part_number:
         urls = [f"{ENRON_DATASET_URL}/{EDRM_PART_NAME_MAPPING[int(part_number)]}.zip"]
     else:
-        urls = [f"{ENRON_DATASET_URL}/{name}.zip" for name in EDRM_PART_NAME_MAPPING.values()]
+        urls = [
+            f"{ENRON_DATASET_URL}/{name}.zip"
+            for name in EDRM_PART_NAME_MAPPING.values()
+        ]
 
     download_files(urls, CACHED_ENRON_DATA_DIR, dry_run=False)
 
