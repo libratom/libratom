@@ -49,7 +49,7 @@ def set_log_level_from_verbose(ctx, param, value):
     "--part-number",
     required=False,
     type=click.Choice([str(key) for key in EDRM_PART_NAME_MAPPING.keys()]),
-    help=f"Download the given part number. If this is not provided, download the entire Enron dataset.",
+    help="Download the given part number. If this is not provided, download the entire Enron dataset.",
 )
 @click.option(
     "-v",
