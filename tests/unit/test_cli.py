@@ -61,7 +61,7 @@ def run_ratom_subcommand(
     Block of code to run a given ratom subcommand as part of a test
     """
 
-    if not str:
+    if not cmd:
         raise ValueError("Empty ratom subcommand string")
 
     subcommand = [cmd]
