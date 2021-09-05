@@ -6,7 +6,7 @@ import logging
 from email import policy
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import DEFAULT, MagicMock, Mock, patch
 
 import pytest
 
@@ -155,6 +155,34 @@ def test_get_messages_with_bad_files(enron_dataset_part044, mock_progress_callba
         assert res
 
     assert _count == 558
+
+
+def test_get_messages_with_bad_message(sample_pst_file, mock_progress_callback):
+
+    _count = 0
+
+    with patch.object(
+        libratom.lib.pff.PffArchive, "get_attachment_metadata"
+    ) as patched_method:
+
+        # Raise on the first call, then don't raise
+        def side_effects():
+            yield RuntimeError
+            while True:
+                yield DEFAULT
+
+        patched_method.side_effect = side_effects()
+
+        for _count, res in enumerate(
+            get_messages(
+                files=[sample_pst_file],
+                progress_callback=mock_progress_callback,
+            ),
+            start=1,
+        ):
+            assert res
+
+    assert _count == 2667
 
 
 def test_get_message_by_id(sample_pst_file):
