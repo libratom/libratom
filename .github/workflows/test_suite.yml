@@ -23,8 +23,8 @@ jobs:
       with:
         workflow: cache_test_data.yml
         path: ${{ env.EDRM_DIR }}
-    - name: Check local data dir
-      run: ls -al ${{ env.EDRM_DIR }}
+    - name: Confirm test data is present
+      run: find ${{ env.EDRM_DIR }} -type f
     - name: Install tox
       run: |
         python -m pip install --upgrade pip
