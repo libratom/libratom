@@ -36,14 +36,20 @@ def fetch_enron_dataset(name: str, files: List[str], url: str) -> Path:
     Returns:
         A directory path
     """
-    path = CACHED_ENRON_DATA_DIR / name
+    dataset_path = CACHED_ENRON_DATA_DIR / name
 
-    if not path.exists():
+    if not dataset_path.exists():
         # Make the directories
         CACHED_ENRON_DATA_DIR.mkdir(parents=True, exist_ok=True)
-        zipped_path = CACHED_ENRON_DATA_DIR / f"{name}.zip"
 
-        # Fetch the zipped PST file
+        # Look for existing zipped PST file
+        zipped_path = CACHED_ENRON_DATA_DIR / f"{name}.zip"  # Default if not exists
+        for path in CACHED_ENRON_DATA_DIR.rglob("*.zip"):
+            if path.name == f"{name}.zip":
+                zipped_path = path
+                break
+
+        # Fetch data if needed
         if not zipped_path.exists():
             max_tries = 5
             for i in range(1, max_tries + 1):
@@ -70,9 +76,9 @@ def fetch_enron_dataset(name: str, files: List[str], url: str) -> Path:
 
     # Confirm the files are there
     for filename in files:
-        assert (path / filename).is_file()
+        assert (dataset_path / filename).is_file()
 
-    return path
+    return dataset_path
 
 
 @pytest.fixture(scope="session")
