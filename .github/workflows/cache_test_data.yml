@@ -23,11 +23,11 @@ jobs:
         pip install -e ./
     - name: Download Enron data from the web
       run: python ./libratom/scripts/download_edrm_zipped_files.py -n ${{ matrix.edrm-part }}
-    - name: Check local data dir
-      run: ls -al ${{ env.EDRM_DIR }}
+    - name: Check local data
+      run: find ${{ env.EDRM_DIR }} -type f
     - name: Upload Enron data into github storage
       uses: actions/upload-artifact@v2
       with:
         name: EDRM_part_${{ matrix.edrm-part }}
-        path: /tmp/libratom/test_data/RevisedEDRMv1_Complete
+        path: ${{ env.EDRM_DIR }}
         retention-days: 90
