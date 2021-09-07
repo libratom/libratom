@@ -145,6 +145,7 @@ def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
                 # may need reloading to work in the current process
                 reload(thinc.util)
                 reload(thinc.shims.pytorch)
+                reload(thinc.shims.pytorch_grad_scaler)
 
             # Now try loading the model again
             spacy_model = spacy.load(spacy_model_name)
