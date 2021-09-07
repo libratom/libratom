@@ -111,7 +111,7 @@ striprtf==0.0.13
     # via -r requirements.in
 tabulate==0.8.9
     # via -r requirements.in
-thinc==8.0.9
+thinc==8.0.10
     # via spacy
 tqdm==4.62.2
     # via spacy
