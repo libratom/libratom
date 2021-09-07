@@ -71,7 +71,8 @@ def fetch_enron_dataset(name: str, files: List[str], url: str) -> Path:
                         raise
 
         # Unzip and remove archive
-        ZipFile(zipped_path).extractall(path=CACHED_ENRON_DATA_DIR)
+        with ZipFile(zipped_path) as archive:
+            archive.extractall(path=CACHED_ENRON_DATA_DIR)
         zipped_path.unlink()
 
     # Confirm the files are there
