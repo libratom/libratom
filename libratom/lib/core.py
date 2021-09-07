@@ -128,7 +128,7 @@ def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
             # Download quietly
             spacy_msg.no_print = True
             try:
-                spacy.cli.download(spacy_model_name, False, "--quiet")
+                spacy.cli.download(spacy_model_name, False, False, "--quiet")
             except SystemExit:
                 logger.error(f"Unable to install spacy model {spacy_model_name}")
                 return None

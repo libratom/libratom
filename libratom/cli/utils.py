@@ -155,7 +155,9 @@ def install_spacy_model(
     version_suffix, direct_download = (f"-{version}", True) if version else ("", False)
 
     try:
-        spacy.cli.download(f"{model}{version_suffix}", direct_download, "--quiet")
+        spacy.cli.download(
+            f"{model}{version_suffix}", direct_download, False, "--quiet"
+        )
     except SystemExit:
         click.echo(
             click.style(
