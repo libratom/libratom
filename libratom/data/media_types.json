@@ -404,6 +404,7 @@
     "application/tlsrpt+gzip",
     "application/tlsrpt+json",
     "application/tnauthlist",
+    "application/token-introspection+jwt",
     "application/trickle-ice-sdpfrag",
     "application/trig",
     "application/ttml+xml",
