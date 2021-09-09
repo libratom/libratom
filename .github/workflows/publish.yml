@@ -1,0 +1,27 @@
+name: Publish to PYPI
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+
+jobs:
+  publish:
+    name: Build a distribution and upload it to PYPI
+    runs-on: ubuntu-20.04
+    if: github.repository_owner == 'libratom'  # So that it doesn't run on forks
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Build
+        run: python setup.py sdist bdist_wheel
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          skip_existing: true
