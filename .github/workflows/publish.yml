@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - publish
     tags:
       - '*'
 
@@ -26,16 +25,16 @@ jobs:
           pip install wheel pbr
       - name: Build
         run: python setup.py sdist bdist_wheel
-      - name: Test Publish
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
-          skip_existing: true
-#      - name: Publish
+#      - name: Test Publish
 #        uses: pypa/gh-action-pypi-publish@release/v1
 #        with:
 #          user: __token__
-#          password: ${{ secrets.PYPI_API_TOKEN }}
+#          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+#          repository_url: https://test.pypi.org/legacy/
 #          skip_existing: true
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          skip_existing: true
