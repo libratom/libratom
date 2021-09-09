@@ -1,10 +1,11 @@
-name: Build And Test
+name: Build, Test, Release
 
 on:
   - push
 
 jobs:
-  build:
+  test:
+    name: Run the test suite
     runs-on: ${{ matrix.os }}
     env:
       EDRM_DIR: /tmp/libratom/test_data/RevisedEDRMv1_Complete
@@ -38,8 +39,8 @@ jobs:
         fail_ci_if_error: true
         verbose: true
   publish:
-    name: Build a distribution and upload it to PYPI
-    needs: build
+    name: Release (PYPI)
+    needs: test
     runs-on: ubuntu-20.04
     # First condition is to not run on forks
     # Second condition is to run only on push to master or tags
@@ -59,17 +60,17 @@ jobs:
           pip install wheel pbr
       - name: Build
         run: python setup.py sdist bdist_wheel
-      - name: Test Publish
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
-          skip_existing: true
-#      - name: Publish
+#      - name: Test Publish
 #        uses: pypa/gh-action-pypi-publish@release/v1
 #        with:
 #          user: __token__
-#          password: ${{ secrets.PYPI_API_TOKEN }}
+#          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+#          repository_url: https://test.pypi.org/legacy/
 #          skip_existing: true
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          skip_existing: true
 
