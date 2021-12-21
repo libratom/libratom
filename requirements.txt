@@ -123,7 +123,8 @@ typer==0.4.0
     # via
     #   pathy
     #   spacy
-typing-extensions==4.0.1
+typing-extensions==4.0.1; python_version >= "3.8"
+typing_extensions>=3.7.4.1,<4.0.0.0; python_version < "3.8"
     # via pydantic
 urllib3==1.26.7
     # via requests
