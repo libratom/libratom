@@ -136,6 +136,7 @@ def extract_entities(
 
                 if error:
                     logger.info(
+                        # pylint: disable=consider-using-f-string
                         "Skipping message {message_id} from {filepath}".format(**res)
                     )
                     logger.debug(error)
