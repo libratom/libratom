@@ -20,9 +20,14 @@ RATOM_SPACY_MODEL_MAX_LENGTH = int(
 
 # Spacy trained model names
 SPACY_MODEL_NAMES = [
+    "ca_core_news_lg",
+    "ca_core_news_md",
+    "ca_core_news_sm",
+    "ca_core_news_trf",
     "da_core_news_lg",
     "da_core_news_md",
     "da_core_news_sm",
+    "da_core_news_trf",
     "de_core_news_lg",
     "de_core_news_md",
     "de_core_news_sm",
@@ -63,6 +68,7 @@ SPACY_MODEL_NAMES = [
     "ja_core_news_lg",
     "ja_core_news_md",
     "ja_core_news_sm",
+    "ja_core_news_trf",
     "lt_core_news_lg",
     "lt_core_news_md",
     "lt_core_news_sm",
