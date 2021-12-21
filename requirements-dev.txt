@@ -4,22 +4,22 @@
 #
 #    pip-compile --output-file=requirements-dev.txt requirements-dev.in requirements.in
 #
-astroid==2.7.3
+astroid==2.9.0
     # via pylint
 attrs==21.2.0
     # via
     #   flake8-bugbear
     #   jsonschema
     #   pytest
-backports.entry-points-selectable==1.1.0
+backports.entry-points-selectable==1.1.1
     # via virtualenv
-beautifulsoup4==4.9.3
+beautifulsoup4==4.10.0
     # via -r requirements.in
-black==21.8b0
+black==21.12b0
     # via -r requirements-dev.in
-blessed==1.18.1
+blessed==1.19.0
     # via enlighten
-blis==0.7.4
+blis==0.7.5
     # via
     #   spacy
     #   thinc
@@ -28,11 +28,11 @@ catalogue==2.0.6
     #   spacy
     #   srsly
     #   thinc
-certifi==2021.5.30
+certifi==2021.10.8
     # via requests
-charset-normalizer==2.0.4
+charset-normalizer==2.0.9
     # via requests
-click==7.1.2
+click==8.0.3
     # via
     #   -r requirements.in
     #   black
@@ -42,46 +42,48 @@ click==7.1.2
     #   typer
 click-log==0.3.2
     # via -r requirements.in
-coverage==5.5
+coverage[toml]==6.2
     # via pytest-cov
-cymem==2.0.5
+cymem==2.0.6
     # via
     #   preshed
     #   spacy
     #   thinc
-distlib==0.3.2
+distlib==0.3.4
     # via virtualenv
-enlighten==1.10.1
+enlighten==1.10.2
     # via -r requirements.in
-filelock==3.0.12
+filelock==3.4.0
     # via
     #   tox
     #   virtualenv
-flake8==3.9.2
+flake8==4.0.1
     # via
     #   -r requirements-dev.in
     #   flake8-bugbear
-flake8-bugbear==21.4.3
+flake8-bugbear==21.11.29
     # via -r requirements-dev.in
 future==0.18.2
     # via treelib
-greenlet==1.1.1
+greenlet==1.1.2
     # via sqlalchemy
-humanfriendly==9.2
+humanfriendly==10.0
     # via -r requirements.in
-idna==3.2
+idna==3.3
     # via requests
 iniconfig==1.1.1
     # via pytest
-isort==5.9.3
+isort==5.10.1
     # via
     #   -r requirements-dev.in
     #   pylint
-jinja2==3.0.1
+jinja2==3.0.3
     # via spacy
-jsonschema==3.2.0
+jsonschema==4.3.2
     # via -r requirements.in
-lazy-object-proxy==1.6.0
+langcodes==3.3.0
+    # via spacy
+lazy-object-proxy==1.7.1
     # via astroid
 libpff-python-ratom==20200808
     # via -r requirements.in
@@ -93,19 +95,19 @@ mccabe==0.6.1
     #   pylint
 mock==4.0.3
     # via -r requirements-dev.in
-murmurhash==1.0.5
+murmurhash==1.0.6
     # via
     #   preshed
     #   spacy
     #   thinc
 mypy-extensions==0.4.3
     # via black
-numpy==1.21.2
+numpy==1.21.5
     # via
     #   blis
     #   spacy
     #   thinc
-packaging==21.0
+packaging==21.3
     # via
     #   -r requirements.in
     #   pytest
@@ -114,15 +116,15 @@ packaging==21.0
     #   tox
 pathspec==0.9.0
     # via black
-pathy==0.6.0
+pathy==0.6.1
     # via spacy
-pbr==5.6.0
+pbr==5.8.0
     # via -r requirements.in
-pep517==0.11.0
+pep517==0.12.0
     # via pip-tools
-pip-tools==6.2.0
+pip-tools==6.4.0
     # via -r requirements-dev.in
-platformdirs==2.3.0
+platformdirs==2.4.0
     # via
     #   black
     #   pylint
@@ -133,33 +135,33 @@ pluggy==1.0.0
     #   tox
 prefixed==0.3.2
     # via enlighten
-preshed==3.0.5
+preshed==3.0.6
     # via
     #   spacy
     #   thinc
 psutil==5.8.0
     # via -r requirements.in
-py==1.10.0
+py==1.11.0
     # via
     #   pytest
     #   tox
 py-cpuinfo==8.0.0
     # via pytest-benchmark
-pycodestyle==2.7.0
+pycodestyle==2.8.0
     # via flake8
 pydantic==1.8.2
     # via
     #   spacy
     #   thinc
-pyflakes==2.3.1
+pyflakes==2.4.0
     # via flake8
-pylint==2.10.2
+pylint==2.12.2
     # via -r requirements-dev.in
-pyparsing==2.4.7
+pyparsing==3.0.6
     # via packaging
 pyrsistent==0.18.0
     # via jsonschema
-pysnooper==0.5.0
+pysnooper==1.0.0
     # via -r requirements-dev.in
 pytest==6.2.5
     # via
@@ -173,14 +175,12 @@ pytest-benchmark==3.4.1
     # via -r requirements-dev.in
 pytest-click==1.0.2
     # via -r requirements-dev.in
-pytest-cov==2.12.1
+pytest-cov==3.0.0
     # via -r requirements-dev.in
 pytest-mock==3.6.1
     # via -r requirements-dev.in
 pytest-sugar==0.9.4
     # via -r requirements-dev.in
-regex==2021.8.28
-    # via black
 requests==2.26.0
     # via
     #   -r requirements-dev.in
@@ -188,62 +188,66 @@ requests==2.26.0
 six==1.16.0
     # via
     #   blessed
-    #   jsonschema
     #   tox
     #   virtualenv
 smart-open==5.2.1
     # via pathy
-soupsieve==2.2.1
+soupsieve==2.3.1
     # via beautifulsoup4
-spacy==3.1.2
+spacy==3.2.1
     # via -r requirements.in
 spacy-legacy==3.0.8
     # via spacy
-sqlalchemy==1.4.23
+spacy-loggers==1.0.1
+    # via spacy
+sqlalchemy==1.4.28
     # via -r requirements.in
-srsly==2.4.1
+srsly==2.4.2
     # via
     #   spacy
     #   thinc
-striprtf==0.0.13
+striprtf==0.0.17
     # via -r requirements.in
 tabulate==0.8.9
     # via -r requirements.in
 termcolor==1.1.0
     # via pytest-sugar
-thinc==8.0.10
+thinc==8.0.13
     # via spacy
 toml==0.10.2
     # via
     #   pylint
     #   pytest
-    #   pytest-cov
     #   tox
-tomli==1.2.1
+tomli==1.2.3
     # via
     #   black
+    #   coverage
     #   pep517
-tox==3.24.3
+tox==3.24.4
     # via -r requirements-dev.in
-tqdm==4.62.2
+tqdm==4.62.3
     # via spacy
 treelib==1.6.1
     # via -r requirements.in
-typer==0.3.2
+typer==0.4.0
     # via
     #   pathy
     #   spacy
-typing-extensions==3.10.0.2
+typing-extensions==4.0.1
     # via
+    #   astroid
     #   black
     #   pydantic
-urllib3==1.26.6
+    #   pylint
+urllib3==1.26.7
     # via requests
-virtualenv==20.7.2
+virtualenv==20.10.0
     # via tox
-wasabi==0.8.2
+wasabi==0.9.0
     # via
     #   spacy
+    #   spacy-loggers
     #   thinc
 wcwidth==0.2.5
     # via blessed
@@ -251,7 +255,7 @@ wheel==0.37.0
     # via
     #   -r requirements-dev.in
     #   pip-tools
-wrapt==1.12.1
+wrapt==1.13.3
     # via astroid
 
 # The following packages are considered to be unsafe in a requirements file:
