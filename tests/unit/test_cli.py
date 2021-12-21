@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring,invalid-name,too-few-public-methods,misplaced-comparison-constant
+# pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 
 import datetime
 import os
