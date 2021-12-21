@@ -348,7 +348,7 @@ def good_eml_export_input(eml_export_input_json) -> Path:
     with TemporaryDirectory() as tmpdir:
         json_file_path = Path(tmpdir) / "test.json"
 
-        with json_file_path.open(mode="w") as json_file:
+        with json_file_path.open(mode="w", encoding="UTF-8") as json_file:
             json.dump(eml_export_input_json, json_file)
 
         yield json_file_path
@@ -362,7 +362,7 @@ def bad_eml_export_input(eml_export_input_json) -> Path:
     with TemporaryDirectory() as tmpdir:
         json_file_path = Path(tmpdir) / "test.json"
 
-        with json_file_path.open(mode="w") as json_file:
+        with json_file_path.open(mode="w", encoding="UTF-8") as json_file:
             json.dump(eml_export_input_json, json_file)
 
         yield json_file_path
