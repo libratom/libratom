@@ -277,8 +277,14 @@ def test_ratom_report_empty(isolated_cli_runner, params, expected):
                 tokens=["spaCy model", "installed version", "available versions"],
             ),
         ),
-        (["-i"], Expected(status=2, tokens=["Error: Option '-i' requires an argument."])),
-        (["-u"], Expected(status=2, tokens=["Error: Option '-u' requires an argument."])),
+        (
+            ["-i"],
+            Expected(status=2, tokens=["Error: Option '-i' requires an argument."]),
+        ),
+        (
+            ["-u"],
+            Expected(status=2, tokens=["Error: Option '-u' requires an argument."]),
+        ),
         (
             ["-li", "en_core_web_sm"],
             Expected(
