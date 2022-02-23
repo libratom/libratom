@@ -340,7 +340,7 @@ def test_ratom_entities_from_mbox_files(
 def test_ratom_entities_enron_004(
     isolated_cli_runner,
     enron_dataset_part004,
-    en_core_web_sm_3_1_0,  # pylint: disable=unused-argument
+    en_core_web_sm_3_2_0,  # pylint: disable=unused-argument
     params,
     expected,
 ):
@@ -355,7 +355,7 @@ def test_ratom_entities_enron_004(
             assert str(entity)
 
         # Verify total entity count
-        assert session.query(Entity).count() == 188459
+        assert session.query(Entity).count() == 205542
 
         # Verify count per entity type
         results = (
@@ -367,24 +367,23 @@ def test_ratom_entities_enron_004(
         assert results
 
         expected_counts = {
-            "CARDINAL": 40646,
-            "DATE": 8539,
-            "EVENT": 104,
-            "FAC": 310,
-            "GPE": 10754,
-            "LANGUAGE": 2,
-            "LAW": 12537,
-            "LOC": 225,
-            "MONEY": 1411,
-            "NORP": 604,
-            "ORDINAL": 582,
-            "ORG": 91004,
-            "PERCENT": 750,
-            "PERSON": 16960,
-            "PRODUCT": 738,
-            "QUANTITY": 240,
-            "TIME": 2530,
-            "WORK_OF_ART": 523,
+            "CARDINAL": 49867,
+            "DATE": 9518,
+            "EVENT": 41,
+            "FAC": 257,
+            "GPE": 19613,
+            "LAW": 239,
+            "LOC": 258,
+            "MONEY": 3196,
+            "NORP": 612,
+            "ORDINAL": 563,
+            "ORG": 89172,
+            "PERCENT": 2575,
+            "PERSON": 12389,
+            "PRODUCT": 1242,
+            "QUANTITY": 36,
+            "TIME": 2917,
+            "WORK_OF_ART": 13047,
         }
 
         for entity_type, count in results:
@@ -396,7 +395,7 @@ def test_ratom_entities_enron_004(
             .filter_by(name="spacy_model_version")
             .one()
             .value
-            == "3.1.0"
+            == "3.2.0"
         )
 
 
