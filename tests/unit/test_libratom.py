@@ -111,10 +111,19 @@ def test_get_transport_headers_from_sent_items(enron_dataset_part004):
 def test_extract_message_attachments(enron_dataset_part002):
     """Checking 3 known attachments, to validate the attachment extraction process"""
 
-    digests = {
-        47685: "d48232614b01e56014293854abbb5db3",
-        47717: "cf8be7cd3e6e14307972246e2942c9d1",
-        47749: "081e6b66dc89671ff6460adac94dbab1",
+    attachments = {
+        47685: {
+            "name": "cubicle hurdles.mpeg",
+            "digest": "d48232614b01e56014293854abbb5db3",
+        },
+        47717: {
+            "name": "Hallway races.mpeg",
+            "digest": "cf8be7cd3e6e14307972246e2942c9d1",
+        },
+        47749: {
+            "name": "Rowing.mpeg",
+            "digest": "081e6b66dc89671ff6460adac94dbab1",
+        },
     }
 
     with PffArchive(
@@ -135,8 +144,13 @@ def test_extract_message_attachments(enron_dataset_part002):
             )
             filepath.write_bytes(rbuf)
 
-            # Confirm checksum
-            assert hashlib.md5(rbuf).hexdigest() == digests[att.identifier]
+            # Confirm attachment name
+            assert att.name == attachments[att.identifier]["name"]
+
+            # Confirm attachment checksum
+            assert (
+                hashlib.md5(rbuf).hexdigest() == attachments[att.identifier]["digest"]
+            )
 
             # Sanity check on the file
             assert filepath.stat().st_size == att.size
