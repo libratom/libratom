@@ -4,11 +4,11 @@
 #
 #    pip-compile --output-file=requirements.txt requirements.in
 #
-attrs==21.2.0
+attrs==21.4.0
     # via jsonschema
 beautifulsoup4==4.10.0
     # via -r requirements.in
-blessed==1.19.0
+blessed==1.19.1
     # via enlighten
 blis==0.7.5
     # via
@@ -21,9 +21,9 @@ catalogue==2.0.6
     #   thinc
 certifi==2021.10.8
     # via requests
-charset-normalizer==2.0.9
+charset-normalizer==2.0.12
     # via requests
-click==8.0.3
+click==8.0.4
     # via
     #   -r requirements.in
     #   click-log
@@ -47,20 +47,20 @@ idna==3.3
     # via requests
 jinja2==3.0.3
     # via spacy
-jsonschema==4.3.2
+jsonschema==4.4.0
     # via -r requirements.in
 langcodes==3.3.0
     # via spacy
 libpff-python-ratom==20200808
     # via -r requirements.in
-markupsafe==2.0.1
+markupsafe==2.1.0
     # via jinja2
 murmurhash==1.0.6
     # via
     #   preshed
     #   spacy
     #   thinc
-numpy==1.21.5
+numpy==1.22.2
     # via
     #   blis
     #   spacy
@@ -71,7 +71,7 @@ packaging==21.3
     #   spacy
 pathy==0.6.1
     # via spacy
-pbr==5.8.0
+pbr==5.8.1
     # via -r requirements.in
 prefixed==0.3.2
     # via enlighten
@@ -79,17 +79,17 @@ preshed==3.0.6
     # via
     #   spacy
     #   thinc
-psutil==5.8.0
+psutil==5.9.0
     # via -r requirements.in
 pydantic==1.8.2
     # via
     #   spacy
     #   thinc
-pyparsing==3.0.6
+pyparsing==3.0.7
     # via packaging
-pyrsistent==0.18.0
+pyrsistent==0.18.1
     # via jsonschema
-requests==2.26.0
+requests==2.27.1
     # via spacy
 six==1.16.0
     # via blessed
@@ -97,19 +97,19 @@ smart-open==5.2.1
     # via pathy
 soupsieve==2.3.1
     # via beautifulsoup4
-spacy==3.2.1
+spacy==3.2.2
     # via -r requirements.in
 spacy-legacy==3.0.8
     # via spacy
 spacy-loggers==1.0.1
     # via spacy
-sqlalchemy==1.4.28
+sqlalchemy==1.4.31
     # via -r requirements.in
 srsly==2.4.2
     # via
     #   spacy
     #   thinc
-striprtf==0.0.17
+striprtf==0.0.19
     # via -r requirements.in
 tabulate==0.8.9
     # via -r requirements.in
@@ -123,10 +123,9 @@ typer==0.4.0
     # via
     #   pathy
     #   spacy
-typing-extensions==4.0.1; python_version >= "3.8"
-typing_extensions>=3.7.4.1,<4.0.0.0; python_version < "3.8"
+typing-extensions==4.1.1
     # via pydantic
-urllib3==1.26.7
+urllib3==1.26.8
     # via requests
 wasabi==0.9.0
     # via
