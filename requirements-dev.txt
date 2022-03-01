@@ -17,7 +17,7 @@ black==22.1.0
     # via -r requirements-dev.in
 blessed==1.19.1
     # via enlighten
-blis==0.7.5
+blis==0.7.6
     # via
     #   spacy
     #   thinc
@@ -28,6 +28,8 @@ catalogue==2.0.6
     #   thinc
 certifi==2021.10.8
     # via requests
+cffi==1.15.0
+    # via pynacl
 charset-normalizer==2.0.12
     # via requests
 click==8.0.4
@@ -47,6 +49,8 @@ cymem==2.0.6
     #   preshed
     #   spacy
     #   thinc
+deprecated==1.2.13
+    # via pygithub
 distlib==0.3.4
     # via virtualenv
 enlighten==1.10.2
@@ -147,14 +151,22 @@ py-cpuinfo==8.0.0
     # via pytest-benchmark
 pycodestyle==2.8.0
     # via flake8
+pycparser==2.21
+    # via cffi
 pydantic==1.8.2
     # via
     #   spacy
     #   thinc
 pyflakes==2.4.0
     # via flake8
+pygithub==1.55
+    # via -r requirements-dev.in
+pyjwt==2.3.0
+    # via pygithub
 pylint==2.12.2
     # via -r requirements-dev.in
+pynacl==1.5.0
+    # via pygithub
 pyparsing==3.0.7
     # via packaging
 pyrsistent==0.18.1
@@ -182,6 +194,7 @@ pytest-sugar==0.9.4
 requests==2.27.1
     # via
     #   -r requirements-dev.in
+    #   pygithub
     #   spacy
 six==1.16.0
     # via
@@ -192,9 +205,9 @@ smart-open==5.2.1
     # via pathy
 soupsieve==2.3.1
     # via beautifulsoup4
-spacy==3.2.2
+spacy==3.2.3
     # via -r requirements.in
-spacy-legacy==3.0.8
+spacy-legacy==3.0.9
     # via spacy
 spacy-loggers==1.0.1
     # via spacy
@@ -204,7 +217,7 @@ srsly==2.4.2
     # via
     #   spacy
     #   thinc
-striprtf==0.0.19
+striprtf==0.0.20
     # via -r requirements.in
 tabulate==0.8.9
     # via -r requirements.in
@@ -224,7 +237,7 @@ tomli==2.0.1
     #   pytest
 tox==3.24.5
     # via -r requirements-dev.in
-tqdm==4.62.3
+tqdm==4.63.0
     # via spacy
 treelib==1.6.1
     # via -r requirements.in
@@ -240,7 +253,7 @@ typing-extensions==4.1.1
     #   pylint
 urllib3==1.26.8
     # via requests
-virtualenv==20.13.1
+virtualenv==20.13.2
     # via tox
 wasabi==0.9.0
     # via
@@ -254,7 +267,9 @@ wheel==0.37.1
     #   -r requirements-dev.in
     #   pip-tools
 wrapt==1.13.3
-    # via astroid
+    # via
+    #   astroid
+    #   deprecated
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
