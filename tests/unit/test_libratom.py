@@ -10,6 +10,7 @@ from tempfile import TemporaryDirectory
 from unittest.mock import DEFAULT, MagicMock, Mock, patch
 
 import pytest
+from github import Github
 
 import libratom
 from libratom.data import MIME_TYPES
@@ -223,8 +224,9 @@ def test_file_report_with_empty_relationship():
 
 @pytest.mark.skipif(
     (sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
-    >= (3, 10, 0),
-    reason="will fix",
+    >= (3, 10, 0)
+    and Github().get_repo("pytorch/pytorch").get_issue(number=66424).state == "open",
+    reason="https://github.com/pytorch/pytorch/issues/66424",
 )
 @pytest.mark.parametrize(
     "model_name, expected_entity_types",
