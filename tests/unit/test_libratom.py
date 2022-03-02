@@ -3,6 +3,7 @@ import datetime
 import email
 import hashlib
 import logging
+import os
 import sys
 from email import policy
 from pathlib import Path
@@ -225,7 +226,11 @@ def test_file_report_with_empty_relationship():
 @pytest.mark.skipif(
     (sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
     >= (3, 10, 0)
-    and Github().get_repo("pytorch/pytorch").get_issue(number=66424).state == "open",
+    and Github(os.environ.get("GITHUB-TOKEN"))
+    .get_repo("pytorch/pytorch")
+    .get_issue(number=66424)
+    .state
+    == "open",
     reason="https://github.com/pytorch/pytorch/issues/66424",
 )
 @pytest.mark.parametrize(
