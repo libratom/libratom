@@ -87,7 +87,7 @@ langcodes==3.3.0
     # via spacy
 lazy-object-proxy==1.7.1
     # via astroid
-libpff-python-ratom==20200808
+libpff-python-ratom==20220304
     # via -r requirements.in
 markupsafe==2.1.0
     # via jinja2

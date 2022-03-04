@@ -51,7 +51,7 @@ jsonschema==4.4.0
     # via -r requirements.in
 langcodes==3.3.0
     # via spacy
-libpff-python-ratom==20200808
+libpff-python-ratom==20220304
     # via -r requirements.in
 markupsafe==2.1.0
     # via jinja2
