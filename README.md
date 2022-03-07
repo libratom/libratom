@@ -290,7 +290,7 @@ Follow the remaining instructions in the Installation section at the top of this
 
 To install and test this software in a new Python virtual environment in Ubuntu 18.04LTS or newer:
 
-Make sure Python 3.7 or newer, python3-pip, python3-venv, and build-essential are installed. Open a terminal and type the following command:
+Make sure Python 3.8 or newer, python3-pip, python3-venv, and build-essential are installed. Open a terminal and type the following command:
 
 ```shell
 sudo apt install build-essential python3 python3-pip python3-venv
