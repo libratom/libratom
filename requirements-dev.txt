@@ -211,7 +211,7 @@ spacy-legacy==3.0.9
     # via spacy
 spacy-loggers==1.0.1
     # via spacy
-sqlalchemy==1.4.31
+sqlalchemy==1.4.32
     # via -r requirements.in
 srsly==2.4.2
     # via
@@ -253,7 +253,7 @@ typing-extensions==4.1.1
     #   pylint
 urllib3==1.26.8
     # via requests
-virtualenv==20.13.2
+virtualenv==20.13.3
     # via tox
 wasabi==0.9.0
     # via
