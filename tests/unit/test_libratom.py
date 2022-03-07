@@ -226,7 +226,7 @@ def test_file_report_with_empty_relationship():
 @pytest.mark.skipif(
     (sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
     >= (3, 10, 0)
-    and Github(os.environ.get("GITHUB-TOKEN"))
+    and Github(os.environ.get("GITHUB_TOKEN"))
     .get_repo("pytorch/pytorch")
     .get_issue(number=66424)
     .state
