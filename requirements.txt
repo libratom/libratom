@@ -103,7 +103,7 @@ spacy-legacy==3.0.9
     # via spacy
 spacy-loggers==1.0.1
     # via spacy
-sqlalchemy==1.4.31
+sqlalchemy==1.4.32
     # via -r requirements.in
 srsly==2.4.2
     # via
