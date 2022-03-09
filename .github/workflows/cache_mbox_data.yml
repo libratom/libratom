@@ -1,0 +1,30 @@
+name: Cache Test Data
+
+on: workflow_dispatch
+
+jobs:
+  cache_mbox_test_data:
+    name: Cache mbox test data
+    runs-on: ubuntu-latest
+    env:
+      CACHED_HTTPD_USERS_MAIL_DIR: /tmp/libratom/test_data/httpd-users
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install libratom
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r ./requirements-dev.txt
+        pip install -e ./
+    - name: Download http users mail data from the web
+      run: python ./libratom/scripts/download_sample_mbox_files.py
+    - name: Check local data
+      run: find ${{ env.CACHED_HTTPD_USERS_MAIL_DIR }} -type f
+    - name: Upload mbox files into github storage
+      uses: actions/upload-artifact@v2
+      with:
+        name: mbox_sample_files
+        path: ${{ env.CACHED_HTTPD_USERS_MAIL_DIR }}
+        retention-days: 90
