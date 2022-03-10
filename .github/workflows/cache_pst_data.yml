@@ -1,4 +1,4 @@
-name: Cache Test Data
+name: Cache PST Data
 
 on: workflow_dispatch
 

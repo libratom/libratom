@@ -1,4 +1,4 @@
-name: Cache Test Data
+name: Cache MBOX Data
 
 on: workflow_dispatch
 
