@@ -288,9 +288,8 @@ def directory_of_mbox_files() -> Path:
         zipped_path.unlink()
     else:
         # Download 6 monthly mailing list digests
-        # urls = [url_template.format(month=i) for i in range(1, 7)]
-        # download_files(urls, path)
-        pass
+        urls = [url_template.format(month=i) for i in range(1, 7)]
+        download_files(urls, path)
 
     # Confirm the files are there
     for i in range(1, 7):
