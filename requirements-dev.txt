@@ -104,7 +104,7 @@ murmurhash==1.0.6
     #   thinc
 mypy-extensions==0.4.3
     # via black
-numpy==1.22.2
+numpy==1.22.3
     # via
     #   blis
     #   spacy
