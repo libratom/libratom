@@ -8,6 +8,7 @@ jobs:
     name: Run the test suite
     runs-on: ${{ matrix.os }}
     env:
+      TEST_DATA_DIR: /tmp/libratom/test_data
       EDRM_DIR: /tmp/libratom/test_data/RevisedEDRMv1_Complete
       CACHED_HTTPD_USERS_MAIL_DIR: /tmp/libratom/test_data/httpd-users
     strategy:
@@ -29,7 +30,7 @@ jobs:
       uses: dawidd6/action-download-artifact@v2
       with:
         workflow: cache_mbox_data.yml
-        path: ${{ env.CACHED_HTTPD_USERS_MAIL_DIR }}
+        path: ${{ env.TEST_DATA_DIR }}  # One level up from CACHED_HTTPD_USERS_MAIL_DIR
     - name: Confirm test data is present
       run: |
         find ${{ env.EDRM_DIR }} -type f

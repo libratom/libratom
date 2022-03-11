@@ -25,6 +25,6 @@ jobs:
     - name: Upload mbox files into github storage
       uses: actions/upload-artifact@v2
       with:
-        name: sample_mbox_files
+        name: httpd-users
         path: ${{ env.CACHED_HTTPD_USERS_MAIL_DIR }}
         retention-days: 90

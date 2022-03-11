@@ -279,14 +279,8 @@ def directory_of_mbox_files() -> Path:
     # path is our destination directory
     path = CACHED_HTTPD_USERS_MAIL_DIR
 
-    # Look for existing zipped dir
-    zipped_path = path / "sample_mbox_files.zip"
-    if zipped_path.exists():
-        # Unzip and remove archive
-        with ZipFile(zipped_path) as archive:
-            archive.extractall(path=path)
-        zipped_path.unlink()
-    else:
+    # Look for existing directory
+    if not path.is_dir():
         # Download 6 monthly mailing list digests
         urls = [url_template.format(month=i) for i in range(1, 7)]
         download_files(urls, path)
