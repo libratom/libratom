@@ -1742,6 +1742,7 @@
     "model/mesh",
     "model/mtl",
     "model/obj",
+    "model/prc",
     "model/step",
     "model/step+xml",
     "model/step+zip",
