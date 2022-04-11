@@ -6,15 +6,15 @@
 #
 attrs==21.4.0
     # via jsonschema
-beautifulsoup4==4.10.0
+beautifulsoup4==4.11.1
     # via -r requirements.in
 blessed==1.19.1
     # via enlighten
-blis==0.7.6
+blis==0.7.7
     # via
     #   spacy
     #   thinc
-catalogue==2.0.6
+catalogue==2.0.7
     # via
     #   spacy
     #   srsly
@@ -27,8 +27,9 @@ click==8.0.4
     # via
     #   -r requirements.in
     #   click-log
+    #   spacy
     #   typer
-click-log==0.3.2
+click-log==0.4.0
     # via -r requirements.in
 cymem==2.0.6
     # via
@@ -45,7 +46,7 @@ humanfriendly==10.0
     # via -r requirements.in
 idna==3.3
     # via requests
-jinja2==3.0.3
+jinja2==3.1.1
     # via spacy
 jsonschema==4.4.0
     # via -r requirements.in
@@ -53,7 +54,7 @@ langcodes==3.3.0
     # via spacy
 libpff-python-ratom==20220304
     # via -r requirements.in
-markupsafe==2.1.0
+markupsafe==2.1.1
     # via jinja2
 murmurhash==1.0.6
     # via
@@ -85,7 +86,7 @@ pydantic==1.8.2
     # via
     #   spacy
     #   thinc
-pyparsing==3.0.7
+pyparsing==3.0.8
     # via packaging
 pyrsistent==0.18.1
     # via jsonschema
@@ -95,17 +96,17 @@ six==1.16.0
     # via blessed
 smart-open==5.2.1
     # via pathy
-soupsieve==2.3.1
+soupsieve==2.3.2.post1
     # via beautifulsoup4
-spacy==3.2.3
+spacy==3.2.4
     # via -r requirements.in
 spacy-legacy==3.0.9
     # via spacy
-spacy-loggers==1.0.1
+spacy-loggers==1.0.2
     # via spacy
-sqlalchemy==1.4.32
+sqlalchemy==1.4.35
     # via -r requirements.in
-srsly==2.4.2
+srsly==2.4.3
     # via
     #   spacy
     #   thinc
@@ -113,21 +114,21 @@ striprtf==0.0.20
     # via -r requirements.in
 tabulate==0.8.9
     # via -r requirements.in
-thinc==8.0.13
+thinc==8.0.15
     # via spacy
-tqdm==4.63.0
+tqdm==4.64.0
     # via spacy
 treelib==1.6.1
     # via -r requirements.in
-typer==0.4.0
+typer==0.4.1
     # via
     #   pathy
     #   spacy
 typing-extensions==4.1.1
     # via pydantic
-urllib3==1.26.8
+urllib3==1.26.9
     # via requests
-wasabi==0.9.0
+wasabi==0.9.1
     # via
     #   spacy
     #   spacy-loggers
