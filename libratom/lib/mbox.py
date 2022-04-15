@@ -42,7 +42,7 @@ class MboxArchive(Archive):
         Generator function to iterate over the archive's messages
         """
 
-        return self._mailbox.itervalues()  # noqa: B301
+        return (msg for msg in self._mailbox)
 
     @property
     def message_count(self) -> int:

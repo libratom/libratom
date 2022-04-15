@@ -1,5 +1,6 @@
 # pylint: disable=missing-docstring,broad-except,import-outside-toplevel
 
+import itertools
 import json
 import logging
 from email import policy
@@ -17,13 +18,20 @@ from pkg_resources import load_entry_point
 from requests import HTTPError
 from spacy.language import Language
 
-from libratom.lib import MboxArchive, PffArchive
+from libratom.lib import EmlArchive, MboxArchive, PffArchive
 from libratom.lib.base import Archive
 from libratom.lib.constants import RATOM_SPACY_MODEL_MAX_LENGTH, SPACY_MODEL_NAMES
 from libratom.lib.exceptions import FileTypeError
 from libratom.lib.pff import pff_msg_to_string
 
 logger = logging.getLogger(__name__)
+
+EXTENSION_TYPE_MAPPING = {
+    ".pst": PffArchive,
+    ".ost": PffArchive,
+    ".mbox": MboxArchive,
+    ".eml": EmlArchive,
+}
 
 _cached_spacy_models = {}
 
@@ -34,16 +42,9 @@ def get_ratom_settings() -> List[Tuple[str, Union[int, str]]]:
     ]
 
 
-def open_mail_archive(path: Path) -> Optional[Union[PffArchive, MboxArchive]]:
-
-    extension_type_mapping = {
-        ".pst": PffArchive,
-        ".ost": PffArchive,
-        ".mbox": MboxArchive,
-    }
-
+def open_mail_archive(path: Path) -> Optional[Archive]:
     try:
-        archive_class = extension_type_mapping[path.suffix]
+        archive_class = EXTENSION_TYPE_MAPPING[path.suffix]
     except KeyError as exc:
         raise FileTypeError(f"Unable to open {path}. Unsupported file type.") from exc
 
@@ -52,7 +53,10 @@ def open_mail_archive(path: Path) -> Optional[Union[PffArchive, MboxArchive]]:
 
 def get_set_of_files(path: Path) -> Set[Path]:
     if path.is_dir():
-        return set(path.glob("**/*.pst")).union(set(path.glob("**/*.mbox")))
+        valid_mail_files = itertools.chain(
+            *[path.glob(f"**/*{extension}") for extension in EXTENSION_TYPE_MAPPING]
+        )
+        return set(valid_mail_files)
 
     return {path}
 
