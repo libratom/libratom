@@ -293,6 +293,22 @@ def directory_of_mbox_files() -> Path:
 
 
 @pytest.fixture(scope="session")
+def test_eml_files() -> Path:
+    """
+    Returns:
+        The root directory of sample .eml data, valid and invalid.
+
+    Downloaded from https://github.com/mikel/mail/tree/d18a73b6042522b37c7798e26c19158982cdecc1/spec/fixtures/emails
+    """
+    zipped_path = Path(__file__).resolve().parent / "emails.zip"
+
+    # Extract in temporary dir
+    with ZipFile(zipped_path) as archive, TemporaryDirectory() as tmpdir:
+        archive.extractall(path=tmpdir)
+        yield Path(tmpdir)
+
+
+@pytest.fixture(scope="session")
 def sample_mbox_file(directory_of_mbox_files) -> Path:
     yield sorted(directory_of_mbox_files.glob("*.mbox"))[0]
 

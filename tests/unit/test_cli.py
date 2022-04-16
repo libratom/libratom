@@ -399,6 +399,55 @@ def test_ratom_entities_enron_004(
         )
 
 
+@pytest.mark.parametrize(
+    "params, expected",
+    [
+        (
+            ["-v", "-j2"],
+            Expected(status=0, tokens=["Creating database file", "All done"]),
+        )
+    ],
+)
+def test_ratom_entities_eml_files(
+    isolated_cli_runner,
+    test_eml_files,
+    en_core_web_sm_3_2_0,  # pylint: disable=unused-argument
+    params,
+    expected,
+):
+    # Bad date string in example13.eml but valid for entity extraction
+    valid_eml_files = test_eml_files / "emails" / "rfc2822"
+
+    result = extract_entities(params, valid_eml_files, isolated_cli_runner, expected)
+
+    with db_session_from_cmd_out(result) as session:
+
+        # Verify total entity count
+        assert session.query(Entity).count() == 86
+
+        # Verify count per entity type
+        results = (
+            session.query(Entity.label_, func.count(Entity.label_))
+            .group_by(Entity.label_)
+            .all()
+        )
+
+        assert results
+
+        expected_counts = {
+            "CARDINAL": 27,
+            "DATE": 17,
+            "MONEY": 1,
+            "ORG": 6,
+            "PERSON": 30,
+            "PRODUCT": 1,
+            "TIME": 4,
+        }
+
+        for entity_type, count in results:
+            assert expected_counts[entity_type] == count
+
+
 @pytest.mark.skipif(
     not os.getenv("CI", None),
     reason="Keep local test runs reasonably short",
