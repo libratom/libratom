@@ -16,8 +16,12 @@ from sqlalchemy.orm.session import Session
 import libratom
 from libratom.lib.concurrency import get_messages, imap_job, worker_init
 from libratom.lib.core import get_ratom_settings, open_mail_archive
+from libratom.lib.headers import (
+    get_header_field_type_mapping,
+    populate_header_field_types,
+)
 from libratom.lib.utils import cleanup_message_body
-from libratom.models import Attachment, Configuration, FileReport, Message
+from libratom.models import Attachment, Configuration, FileReport, HeaderField, Message
 
 logger = logging.getLogger(__name__)
 
@@ -159,6 +163,14 @@ def generate_report(
     # Load the file_report table for local lookup
     _file_reports = session.query(FileReport).all()  # noqa: F841
 
+    # Add header field type table
+    if include_message_contents:
+        populate_header_field_types(session)
+
+    # Cache header field types into local mapping,
+    # empty if header field type table was not created
+    header_field_type_mapping = get_header_field_type_mapping(session)
+
     try:
 
         for msg_info in get_messages(
@@ -204,6 +216,28 @@ def generate_report(
                     for attachment in attachments
                 ]
             )
+
+            # Record header fields
+            if include_message_contents:
+                header_fields = []
+
+                for line in msg_info.get("headers", "").splitlines():
+                    try:
+                        header_name, header_value = line.split(":", maxsplit=1)
+                    except ValueError:
+                        continue
+                    if header_field_type := header_field_type_mapping.get(
+                        header_name.lower()
+                    ):
+                        header_fields.append(
+                            HeaderField(
+                                header_field_type=header_field_type,
+                                value=header_value,
+                                message=message,
+                            )
+                        )
+
+                session.add_all(header_fields)
 
     except KeyboardInterrupt:
         logger.warning("Cancelling running task")

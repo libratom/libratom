@@ -1,4 +1,4 @@
-# pylint: disable=broad-except,invalid-name,protected-access,consider-using-ternary,too-many-locals,too-many-arguments
+# pylint: disable=broad-except,invalid-name,protected-access,consider-using-ternary
 """
 Set of utility functions that use spaCy to perform named entity recognition
 """
@@ -21,8 +21,12 @@ from libratom.lib.constants import (
     BodyType,
 )
 from libratom.lib.core import get_cached_spacy_model
+from libratom.lib.headers import (
+    get_header_field_type_mapping,
+    populate_header_field_types,
+)
 from libratom.lib.utils import cleanup_message_body
-from libratom.models import Attachment, Entity, FileReport, Message
+from libratom.models import Attachment, Entity, FileReport, HeaderField, Message
 
 logger = logging.getLogger(__name__)
 
@@ -91,9 +95,9 @@ def extract_entities(
     """
 
     # Confirm environment settings
-    for key, value in globals().items():
-        if key.startswith("RATOM_"):
-            logger.debug(f"{key}: {value}")
+    for setting_name, setting_value in globals().items():
+        if setting_name.startswith("RATOM_"):
+            logger.debug(f"{setting_name}: {setting_value}")
 
     # Default progress callbacks to no-op
     processing_update_progress = processing_progress_callback or (lambda *_, **__: None)
@@ -101,6 +105,14 @@ def extract_entities(
 
     # Load the file_report table for local lookup
     _file_reports = session.query(FileReport).all()  # noqa: F841
+
+    # Add header field type table
+    if include_message_contents:
+        populate_header_field_types(session)
+
+    # Cache header field types into local mapping,
+    # empty if header field type table was not created
+    header_field_type_mapping = get_header_field_type_mapping(session)
 
     # Start of multiprocessing
     ctx = multiprocessing.get_context(
@@ -177,6 +189,28 @@ def extract_entities(
                         for attachment in attachments
                     ]
                 )
+
+                # Record header fields
+                if include_message_contents:
+                    header_fields = []
+
+                    for line in res.get("headers", "").splitlines():
+                        try:
+                            header_name, header_value = line.split(":", maxsplit=1)
+                        except ValueError:
+                            continue
+                        if header_field_type := header_field_type_mapping.get(
+                            header_name.lower()
+                        ):
+                            header_fields.append(
+                                HeaderField(
+                                    header_field_type=header_field_type,
+                                    value=header_value,
+                                    message=message,
+                                )
+                            )
+
+                    session.add_all(header_fields)
 
                 # Record entities info
                 for entity in entities:
