@@ -19,3 +19,4 @@ class Message(Base):
     file_report_id = Column(Integer, ForeignKey("file_report.id"))
     entities = relationship("Entity", backref="message")
     attachments = relationship("Attachment", backref="message")
+    header_fields = relationship("HeaderField", backref="message")

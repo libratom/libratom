@@ -203,7 +203,7 @@ def report(
         logger.warning("Aborting")
         return status
 
-    # Get messages and extract entities
+    # Get messages and generate reports
     with db_session(Session) as session:
 
         # Record configuration info
