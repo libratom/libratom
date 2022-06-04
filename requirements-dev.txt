@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=requirements-dev.txt requirements-dev.in requirements.in
 #
-astroid==2.11.2
+astroid==2.11.5
     # via pylint
 attrs==21.4.0
     # via
@@ -26,24 +26,23 @@ catalogue==2.0.7
     #   spacy
     #   srsly
     #   thinc
-certifi==2021.10.8
+certifi==2022.5.18.1
     # via requests
 cffi==1.15.0
     # via pynacl
 charset-normalizer==2.0.12
     # via requests
-click==8.0.4
+click==8.1.3
     # via
     #   -r requirements.in
     #   black
     #   click-log
     #   pip-tools
     #   pytest-click
-    #   spacy
     #   typer
 click-log==0.4.0
     # via -r requirements.in
-coverage[toml]==6.3.2
+coverage[toml]==6.4.1
     # via pytest-cov
 cymem==2.0.6
     # via
@@ -52,13 +51,13 @@ cymem==2.0.6
     #   thinc
 deprecated==1.2.13
     # via pygithub
-dill==0.3.4
+dill==0.3.5.1
     # via pylint
 distlib==0.3.4
     # via virtualenv
 enlighten==1.10.2
     # via -r requirements.in
-filelock==3.6.0
+filelock==3.7.1
     # via
     #   tox
     #   virtualenv
@@ -66,7 +65,7 @@ flake8==4.0.1
     # via
     #   -r requirements-dev.in
     #   flake8-bugbear
-flake8-bugbear==22.3.23
+flake8-bugbear==22.4.25
     # via -r requirements-dev.in
 future==0.18.2
     # via treelib
@@ -82,9 +81,9 @@ isort==5.10.1
     # via
     #   -r requirements-dev.in
     #   pylint
-jinja2==3.1.1
+jinja2==3.1.2
     # via spacy
-jsonschema==4.4.0
+jsonschema==4.6.0
     # via -r requirements.in
 langcodes==3.3.0
     # via spacy
@@ -100,14 +99,14 @@ mccabe==0.6.1
     #   pylint
 mock==4.0.3
     # via -r requirements-dev.in
-murmurhash==1.0.6
+murmurhash==1.0.7
     # via
     #   preshed
     #   spacy
     #   thinc
 mypy-extensions==0.4.3
     # via black
-numpy==1.22.3
+numpy==1.22.4
     # via
     #   blis
     #   spacy
@@ -123,13 +122,13 @@ pathspec==0.9.0
     # via black
 pathy==0.6.1
     # via spacy
-pbr==5.8.1
+pbr==5.9.0
     # via -r requirements.in
 pep517==0.12.0
     # via pip-tools
-pip-tools==6.6.0
+pip-tools==6.6.2
     # via -r requirements-dev.in
-platformdirs==2.5.1
+platformdirs==2.5.2
     # via
     #   black
     #   pylint
@@ -144,7 +143,7 @@ preshed==3.0.6
     # via
     #   spacy
     #   thinc
-psutil==5.9.0
+psutil==5.9.1
     # via -r requirements.in
 py==1.11.0
     # via
@@ -164,19 +163,19 @@ pyflakes==2.4.0
     # via flake8
 pygithub==1.55
     # via -r requirements-dev.in
-pyjwt==2.3.0
+pyjwt==2.4.0
     # via pygithub
-pylint==2.13.5
+pylint==2.14.0
     # via -r requirements-dev.in
 pynacl==1.5.0
     # via pygithub
-pyparsing==3.0.8
+pyparsing==3.0.9
     # via packaging
 pyrsistent==0.18.1
     # via jsonschema
 pysnooper==1.1.1
     # via -r requirements-dev.in
-pytest==7.1.1
+pytest==7.1.2
     # via
     #   -r requirements-dev.in
     #   pytest-benchmark
@@ -208,13 +207,13 @@ smart-open==5.2.1
     # via pathy
 soupsieve==2.3.2.post1
     # via beautifulsoup4
-spacy==3.2.4
+spacy==3.3.0
     # via -r requirements.in
 spacy-legacy==3.0.9
     # via spacy
 spacy-loggers==1.0.2
     # via spacy
-sqlalchemy==1.4.35
+sqlalchemy==1.4.37
     # via -r requirements.in
 srsly==2.4.3
     # via
@@ -226,7 +225,7 @@ tabulate==0.8.9
     # via -r requirements.in
 termcolor==1.1.0
     # via pytest-sugar
-thinc==8.0.15
+thinc==8.0.17
     # via spacy
 toml==0.10.2
     # via tox
@@ -237,6 +236,8 @@ tomli==2.0.1
     #   pep517
     #   pylint
     #   pytest
+tomlkit==0.11.0
+    # via pylint
 tox==3.25.0
     # via -r requirements-dev.in
 tqdm==4.64.0
@@ -247,7 +248,7 @@ typer==0.4.1
     # via
     #   pathy
     #   spacy
-typing-extensions==4.1.1
+typing-extensions==4.2.0
     # via
     #   astroid
     #   black
@@ -268,7 +269,7 @@ wheel==0.37.1
     # via
     #   -r requirements-dev.in
     #   pip-tools
-wrapt==1.14.0
+wrapt==1.14.1
     # via
     #   astroid
     #   deprecated
