@@ -24,7 +24,7 @@ The first thing you will likely want to do after you've forked libratom and clon
    pip install -e ./
    ```
    
-We use [tox](https://tox.readthedocs.io/en/latest/) to run our test suite. We recommend that you run tox locally before submitting a pull request. It will run static analysis tools first and the test suite second. See our [tox.ini](https://github.com/libratom/libratom/blob/master/tox.ini) file for details.
+We use [tox](https://tox.readthedocs.io/en/latest/) to run our test suite. We recommend that you run tox locally before submitting a pull request. It will run static analysis tools first and the test suite second. See our [tox.ini](https://github.com/libratom/libratom/blob/main/tox.ini) file for details.
 
 #### Code Style
 We use [black](https://black.readthedocs.io/en/stable/) as our code formatter. You can run it locally before committing or set it as a pre-commit hook. If necessary you can turn off formatting for a specific block of code with `# fmt: off` and back on with `# fmt: on`.
