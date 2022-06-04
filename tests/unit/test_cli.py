@@ -340,7 +340,7 @@ def test_ratom_entities_from_mbox_files(
 def test_ratom_entities_enron_004(
     isolated_cli_runner,
     enron_dataset_part004,
-    en_core_web_sm_3_2_0,  # pylint: disable=unused-argument
+    en_core_web_sm_3_3_0,  # pylint: disable=unused-argument
     params,
     expected,
 ):
@@ -355,7 +355,7 @@ def test_ratom_entities_enron_004(
             assert str(entity)
 
         # Verify total entity count
-        assert session.query(Entity).count() == 205542
+        assert session.query(Entity).count() == 195299
 
         # Verify count per entity type
         results = (
@@ -367,23 +367,24 @@ def test_ratom_entities_enron_004(
         assert results
 
         expected_counts = {
-            "CARDINAL": 49867,
-            "DATE": 9518,
-            "EVENT": 41,
-            "FAC": 257,
-            "GPE": 19613,
-            "LAW": 239,
-            "LOC": 258,
-            "MONEY": 3196,
-            "NORP": 612,
-            "ORDINAL": 563,
-            "ORG": 89172,
-            "PERCENT": 2575,
-            "PERSON": 12389,
-            "PRODUCT": 1242,
-            "QUANTITY": 36,
-            "TIME": 2917,
-            "WORK_OF_ART": 13047,
+            "CARDINAL": 33193,
+            "DATE": 8436,
+            "EVENT": 115,
+            "FAC": 190,
+            "GPE": 6667,
+            "LANGUAGE": 5,
+            "LAW": 340,
+            "LOC": 376,
+            "MONEY": 6473,
+            "NORP": 410,
+            "ORDINAL": 533,
+            "ORG": 96662,
+            "PERCENT": 933,
+            "PERSON": 23942,
+            "PRODUCT": 1579,
+            "QUANTITY": 124,
+            "TIME": 2608,
+            "WORK_OF_ART": 12713,
         }
 
         for entity_type, count in results:
@@ -395,7 +396,7 @@ def test_ratom_entities_enron_004(
             .filter_by(name="spacy_model_version")
             .one()
             .value
-            == "3.2.0"
+            == "3.3.0"
         )
 
 
@@ -411,7 +412,7 @@ def test_ratom_entities_enron_004(
 def test_ratom_entities_eml_files(
     isolated_cli_runner,
     test_eml_files,
-    en_core_web_sm_3_2_0,  # pylint: disable=unused-argument
+    en_core_web_sm_3_3_0,  # pylint: disable=unused-argument
     params,
     expected,
 ):
@@ -423,7 +424,7 @@ def test_ratom_entities_eml_files(
     with db_session_from_cmd_out(result) as session:
 
         # Verify total entity count
-        assert session.query(Entity).count() == 86
+        assert session.query(Entity).count() == 75
 
         # Verify count per entity type
         results = (
@@ -435,13 +436,16 @@ def test_ratom_entities_eml_files(
         assert results
 
         expected_counts = {
-            "CARDINAL": 27,
+            "CARDINAL": 4,
             "DATE": 17,
+            "FAC": 1,
+            "GPE": 2,
+            "LAW": 1,
             "MONEY": 1,
-            "ORG": 6,
-            "PERSON": 30,
-            "PRODUCT": 1,
-            "TIME": 4,
+            "ORG": 10,
+            "PERSON": 29,
+            "TIME": 5,
+            "WORK_OF_ART": 5,
         }
 
         for entity_type, count in results:
