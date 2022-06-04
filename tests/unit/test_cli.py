@@ -5,7 +5,7 @@ import os
 import tempfile
 from contextlib import contextmanager
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Iterable, List, Optional, Union
 from unittest.mock import MagicMock, patch
 
 import click
@@ -29,7 +29,14 @@ from libratom.lib.core import load_spacy_model, open_mail_archive
 from libratom.lib.database import db_session_from_cmd_out
 from libratom.lib.entities import process_message
 from libratom.lib.utils import BodyType, cleanup_message_body
-from libratom.models import Configuration, Entity, FileReport, Message
+from libratom.models import (
+    Configuration,
+    Entity,
+    FileReport,
+    HeaderField,
+    HeaderFieldType,
+    Message,
+)
 
 
 @contextmanager
@@ -42,7 +49,7 @@ class Expected:
     Result object type for parametrized tests. Expand as necessary...
     """
 
-    def __init__(self, status: int, tokens: List[str], **kwargs):
+    def __init__(self, status: int, tokens: Iterable[str] = (), **kwargs):
         self.status = status
         self.tokens = tokens
 
@@ -301,8 +308,8 @@ def test_ratom_model(cli_runner, params, expected):
 @pytest.mark.parametrize(
     "params, expected",
     [
-        (["-i", "en_core_web_sm"], Expected(status=0, tokens=[])),
-        (["-u", "en_core_web_sm"], Expected(status=0, tokens=[])),
+        (["-i", "en_core_web_sm"], Expected(status=0)),
+        (["-u", "en_core_web_sm"], Expected(status=0)),
     ],
 )
 def test_ratom_model_install(cli_runner, params, expected):
@@ -398,6 +405,46 @@ def test_ratom_entities_enron_004(
             .value
             == "3.3.0"
         )
+
+
+@pytest.mark.parametrize(
+    "command",
+    ["entities", "report"],
+)
+@pytest.mark.parametrize(
+    "params, expected_counts",
+    [
+        (
+            [],
+            {HeaderFieldType: 0, HeaderField: 0},
+        ),
+        (
+            ["-m"],
+            {HeaderFieldType: 145, HeaderField: 16144},
+        ),
+    ],
+)
+def test_ratom_commands_with_header_fields(
+    isolated_cli_runner,
+    enron_dataset_part001,
+    en_core_web_sm_3_3_0,  # pylint: disable=unused-argument
+    command,
+    params,
+    expected_counts,
+):
+    # All runs should be successful
+    success = Expected(status=0)
+
+    # Add verbose flag to get the DB file from cmd out
+    result = run_ratom_subcommand(
+        command, params + ["-v"], enron_dataset_part001, isolated_cli_runner, success
+    )
+
+    with db_session_from_cmd_out(result) as session:
+
+        # Validate row counts for header field types and header fields
+        for object_type, count in expected_counts.items():
+            assert session.query(object_type).count() == count
 
 
 @pytest.mark.parametrize(
@@ -608,7 +655,7 @@ def test_validate_eml_export_input(bad_eml_export_input):
 
 
 def test_ratom_emldump(cli_runner, enron_dataset_part004, good_eml_export_input):
-    expected = Expected(status=0, tokens=[])
+    expected = Expected(status=0)
 
     with tempfile.TemporaryDirectory() as tmpdir:
         params = [
