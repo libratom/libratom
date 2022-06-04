@@ -54,10 +54,10 @@ jobs:
     needs: test
     runs-on: ubuntu-20.04
     # First condition is to not run on forks
-    # Second condition is to run only on push to master or tags
+    # Second condition is to run only on push to main or tags
     if: |
       github.repository_owner == 'libratom' &&
-      (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
+      (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
     steps:
       - uses: actions/checkout@v2
         with:
