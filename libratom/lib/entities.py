@@ -194,7 +194,7 @@ def extract_entities(
                 if include_message_contents:
                     header_fields = []
 
-                    for line in res.get("headers", "").splitlines():
+                    for line in (res.get("headers") or "").splitlines():
                         try:
                             header_name, header_value = line.split(":", maxsplit=1)
                         except ValueError:
