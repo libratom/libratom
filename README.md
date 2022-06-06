@@ -69,7 +69,7 @@ Note that the -m flag has been added to this command to write message bodies (st
 
 By default, the tool will install and use the latest spaCy 3 en\_core\_web\_sm model (see the [model management](#model-management) section for how to list and install model versions). It will start as many concurrent jobs as there are virtual cores available. Entities are written to a sqlite3 file automatically named using the existing file or directory name and current datetime stamp, and with the following schema:
 
-![RATOM database schema](https://libratom.github.io/ratom-db-schema.svg)
+![RATOM database schema](https://libratom.github.io/ratom-db-schema-v2.png)
 
 The schema contains five tables. Four tables are used to represent files, messages, attachments, and entities. A fifth table is used to store configuration and environment details relevant to a specific run.
 
