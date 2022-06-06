@@ -221,7 +221,7 @@ def generate_report(
             if include_message_contents:
                 header_fields = []
 
-                for line in msg_info.get("headers", "").splitlines():
+                for line in (msg_info.get("headers") or "").splitlines():
                     try:
                         header_name, header_value = line.split(":", maxsplit=1)
                     except ValueError:
