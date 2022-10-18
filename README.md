@@ -14,15 +14,17 @@ Python library and supporting utilities to parse and process PST and mbox email 
 
 Libratom requires Python 3.8 or newer, and can be installed from the Python Package Index. Installing with **pip** will automatically install all required dependencies. These dependencies include a version of **libpff** that will be compiled automatically with C tooling during install. A selection of environments we have tested follows:
 
-*   Ubuntu 18.04LTS and 20.04LTS releases require build-essential, python3, python3-pip, and python3-venv packages
+*   Ubuntu 18.04LTS, 20.04LTS, and 22.04LTS releases require build-essential, python3, python3-pip, and python3-venv packages
+*   RHEL 9 requires python3, python3-pip, python3-devel, and the Development Tools package group.
 *   macOS 10.14 (and newer) releases require Xcode 11 (or newer), Xcode CLI tools, and Python 3 installed using Homebrew (or your preferred method)
-*   Windows 10 releases require Visual Studio Code, Build Tools for Visual Studio, and Python 3 installed using Anaconda 3 (or your preferred method)
+*   Windows 10/11 releases require Visual Studio Code, Build Tools for Visual Studio, and Python 3 installed using Anaconda 3 (or your preferred method)
 
 Need guidance setting up an environment on your platform? Navigate to one of the linked sections below before continuing.
 
 *   [Windows environment setup](#windows-environment-setup)
 *   [macOS environment setup](#macos-environment-setup)
 *   [Ubuntu environment setup](#ubuntu-environment-setup)
+*   [RHEL environment setup](#rhel-environment-setup)
 
 We **strongly recommend** you create a Python virtual environment prior to installing libratom. If you followed one of the guides above, you should already have one activated. With the environment configured and a Python virtual environment created and activated, run the following commands.
 
@@ -304,6 +306,30 @@ source venv/bin/activate
 ```
 
 Follow the remaining instructions in the Installation section at the top of this README to upgrade pip and install libratom.
+
+### RHEL environment setup
+
+These instructions use the *DNF* package manager, and have been tested in RHEL 9. In RHEL 9, you will need to install the python3-pip and python3 devel packages. In a terminal, run the following commands:
+
+```shell
+sudo dnf install python3-pip
+sudo dnf install python3-devel
+```
+
+Reply "y" if prompted during the installations. Next, you'll need to install some development tools, particularly a C compiler. There are several ways to do this, but the simplest is to install the Development Tools group:
+
+```shell
+sudo dnf group install "Development Tools"
+```
+
+Create and activate a Python virtual environment:
+
+```shell
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Once you have completed these installs, follow the remaining instructions at the top of this README to upgrade pip and install libratom.
 
 ## License(s)
 
