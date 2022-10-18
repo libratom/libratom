@@ -2,8 +2,6 @@
 import json
 import os
 import time
-from email import message_from_binary_file
-from email.message import Message
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Callable, Dict, List
@@ -14,7 +12,7 @@ import requests
 from requests.exceptions import ChunkedEncodingError, HTTPError
 
 from libratom.cli.utils import get_installed_model_version, install_spacy_model
-from libratom.lib.download import download_file, download_files
+from libratom.lib.download import download_files
 
 # Skip load tests
 if not os.getenv("LIBRATOM_LOAD_TESTING"):
@@ -311,26 +309,6 @@ def test_eml_files() -> Path:
 @pytest.fixture(scope="session")
 def sample_mbox_file(directory_of_mbox_files) -> Path:
     yield sorted(directory_of_mbox_files.glob("*.mbox"))[0]
-
-
-@pytest.fixture(scope="session")
-def utf8_message_with_no_cte_header() -> Message:
-    """
-    Returns:
-        A message with non-ascii characters and no CTE header, encoded as UTF-8
-    """
-
-    url = "https://raw.githubusercontent.com/kyrias/cpython/9a510426522e1d714cd0ea238b14de0fc76862b2/Lib/test/test_email/data/msg_47.txt"
-
-    with TemporaryDirectory() as tmpdir:
-
-        download_dir = Path(tmpdir)
-        file_path = download_dir / url.rsplit("/", 1)[1]
-
-        assert download_file(url=url, download_dir=download_dir) == 318
-
-        with file_path.open("rb") as fp:
-            yield message_from_binary_file(fp)
 
 
 @pytest.fixture(scope="session")
