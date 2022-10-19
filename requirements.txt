@@ -4,24 +4,22 @@
 #
 #    pip-compile --output-file=requirements.txt requirements.in
 #
-attrs==21.4.0
+attrs==22.1.0
     # via jsonschema
 beautifulsoup4==4.11.1
     # via -r requirements.in
 blessed==1.19.1
     # via enlighten
-blis==0.7.7
-    # via
-    #   spacy
-    #   thinc
-catalogue==2.0.7
+blis==0.7.9
+    # via thinc
+catalogue==2.0.8
     # via
     #   spacy
     #   srsly
     #   thinc
-certifi==2022.5.18.1
+certifi==2022.9.24
     # via requests
-charset-normalizer==2.0.12
+charset-normalizer==2.1.1
     # via requests
 click==8.1.3
     # via
@@ -30,24 +28,26 @@ click==8.1.3
     #   typer
 click-log==0.4.0
     # via -r requirements.in
-cymem==2.0.6
+confection==0.0.3
+    # via thinc
+cymem==2.0.7
     # via
     #   preshed
     #   spacy
     #   thinc
-enlighten==1.10.2
+enlighten==1.11.1
     # via -r requirements.in
 future==0.18.2
     # via treelib
-greenlet==1.1.2
+greenlet==1.1.3.post0
     # via sqlalchemy
 humanfriendly==10.0
     # via -r requirements.in
-idna==3.3
+idna==3.4
     # via requests
 jinja2==3.1.2
     # via spacy
-jsonschema==4.6.0
+jsonschema==4.16.0
     # via -r requirements.in
 langcodes==3.3.0
     # via spacy
@@ -55,33 +55,32 @@ libpff-python-ratom==20220304
     # via -r requirements.in
 markupsafe==2.1.1
     # via jinja2
-murmurhash==1.0.7
+murmurhash==1.0.9
     # via
     #   preshed
     #   spacy
     #   thinc
-numpy==1.22.4
+numpy==1.23.4
     # via
-    #   blis
     #   spacy
     #   thinc
 packaging==21.3
     # via
     #   -r requirements.in
     #   spacy
-pathy==0.6.1
+pathy==0.6.2
     # via spacy
-pbr==5.9.0
+pbr==5.10.0
     # via -r requirements.in
 prefixed==0.3.2
     # via enlighten
-preshed==3.0.6
+preshed==3.0.8
     # via
     #   spacy
     #   thinc
-psutil==5.9.1
+psutil==5.9.3
     # via -r requirements.in
-pydantic==1.8.2
+pydantic==1.9.2
     # via
     #   spacy
     #   thinc
@@ -89,7 +88,7 @@ pyparsing==3.0.9
     # via packaging
 pyrsistent==0.18.1
     # via jsonschema
-requests==2.27.1
+requests==2.28.1
     # via spacy
 six==1.16.0
     # via blessed
@@ -97,37 +96,37 @@ smart-open==5.2.1
     # via pathy
 soupsieve==2.3.2.post1
     # via beautifulsoup4
-spacy==3.3.0
+spacy==3.4.1
     # via -r requirements.in
-spacy-legacy==3.0.9
+spacy-legacy==3.0.10
     # via spacy
-spacy-loggers==1.0.2
+spacy-loggers==1.0.3
     # via spacy
-sqlalchemy==1.4.37
+sqlalchemy==1.4.42
     # via -r requirements.in
-srsly==2.4.3
+srsly==2.4.5
     # via
     #   spacy
     #   thinc
-striprtf==0.0.20
+striprtf==0.0.21
     # via -r requirements.in
-tabulate==0.8.9
+tabulate==0.9.0
     # via -r requirements.in
-thinc==8.0.17
+thinc==8.1.5
     # via spacy
-tqdm==4.64.0
+tqdm==4.64.1
     # via spacy
 treelib==1.6.1
     # via -r requirements.in
-typer==0.4.1
+typer==0.4.2
     # via
     #   pathy
     #   spacy
-typing-extensions==4.2.0
+typing-extensions==4.4.0
     # via pydantic
-urllib3==1.26.9
+urllib3==1.26.12
     # via requests
-wasabi==0.9.1
+wasabi==0.10.1
     # via
     #   spacy
     #   spacy-loggers
