@@ -362,7 +362,7 @@ def test_ratom_entities_enron_004(
             assert str(entity)
 
         # Verify total entity count
-        assert session.query(Entity).count() == 195299
+        assert session.query(Entity).count() == 216758
 
         # Verify count per entity type
         results = (
@@ -374,23 +374,24 @@ def test_ratom_entities_enron_004(
         assert results
 
         expected_counts = {
-            "CARDINAL": 49867,
-            "DATE": 9518,
-            "EVENT": 41,
-            "FAC": 257,
-            "GPE": 19613,
-            "LAW": 239,
-            "LOC": 258,
-            "MONEY": 3196,
-            "NORP": 612,
-            "ORDINAL": 563,
-            "ORG": 89172,
-            "PERCENT": 2575,
-            "PERSON": 12389,
-            "PRODUCT": 1242,
-            "QUANTITY": 36,
-            "TIME": 2917,
-            "WORK_OF_ART": 13047,
+            "CARDINAL": 43484,
+            "DATE": 8798,
+            "EVENT": 69,
+            "FAC": 360,
+            "GPE": 6952,
+            "LANGUAGE": 3,
+            "LAW": 361,
+            "LOC": 287,
+            "MONEY": 1914,
+            "NORP": 763,
+            "ORDINAL": 613,
+            "ORG": 122184,
+            "PERCENT": 13135,
+            "PERSON": 13235,
+            "PRODUCT": 633,
+            "QUANTITY": 253,
+            "TIME": 3095,
+            "WORK_OF_ART": 619,
         }
 
         for entity_type, count in results:
@@ -402,7 +403,7 @@ def test_ratom_entities_enron_004(
             .filter_by(name="spacy_model_version")
             .one()
             .value
-            == "3.3.0"
+            == "3.4.1"
         )
 
 
