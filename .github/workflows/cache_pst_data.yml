@@ -26,7 +26,7 @@ jobs:
     - name: Check local data
       run: find ${{ env.EDRM_DIR }} -type f
     - name: Upload Enron data into github storage
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: EDRM_part_${{ matrix.edrm-part }}
         path: ${{ env.EDRM_DIR }}

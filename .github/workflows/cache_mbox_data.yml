@@ -23,7 +23,7 @@ jobs:
     - name: Check local data
       run: find ${{ env.CACHED_HTTPD_USERS_MAIL_DIR }} -type f
     - name: Upload mbox files into github storage
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: httpd-users
         path: ${{ env.CACHED_HTTPD_USERS_MAIL_DIR }}
