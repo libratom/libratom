@@ -235,10 +235,14 @@ def test_file_report_with_empty_relationship():
     reason="https://github.com/pytorch/pytorch/issues/66424",
 )
 @pytest.mark.parametrize(
-    "model_name, expected_entity_types",
-    [("en_core_web_trf", {"DATE", "MONEY", "ORG"})],
+    "expected_entity_types",
+    [{"DATE", "ORG", "PERSON", "QUANTITY"}],
 )
-def test_apply_spacy_model(sample_pst_file, model_name, expected_entity_types):
+def test_apply_transformer_model(
+    sample_pst_file, en_core_web_trf_3_4_1, expected_entity_types
+):
+    model_name = en_core_web_trf_3_4_1.name
+
     # Extract a known (short) message
     msg_id = 2112164
     with open_mail_archive(sample_pst_file) as archive:

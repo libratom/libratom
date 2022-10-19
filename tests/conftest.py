@@ -2,6 +2,7 @@
 import json
 import os
 import time
+from dataclasses import dataclass
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Callable, Dict, List
@@ -21,6 +22,12 @@ if not os.getenv("LIBRATOM_LOAD_TESTING"):
 ENRON_DATASET_URL = "https://www.ibiblio.org/enron/RevisedEDRMv1_Complete"
 CACHED_ENRON_DATA_DIR = Path("/tmp/libratom/test_data/RevisedEDRMv1_Complete")
 CACHED_HTTPD_USERS_MAIL_DIR = Path("/tmp/libratom/test_data/httpd-users")
+
+
+@dataclass
+class SpacyModel:
+    name: str
+    version: str
 
 
 def fetch_enron_dataset(name: str, files: List[str], url: str) -> Path:
@@ -378,7 +385,24 @@ def en_core_web_sm_3_3_0() -> None:
     if existing_version != version:
         assert install_spacy_model(model, version) == 0
 
-    yield
+    yield SpacyModel(name=model, version=version)
+
+    # Reinstall previous version
+    if existing_version and existing_version != version:
+        assert install_spacy_model(model, existing_version) == 0
+
+
+@pytest.fixture(scope="function")
+def en_core_web_trf_3_4_1() -> None:
+    model, version = "en_core_web_trf", "3.4.1"
+
+    existing_version = get_installed_model_version(model)
+
+    # Install wanted version
+    if existing_version != version:
+        assert install_spacy_model(model, version) == 0
+
+    yield SpacyModel(name=model, version=version)
 
     # Reinstall previous version
     if existing_version and existing_version != version:
