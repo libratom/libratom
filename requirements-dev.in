@@ -16,3 +16,6 @@ pip-tools
 black
 tox
 requests
+spacy-transformers
+jupyterlab
+ipywidgets
