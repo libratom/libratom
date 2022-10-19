@@ -69,7 +69,7 @@ def get_spacy_models() -> Dict[str, List[str]]:
 
     try:
         while paginated_url:
-            response = requests.get(url=paginated_url)
+            response = requests.get(url=paginated_url, timeout=(6.05, 30))
 
             if not response.ok:
                 response.raise_for_status()
