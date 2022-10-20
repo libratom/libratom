@@ -356,6 +356,8 @@ def pff_msg_to_string(message: pypff.message) -> str:
     """
 
     headers = message.transport_headers or ""
-    body = decode(message.plain_text_body or message.rtf_body or message.html_body or "")
+    body = decode(
+        message.plain_text_body or message.rtf_body or message.html_body or ""
+    )
 
     return f"{headers.strip()}\r\n\r\n{body.strip()}"
