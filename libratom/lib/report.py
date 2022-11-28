@@ -7,6 +7,7 @@ import hashlib
 import logging
 import multiprocessing
 import os
+from dataclasses import asdict
 from functools import partial
 from pathlib import Path
 from typing import Callable, Dict, Iterable, Optional, Tuple
@@ -209,7 +210,7 @@ def generate_report(
             session.add_all(
                 [
                     Attachment(
-                        **attachment._asdict(),
+                        **asdict(attachment),
                         message=message,
                         file_report=file_report,
                     )

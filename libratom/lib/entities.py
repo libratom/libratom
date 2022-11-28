@@ -5,6 +5,7 @@ Set of utility functions that use spaCy to perform named entity recognition
 
 import logging
 import multiprocessing
+from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
@@ -182,7 +183,7 @@ def extract_entities(
                 session.add_all(
                     [
                         Attachment(
-                            **attachment._asdict(),
+                            **asdict(attachment),
                             message=message,
                             file_report=file_report,
                         )

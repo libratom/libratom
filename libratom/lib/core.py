@@ -5,7 +5,6 @@ import json
 import logging
 from email import policy
 from email.generator import Generator
-from email.message import Message
 from email.parser import Parser
 from importlib import reload
 from pathlib import Path
@@ -19,7 +18,7 @@ from requests import HTTPError
 from spacy.language import Language
 
 from libratom.lib import EmlArchive, MboxArchive, PffArchive
-from libratom.lib.base import Archive
+from libratom.lib.base import Archive, AttachmentMetadata
 from libratom.lib.constants import RATOM_SPACY_MODEL_MAX_LENGTH, SPACY_MODEL_NAMES
 from libratom.lib.exceptions import FileTypeError
 from libratom.lib.pff import pff_msg_to_string
@@ -164,21 +163,6 @@ def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
     return spacy_model
 
 
-def extract_message_from_archive(archive: Archive, msg_id: int) -> Message:
-    """
-    Extracts a message from an open Archive object
-    """
-
-    msg = archive.get_message_by_id(msg_id)
-
-    # mbox archive
-    if isinstance(archive, MboxArchive):
-        return msg
-
-    # pst archive
-    return Parser(policy=policy.default).parsestr(pff_msg_to_string(msg))
-
-
 def export_messages_from_file(
     src_file: Path, msg_ids: Iterable[int], dest_folder: Path = None
 ) -> None:
@@ -192,8 +176,50 @@ def export_messages_from_file(
     with open_mail_archive(src_file) as archive:
         for msg_id in msg_ids:
             try:
-                msg = extract_message_from_archive(archive, int(msg_id))
+                # Get message from archive
+                msg = archive.get_message_by_id(int(msg_id))
 
+                # Process PST or MBOX message and attachments
+                if isinstance(archive, MboxArchive):
+                    # Extract attachments
+                    attachments = [
+                        AttachmentMetadata(
+                            name=part.get_filename(),
+                            content=part.get_payload(decode=True),
+                        )
+                        for part in msg.walk()
+                        if (
+                            content_disposition := part.get_content_disposition() or ""
+                        ).startswith("attachment")
+                        or content_disposition.startswith("inline")
+                    ]
+
+                    if attachments:
+                        # Make directory for this message's attachments
+                        attachments_folder = dest_folder / f"{msg_id}_attachments"
+                        attachments_folder.mkdir(parents=True, exist_ok=True)
+
+                        # Write files
+                        for attachment in attachments:
+                            (attachments_folder / attachment.name).write_bytes(
+                                attachment.content
+                            )
+
+                else:  # PST archive
+                    if msg.number_of_attachments > 0:
+                        # Make directory for this message's attachments
+                        attachments_folder = dest_folder / f"{msg_id}_attachments"
+                        attachments_folder.mkdir(parents=True, exist_ok=True)
+
+                        # Extract attachments and write files
+                        for attachment in msg.attachments:
+                            buffer = attachment.read_buffer(attachment.size)
+                            (attachments_folder / attachment.name).write_bytes(buffer)
+
+                    # Convert message to Python Message type
+                    msg = Parser(policy=policy.default).parsestr(pff_msg_to_string(msg))
+
+                # Write message as eml file
                 with (dest_folder / f"{msg_id}.eml").open(
                     mode="w", encoding="utf-8", errors="replace"
                 ) as eml_file:

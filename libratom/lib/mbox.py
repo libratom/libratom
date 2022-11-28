@@ -103,7 +103,10 @@ class MboxArchive(Archive):
                 size=len(part.get_payload()),
             )
             for part in message.walk()
-            if part.get_content_disposition() == "attachment"
+            if (content_disposition := part.get_content_disposition() or "").startswith(
+                "attachment"
+            )
+            or content_disposition.startswith("inline")
         ]
 
     def _build_tree(self) -> None:
