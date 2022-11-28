@@ -1,13 +1,23 @@
 # pylint: disable=missing-docstring
 
 from abc import ABC, abstractmethod
-from collections import namedtuple
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Generator, Iterable, Optional, Tuple
 
 from libratom.lib.constants import BodyType
 
-AttachmentMetadata = namedtuple("AttachmentMetadata", ["name", "mime_type", "size"])
+
+@dataclass
+class AttachmentMetadata:
+    """
+    Attachment metadata and/or payload
+    """
+
+    name: str
+    mime_type: Optional[str] = None
+    size: Optional[int] = None
+    content: Optional[bytes] = None
 
 
 class Archive(ABC):  # pragma: no cover

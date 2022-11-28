@@ -19,7 +19,6 @@ from libratom.data import MIME_TYPES
 from libratom.lib.concurrency import get_messages
 from libratom.lib.constants import SPACY_MODELS, BodyType
 from libratom.lib.core import (
-    extract_message_from_archive,
     get_cached_spacy_model,
     get_set_of_files,
     open_mail_archive,
@@ -454,7 +453,7 @@ def test_get_mbox_message_by_id(sample_mbox_file):
 
         for index, message in enumerate(archive.messages(), start=1):
             msg = archive.get_message_by_id(index)
-            assert extract_message_from_archive(archive, index)
+            assert msg
             assert archive.format_message(msg) == archive.format_message(message)
             assert archive.get_message_headers(message)
 
