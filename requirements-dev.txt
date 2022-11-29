@@ -258,15 +258,15 @@ numpy==1.23.5
     #   spacy
     #   thinc
     #   transformers
-nvidia-cublas-cu11==11.10.3.66
+nvidia-cublas-cu11==11.10.3.66; sys_platform=="linux"
     # via
     #   nvidia-cudnn-cu11
     #   torch
-nvidia-cuda-nvrtc-cu11==11.7.99
+nvidia-cuda-nvrtc-cu11==11.7.99; sys_platform=="linux"
     # via torch
-nvidia-cuda-runtime-cu11==11.7.99
+nvidia-cuda-runtime-cu11==11.7.99; sys_platform=="linux"
     # via torch
-nvidia-cudnn-cu11==8.5.0.96
+nvidia-cudnn-cu11==8.5.0.96; sys_platform=="linux"
     # via torch
 packaging==21.3
     # via
