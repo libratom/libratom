@@ -24,6 +24,7 @@ from libratom.cli.utils import (
     validate_existing_dir,
     validate_version_string,
 )
+from libratom.lib.base import AttachmentMetadata
 from libratom.lib.constants import SPACY_MODELS
 from libratom.lib.core import load_spacy_model, open_mail_archive
 from libratom.lib.database import db_session_from_cmd_out
@@ -659,13 +660,60 @@ def test_ratom_emldump(cli_runner, enron_dataset_part004, good_eml_export_input)
     expected = Expected(status=0)
 
     with tempfile.TemporaryDirectory() as tmpdir:
+        root_path = Path(tmpdir)
         params = [
             f"-l{enron_dataset_part004}",
             f"-o{tmpdir}",
             str(good_eml_export_input),
         ]
 
+        # Run ratom emldump command
         dump_eml_files(params, None, cli_runner, expected)
+
+        # Confirm exported data
+        expected = {
+            "andy_zipper_000_1_1": {
+                "2203588": [
+                    AttachmentMetadata(
+                        name="US Gas Stack & Website for New Version 121401.xls",
+                        size=39936,
+                    ),
+                ],
+                "2203620": [
+                    AttachmentMetadata(name="AGA.xls", size=129024),
+                ],
+            },
+            "andy_zipper_001_1_1": {
+                "2174116": [
+                    AttachmentMetadata(name="Positions_10_15.xls", size=23040),
+                    AttachmentMetadata(name="Positions_10_16.xls", size=23040),
+                    AttachmentMetadata(name="Positions_10_17.xls", size=23040),
+                    AttachmentMetadata(name="Positions_10_18.xls", size=23040),
+                    AttachmentMetadata(name="Positions_10_19.xls", size=23040),
+                    AttachmentMetadata(name="Positions_10_22.xls", size=23552),
+                    AttachmentMetadata(name="Positions_10_23.xls", size=23552),
+                ]
+            },
+        }
+
+        for file_dir, msg_dirs in expected.items():
+            for msg_pff_identifier, attachments in msg_dirs.items():
+
+                # Confirm eml file is there
+                eml_file_path = root_path / file_dir / f"{msg_pff_identifier}.eml"
+                assert eml_file_path.is_file()
+
+                for attachment in attachments:
+
+                    # Confirm attachment files are there
+                    attachment_path = (
+                        root_path
+                        / file_dir
+                        / f"{msg_pff_identifier}_attachments"
+                        / attachment.name
+                    )
+                    assert attachment_path.is_file()
+                    assert attachment_path.stat().st_size == attachment.size
 
 
 def test_install_spacy_model():
