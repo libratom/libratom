@@ -1,6 +1,7 @@
 # pylint: disable=missing-docstring,invalid-name,too-few-public-methods
 
 import datetime
+import json
 import os
 import tempfile
 from contextlib import contextmanager
@@ -656,9 +657,9 @@ def test_validate_eml_export_input(bad_eml_export_input):
         validate_eml_export_input(None, None, bad_eml_export_input)
 
 
-def test_ratom_emldump(cli_runner, enron_dataset_part004, good_eml_export_input):
-    expected = Expected(status=0)
-
+def test_ratom_emldump_from_pff(
+    cli_runner, enron_dataset_part004, good_eml_export_input
+):
     with tempfile.TemporaryDirectory() as tmpdir:
         root_path = Path(tmpdir)
         params = [
@@ -668,7 +669,7 @@ def test_ratom_emldump(cli_runner, enron_dataset_part004, good_eml_export_input)
         ]
 
         # Run ratom emldump command
-        dump_eml_files(params, None, cli_runner, expected)
+        dump_eml_files(params, None, cli_runner, Expected(status=0))
 
         # Confirm exported data
         expected = {
@@ -711,6 +712,84 @@ def test_ratom_emldump(cli_runner, enron_dataset_part004, good_eml_export_input)
                         / file_dir
                         / f"{msg_pff_identifier}_attachments"
                         / attachment.name
+                    )
+                    assert attachment_path.is_file()
+                    assert attachment_path.stat().st_size == attachment.size
+
+
+def test_ratom_emldump_from_mbox(cli_runner, directory_of_mbox_files):
+
+    ratom_emldump_input = [
+        {
+            "filename": "201901.mbox",
+            "sha256": "70a405404fd766a...",
+            "id_list": ["6", "7", "12", "19", "57", "62", "68", "85", "85", "104"],
+        }
+    ]
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        root_path = Path(tmpdir)
+
+        # Make json input file
+        json_file_path = root_path / "ratom_emldump_input.json"
+        with json_file_path.open(mode="w", encoding="UTF-8") as json_file:
+            json.dump(ratom_emldump_input, json_file)
+
+        params = [
+            f"-l{directory_of_mbox_files}",
+            f"-o{tmpdir}",
+            str(json_file_path),
+        ]
+
+        # Run ratom emldump command
+        dump_eml_files(params, None, cli_runner, Expected(status=0))
+
+        # Confirm exported data
+        expected = {
+            "201901": {
+                "6": [
+                    AttachmentMetadata(name="image001.png", size=5598),
+                ],
+                "7": [
+                    AttachmentMetadata(name="image001.png", size=5598),
+                ],
+                "12": [
+                    AttachmentMetadata(name="image001.png", size=5598),
+                ],
+                "19": [
+                    AttachmentMetadata(name="image001.png", size=5598),
+                ],
+                "57": [
+                    AttachmentMetadata(name="image001.png", size=5598),
+                ],
+                "62": [
+                    AttachmentMetadata(name="httpd.conf", size=21138),
+                ],
+                "68": [
+                    AttachmentMetadata(name="httpd.conf", size=21219),
+                ],
+                "85": [
+                    AttachmentMetadata(name="meet.galex-713.eu.conf", size=2382),
+                    AttachmentMetadata(name="prosody.cfg.lua", size=8705),
+                ],
+                "104": [
+                    AttachmentMetadata(name="error.log_err", size=143406),
+                ],
+            },
+        }
+
+        for file_dir, msg_dirs in expected.items():
+            for msg_id, attachments in msg_dirs.items():
+
+                # Confirm eml file is there
+                eml_file_path = root_path / file_dir / f"{msg_id}.eml"
+                assert eml_file_path.is_file()
+
+                for attachment in attachments:
+
+                    # Confirm attachment files are there
+                    attachment_path = (
+                        root_path / file_dir / f"{msg_id}_attachments" / attachment.name
                     )
                     assert attachment_path.is_file()
                     assert attachment_path.stat().st_size == attachment.size
