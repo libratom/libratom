@@ -211,7 +211,7 @@ We have prepared a selection of Jupyter notebooks to demonstrate core functional
 
 First, install Visual Studio Code. Visit <https://code.visualstudio.com/download> to download and run the 64-bit User Installer for Windows 10. Follow the prompts, accepting all default selections.
 
-Download and run the Build Tools for Visual Studio 2019 installer from <https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019>. Follow the prompts until you see a window with a Workloads tab in the top left hand corner.
+Download and run the Build Tools for Visual Studio 2022 installer from <https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022>. Follow the prompts until you see a window with a Workloads tab in the top left hand corner.
 
 In the Workloads tab, check the box for "C++ build tools". Click the Install button at the bottom right of the window. Once you see "Installation Succeeded!", close the window.
 
