@@ -51,7 +51,7 @@ Follow one of the section links below for detailed explanations of how the avail
 *   [Entity extraction](#entity-extraction): Entity extraction from individual PST and mbox files, or directories containing PST and mbox files. Optionally write message bodies and headers to the database.
 *   [Model management](#model-management): Management tool for spaCy language models. Use to display available models and install specific model versions.
 *   [Scan and report](#scan-and-report): Quickly scan an email source and generate a report. Optionally write message bodies and headers to the database.
-*   [Message export](#message-export): Export selected messages from PST files as one .eml file per message.
+*   [Message export](#message-export): Export selected messages from PST or mbox files as one .eml file per message.
 
 ## Entity extraction
 
@@ -129,10 +129,10 @@ To see a list of available models, type:
 (venv) user@host:~$ ratom model -l
 ```
 
-To install a specific version of an available model, use the -i and --version flags. For example, to install the 3.0.0 version of en\_core\_web\_sm, type:
+To install a specific version of an available model, use the -i and --version flags. For example, to install the 3.4.1 version of en\_core\_web\_sm, type:
 
 ```shell
-(venv) user@host:~$ ratom model -i en_core_web_sm --version 3.0.0
+(venv) user@host:~$ ratom model -i en_core_web_sm --version 3.4.1
 ```
 
 Note that a request to install a specific version will replace any existing version of that model, even if the existing version is newer.
@@ -211,7 +211,7 @@ We have prepared a selection of Jupyter notebooks to demonstrate core functional
 
 First, install Visual Studio Code. Visit <https://code.visualstudio.com/download> to download and run the 64-bit User Installer for Windows 10. Follow the prompts, accepting all default selections.
 
-Download and run the Build Tools for Visual Studio 2019 installer from <https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019>. Follow the prompts until you see a window with a Workloads tab in the top left hand corner.
+Download and run the Build Tools for Visual Studio 2022 installer from <https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022>. Follow the prompts until you see a window with a Workloads tab in the top left hand corner.
 
 In the Workloads tab, check the box for "C++ build tools". Click the Install button at the bottom right of the window. Once you see "Installation Succeeded!", close the window.
 
