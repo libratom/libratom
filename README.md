@@ -51,7 +51,7 @@ Follow one of the section links below for detailed explanations of how the avail
 *   [Entity extraction](#entity-extraction): Entity extraction from individual PST and mbox files, or directories containing PST and mbox files. Optionally write message bodies and headers to the database.
 *   [Model management](#model-management): Management tool for spaCy language models. Use to display available models and install specific model versions.
 *   [Scan and report](#scan-and-report): Quickly scan an email source and generate a report. Optionally write message bodies and headers to the database.
-*   [Message export](#message-export): Export selected messages from PST files as one .eml file per message.
+*   [Message export](#message-export): Export selected messages from PST or mbox files as one .eml file per message.
 
 ## Entity extraction
 
