@@ -17,10 +17,11 @@ from github import Github
 import libratom
 from libratom.data import MIME_TYPES
 from libratom.lib.concurrency import get_messages
-from libratom.lib.constants import SPACY_MODELS, BodyType
+from libratom.lib.constants import SPACY_MODEL_NAMES, SPACY_MODELS, BodyType
 from libratom.lib.core import (
     get_cached_spacy_model,
     get_set_of_files,
+    get_spacy_models,
     open_mail_archive,
 )
 from libratom.lib.database import db_init, db_session
@@ -506,3 +507,8 @@ def test_pff_archive_with_bad_folders(sample_pst_file):
             # No uncaught exception
             assert archive.message_count == 0
             assert not list(archive.messages())
+
+
+def test_spacy_model_names():
+    # Validate our list of known spaCy models
+    assert set(SPACY_MODEL_NAMES) == set(get_spacy_models().keys())
