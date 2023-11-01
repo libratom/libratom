@@ -351,7 +351,6 @@ def eml_export_input_json() -> List[Dict]:
 
 @pytest.fixture(scope="function")
 def good_eml_export_input(eml_export_input_json) -> Path:
-
     with TemporaryDirectory() as tmpdir:
         json_file_path = Path(tmpdir) / "test.json"
 
@@ -363,7 +362,6 @@ def good_eml_export_input(eml_export_input_json) -> Path:
 
 @pytest.fixture(scope="function")
 def bad_eml_export_input(eml_export_input_json) -> Path:
-
     del eml_export_input_json[0]["sha256"]
 
     with TemporaryDirectory() as tmpdir:
@@ -376,8 +374,8 @@ def bad_eml_export_input(eml_export_input_json) -> Path:
 
 
 @pytest.fixture(scope="function")
-def en_core_web_sm_3_4_1() -> None:
-    model, version = "en_core_web_sm", "3.4.1"
+def en_core_web_sm_3_7_0() -> None:
+    model, version = "en_core_web_sm", "3.7.0"
 
     existing_version = get_installed_model_version(model)
 
@@ -393,8 +391,8 @@ def en_core_web_sm_3_4_1() -> None:
 
 
 @pytest.fixture(scope="function")
-def en_core_web_trf_3_4_1() -> None:
-    model, version = "en_core_web_trf", "3.4.1"
+def en_core_web_trf_3_7_2() -> None:
+    model, version = "en_core_web_trf", "3.7.2"
 
     existing_version = get_installed_model_version(model)
 

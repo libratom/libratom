@@ -121,7 +121,6 @@ def extract_entities(
     )  # https://github.com/explosion/spaCy/issues/6662
 
     with ctx.Pool(processes=jobs, initializer=worker_init) as pool:
-
         logger.debug(f"Starting pool with {pool._processes} processes")
 
         new_entities = []
@@ -143,7 +142,6 @@ def extract_entities(
                 ),
                 start=1,
             ):
-
                 # Unpack worker job output
                 res, error = worker_output
 

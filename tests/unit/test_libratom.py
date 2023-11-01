@@ -3,8 +3,6 @@ import datetime
 import email
 import hashlib
 import logging
-import os
-import sys
 import textwrap
 from email import message_from_string, policy
 from pathlib import Path
@@ -12,7 +10,6 @@ from tempfile import TemporaryDirectory
 from unittest.mock import DEFAULT, MagicMock, Mock, patch
 
 import pytest
-from github import Github
 
 import libratom
 from libratom.data import MIME_TYPES
@@ -56,33 +53,28 @@ def test_version():
 
 
 def test_pffarchive_load_from_file_object(sample_pst_file):
-
     with sample_pst_file.open(mode="rb") as f, PffArchive(f) as archive:
         assert len(list(archive.messages())) == 2668
 
 
 def test_pffarchive_load_from_invalid_type():
-
     with pytest.raises(TypeError):
         _ = PffArchive(1)
 
 
 def test_open_mail_archive_with_unsupported_type():
-
     with pytest.raises(FileTypeError):
         _ = open_mail_archive(Path("bad_path"))
 
 
 @pytest.mark.parametrize("bfs", [False, True])
 def test_pffarchive_iterate_over_messages(sample_pst_file, bfs):
-
     with PffArchive(sample_pst_file) as archive:
         for message in archive.messages(bfs=bfs):
             assert message.plain_text_body
 
 
 def test_pffarchive_format_message(enron_dataset_part004, empty_message):
-
     for pst_file in enron_dataset_part004.glob("*.pst"):
         with PffArchive(pst_file) as archive:
             for message in archive.messages():
@@ -96,7 +88,6 @@ def test_pffarchive_format_message(enron_dataset_part004, empty_message):
 
 
 def test_get_transport_headers_from_sent_items(enron_dataset_part004):
-
     for pst_file in enron_dataset_part004.glob("*.pst"):
         with PffArchive(pst_file) as archive:
             for folder in archive.folders():
@@ -133,7 +124,6 @@ def test_extract_message_attachments(enron_dataset_part002):
     with PffArchive(
         next(enron_dataset_part002.glob("*.pst"))
     ) as archive, TemporaryDirectory() as tmp_dir:
-
         # Get message by ID
         node = archive.tree.get_node(2128676)
         message = node.data
@@ -161,7 +151,6 @@ def test_extract_message_attachments(enron_dataset_part002):
 
 
 def test_get_messages_with_bad_files(enron_dataset_part044, mock_progress_callback):
-
     _count = 0
     for _count, res in enumerate(
         get_messages(
@@ -176,13 +165,11 @@ def test_get_messages_with_bad_files(enron_dataset_part044, mock_progress_callba
 
 
 def test_get_messages_with_bad_message(sample_pst_file, mock_progress_callback):
-
     _count = 0
 
     with patch.object(
         libratom.lib.pff.PffArchive, "get_attachment_metadata"
     ) as patched_method:
-
         # Raise on the first call, then don't raise
         def side_effects():
             yield RuntimeError
@@ -224,24 +211,24 @@ def test_file_report_with_empty_relationship():
     assert file_report.processing_wall_time is None
 
 
-@pytest.mark.skipif(
-    (sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
-    >= (3, 10, 0)
-    and Github(os.environ.get("GITHUB_TOKEN"))
-    .get_repo("pytorch/pytorch")
-    .get_issue(number=66424)
-    .state
-    == "open",
-    reason="https://github.com/pytorch/pytorch/issues/66424",
-)
+# @pytest.mark.skipif(
+#    (sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
+#    >= (3, 10, 0)
+#    and Github(os.environ.get("GITHUB_TOKEN"))
+#    .get_repo("pytorch/pytorch")
+#    .get_issue(number=66424)
+#    .state
+#    == "open",
+#    reason="https://github.com/pytorch/pytorch/issues/66424",
+# )
 @pytest.mark.parametrize(
     "expected_entity_types",
     [{"DATE", "ORG", "PERSON", "QUANTITY"}],
 )
 def test_apply_transformer_model(
-    sample_pst_file, en_core_web_trf_3_4_1, expected_entity_types
+    sample_pst_file, en_core_web_trf_3_7_2, expected_entity_types
 ):
-    model_name = en_core_web_trf_3_4_1.name
+    model_name = en_core_web_trf_3_7_2.name
 
     # Extract a known (short) message
     msg_id = 2112164
@@ -276,16 +263,13 @@ def test_apply_transformer_model(
 
 
 def test_extract_entities_from_mbox_files(directory_of_mbox_files):
-
     tmp_filename = "test.sqlite3"
 
     with TemporaryDirectory() as tmpdir:
-
         destination = Path(tmpdir) / tmp_filename
         Session = db_init(destination)
 
         with db_session(Session) as session:
-
             status = extract_entities(
                 files=get_set_of_files(directory_of_mbox_files),
                 session=session,
@@ -313,11 +297,9 @@ def test_extract_entities_from_mbox_files(directory_of_mbox_files):
 def test_run_function_with_interrupt(
     directory_of_mbox_files, function, patched, kwargs
 ):
-
     tmp_filename = "test.sqlite3"
 
     with TemporaryDirectory() as tmpdir:
-
         destination = Path(tmpdir) / tmp_filename
         Session = db_init(destination)
 
@@ -325,7 +307,6 @@ def test_run_function_with_interrupt(
             patched,
             new=MagicMock(side_effect=KeyboardInterrupt),
         ):
-
             status = function(
                 files=get_set_of_files(directory_of_mbox_files),
                 session=session,
@@ -336,11 +317,9 @@ def test_run_function_with_interrupt(
 
 
 def test_scan_files_with_interrupt(directory_of_mbox_files):
-
     tmp_filename = "test.sqlite3"
 
     with TemporaryDirectory() as tmpdir:
-
         destination = Path(tmpdir) / tmp_filename
         Session = db_init(destination)
 
@@ -348,7 +327,6 @@ def test_scan_files_with_interrupt(directory_of_mbox_files):
             "libratom.lib.report.FileReport",
             new=MagicMock(side_effect=KeyboardInterrupt),
         ):
-
             assert (
                 scan_files(
                     files=get_set_of_files(directory_of_mbox_files),
@@ -361,7 +339,6 @@ def test_scan_files_with_interrupt(directory_of_mbox_files):
 
 @pytest.mark.parametrize("dry_run", [False, True])
 def test_download_files(directory_of_mbox_files, dry_run):
-
     assert directory_of_mbox_files  # so that the files are already present
 
     # Try to re-download files already downloaded by the fixture
@@ -374,7 +351,6 @@ def test_download_files(directory_of_mbox_files, dry_run):
 
 
 def test_download_files_with_bad_urls():
-
     bad_urls = ["http://foobar"] * 6
 
     with TemporaryDirectory() as tmpdir, patch("requests.Session.get") as mock_get:
@@ -411,7 +387,6 @@ def test_utf8_message_with_no_cte_header_as_string():
 
 
 def test_get_file_info(sample_pst_file):
-
     res, error = get_file_info(
         # Must use dictionary form if function is called explicitly
         {"path": sample_pst_file}
@@ -430,7 +405,6 @@ def test_get_file_info(sample_pst_file):
 
 
 def test_attachments_mime_type_validation(enron_dataset, mock_progress_callback):
-
     files = get_set_of_files(enron_dataset)
 
     for res in get_messages(files, progress_callback=mock_progress_callback):
@@ -449,7 +423,6 @@ def test_attachments_mime_type_validation(enron_dataset, mock_progress_callback)
 
 def test_get_mbox_message_by_id(sample_mbox_file):
     with open_mail_archive(sample_mbox_file) as archive:
-
         assert archive.message_count == 113
 
         for index, message in enumerate(archive.messages(), start=1):

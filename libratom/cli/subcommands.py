@@ -42,6 +42,7 @@ def entities(
     """
     Click sub command function called by `ratom entities`
     """
+    # pylint: disable=not-callable
 
     # Make or fake our progress bar context objects
     if progress:
@@ -108,7 +109,6 @@ def entities(
 
     # Get messages and extract entities
     with db_session(Session) as session:
-
         # Record configuration info
         store_configuration_in_db(
             session, str(src), jobs, spacy_model_name, spacy_model_version
@@ -131,7 +131,6 @@ def entities(
             unit="msg",
             color="green",
         ) as reporting_msg_bar:
-
             status = extract_entities(
                 files=good_files,
                 session=session,
@@ -157,6 +156,7 @@ def report(
     """
     Click sub command function called by `ratom report`
     """
+    # pylint: disable=not-callable
 
     # Make or fake our progress bar context objects
     if progress:
@@ -205,7 +205,6 @@ def report(
 
     # Get messages and generate reports
     with db_session(Session) as session:
-
         # Record configuration info
         store_configuration_in_db(session, str(src), jobs)
 
@@ -221,7 +220,6 @@ def report(
         with progress_bar_context(
             total=msg_count, desc="Processing messages", unit="msg", color="green"
         ) as msg_bar:
-
             status = generate_report(
                 files=good_files,
                 session=session,
@@ -260,7 +258,6 @@ def emldump(out: Path, location: Path, src: Path) -> int:
 
     # Process each file / id_list
     for input_element in input_elements:
-
         filename, id_list = itemgetter("filename", "id_list")(input_element)
 
         try:

@@ -286,7 +286,6 @@ class PffArchive(Archive):
         return res
 
     def _get_mime_type(self, attachment: pypff.attachment) -> Optional[str]:
-
         entries = attachment.record_sets[0].entries
 
         # Try known positions first
@@ -316,13 +315,11 @@ class PffArchive(Archive):
         return None
 
     def _decode_mime_type(self, data: bytes) -> Optional[str]:
-
         for encoding in self._encodings:
             try:
                 mime_type = data.decode(encoding).rstrip("\0")
 
                 if mime_type.split("/", maxsplit=1)[0].lower() in MIME_TYPE_REGISTRIES:
-
                     # re-order encodings to try this one first
                     if self._encodings[0] != encoding:
                         self._encodings = [

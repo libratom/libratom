@@ -152,7 +152,6 @@ def dump_eml_files(
     ],
 )
 def test_ratom(cli_runner, params, expected):
-
     result = cli_runner.invoke(ratom, args=params)
     assert result.exit_code == 0
     assert expected in result.output
@@ -349,22 +348,22 @@ def test_ratom_entities_from_mbox_files(
 def test_ratom_entities_enron_004(
     isolated_cli_runner,
     enron_dataset_part004,
-    en_core_web_sm_3_4_1,  # pylint: disable=unused-argument
+    en_core_web_sm_3_7_0,  # pylint: disable=unused-argument
     params,
     expected,
 ):
+    # pylint: disable=not-callable
     result = extract_entities(
         params, enron_dataset_part004, isolated_cli_runner, expected
     )
 
     with db_session_from_cmd_out(result) as session:
-
         # Sanity check
         for entity in session.query(Entity)[:10]:
             assert str(entity)
 
         # Verify total entity count
-        assert session.query(Entity).count() == 216758
+        assert session.query(Entity).count() == 171617
 
         # Verify count per entity type
         results = (
@@ -376,24 +375,24 @@ def test_ratom_entities_enron_004(
         assert results
 
         expected_counts = {
-            "CARDINAL": 43484,
-            "DATE": 8798,
-            "EVENT": 69,
-            "FAC": 360,
-            "GPE": 6952,
+            "CARDINAL": 42355,
+            "DATE": 10542,
+            "EVENT": 112,
+            "FAC": 461,
+            "GPE": 6872,
             "LANGUAGE": 3,
-            "LAW": 361,
-            "LOC": 287,
-            "MONEY": 1914,
-            "NORP": 763,
-            "ORDINAL": 613,
-            "ORG": 122184,
-            "PERCENT": 13135,
-            "PERSON": 13235,
-            "PRODUCT": 633,
-            "QUANTITY": 253,
-            "TIME": 3095,
-            "WORK_OF_ART": 619,
+            "LAW": 360,
+            "LOC": 286,
+            "MONEY": 1786,
+            "NORP": 811,
+            "ORDINAL": 593,
+            "ORG": 85387,
+            "PERCENT": 878,
+            "PERSON": 16202,
+            "PRODUCT": 571,
+            "QUANTITY": 436,
+            "TIME": 2998,
+            "WORK_OF_ART": 964,
         }
 
         for entity_type, count in results:
@@ -405,7 +404,7 @@ def test_ratom_entities_enron_004(
             .filter_by(name="spacy_model_version")
             .one()
             .value
-            == "3.4.1"
+            == "3.7.0"
         )
 
 
@@ -429,7 +428,7 @@ def test_ratom_entities_enron_004(
 def test_ratom_commands_with_header_fields(
     isolated_cli_runner,
     enron_dataset_part001,
-    en_core_web_sm_3_4_1,  # pylint: disable=unused-argument
+    en_core_web_sm_3_7_0,  # pylint: disable=unused-argument
     command,
     params,
     expected_counts,
@@ -443,7 +442,6 @@ def test_ratom_commands_with_header_fields(
     )
 
     with db_session_from_cmd_out(result) as session:
-
         # Validate row counts for header field types and header fields
         for object_type, count in expected_counts.items():
             assert session.query(object_type).count() == count
@@ -461,19 +459,19 @@ def test_ratom_commands_with_header_fields(
 def test_ratom_entities_eml_files(
     isolated_cli_runner,
     test_eml_files,
-    en_core_web_sm_3_4_1,  # pylint: disable=unused-argument
+    en_core_web_sm_3_7_0,  # pylint: disable=unused-argument
     params,
     expected,
 ):
+    # pylint: disable=not-callable
     # Bad date string in example13.eml but valid for entity extraction
     valid_eml_files = test_eml_files / "emails" / "rfc2822"
 
     result = extract_entities(params, valid_eml_files, isolated_cli_runner, expected)
 
     with db_session_from_cmd_out(result) as session:
-
         # Verify total entity count
-        assert session.query(Entity).count() == 86
+        assert session.query(Entity).count() == 80
 
         # Verify count per entity type
         results = (
@@ -485,17 +483,17 @@ def test_ratom_entities_eml_files(
         assert results
 
         expected_counts = {
-            "CARDINAL": 16,
-            "DATE": 20,
+            "CARDINAL": 14,
+            "DATE": 18,
             "FAC": 1,
             "GPE": 2,
             "LAW": 3,
             "MONEY": 1,
-            "ORG": 4,
+            "ORG": 7,
             "PRODUCT": 2,
-            "PERSON": 29,
-            "TIME": 13,
-            "WORK_OF_ART": 5,
+            "PERSON": 34,
+            "TIME": 5,
+            "WORK_OF_ART": 2,
         }
 
         for entity_type, count in results:
@@ -518,7 +516,6 @@ def test_ratom_entities_eml_files(
 def test_ratom_entities_enron_012_from_file(
     monkeypatch, isolated_cli_runner, enron_dataset_part012, params, expected
 ):
-
     subcommand = ["entities"]
     subcommand.extend(params)
 
@@ -550,7 +547,6 @@ def test_file_report(enron_dataset_part012):
     file = sorted(enron_dataset_part012.glob("*.pst"))[1]
 
     with tempfile.TemporaryDirectory() as tmpdir:
-
         out = Path(tmpdir) / "entities.sqlite3"
 
         # Extract entities
@@ -699,13 +695,11 @@ def test_ratom_emldump_from_pff(
 
         for file_dir, msg_dirs in expected.items():
             for msg_pff_identifier, attachments in msg_dirs.items():
-
                 # Confirm eml file is there
                 eml_file_path = root_path / file_dir / f"{msg_pff_identifier}.eml"
                 assert eml_file_path.is_file()
 
                 for attachment in attachments:
-
                     # Confirm attachment files are there
                     attachment_path = (
                         root_path
@@ -718,7 +712,6 @@ def test_ratom_emldump_from_pff(
 
 
 def test_ratom_emldump_from_mbox(cli_runner, directory_of_mbox_files):
-
     ratom_emldump_input = [
         {
             "filename": "201901.mbox",
@@ -780,13 +773,11 @@ def test_ratom_emldump_from_mbox(cli_runner, directory_of_mbox_files):
 
         for file_dir, msg_dirs in expected.items():
             for msg_id, attachments in msg_dirs.items():
-
                 # Confirm eml file is there
                 eml_file_path = root_path / file_dir / f"{msg_id}.eml"
                 assert eml_file_path.is_file()
 
                 for attachment in attachments:
-
                     # Confirm attachment files are there
                     attachment_path = (
                         root_path / file_dir / f"{msg_id}_attachments" / attachment.name

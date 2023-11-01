@@ -61,7 +61,6 @@ def get_set_of_files(path: Path) -> Set[Path]:
 
 
 def get_spacy_models() -> Dict[str, List[str]]:
-
     releases = {}
 
     paginated_url = "https://api.github.com/repos/explosion/spacy-models/releases?page=1&per_page=100"
@@ -138,7 +137,6 @@ def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
 
             # Specific steps for transformer models (very brittle and likely not permanent)
             if spacy_model_name.endswith("_trf"):
-
                 # If we just installed a transformer model along with spacy-transformers in a child process
                 # we need to set up an entry point for spacy-transformers in the current process.
                 # This entry point will be registered as a pipeline factory function by the model's language class.

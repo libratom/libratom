@@ -64,7 +64,6 @@ class MboxArchive(Archive):
         for part in message.walk():
             content_type = part.get_content_type()
             if content_type in {"text/plain", "message/rfc822"}:
-
                 # https://bugs.python.org/issue27321
                 # https://www.w3.org/Protocols/rfc1341/5_Content-Transfer-Encoding.html
                 if "content-transfer-encoding" not in part:

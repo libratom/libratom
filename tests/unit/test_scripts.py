@@ -13,7 +13,6 @@ from libratom.scripts.get_media_type_list import download_media_type_files
 
 @pytest.mark.parametrize("params, expected", [(["-h"], "Usage"), (["--help"], "Usage")])
 def test_get_media_type_list_cli(cli_runner, params, expected):
-
     result = cli_runner.invoke(download_media_type_files, args=params)
     assert expected in result.output
 

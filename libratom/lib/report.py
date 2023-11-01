@@ -80,7 +80,6 @@ def scan_files(
     update_progress = progress_callback or (lambda *_, **__: None)
 
     with multiprocessing.Pool(processes=jobs, initializer=worker_init) as pool:
-
         logger.debug(f"Starting pool with {pool._processes} processes")
 
         try:
@@ -173,14 +172,12 @@ def generate_report(
     header_field_type_mapping = get_header_field_type_mapping(session)
 
     try:
-
         for msg_info in get_messages(
             files,
             progress_callback=update_progress,
             with_content=include_message_contents,
             with_headers=include_message_contents,
         ):
-
             # Extract results
             message_id = msg_info.pop("message_id")
             filepath = msg_info.pop("filepath")
