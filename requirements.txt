@@ -23,7 +23,7 @@ catalogue==2.0.10
     #   thinc
 certifi==2023.7.22
     # via requests
-charset-normalizer==3.3.1
+charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via
@@ -79,7 +79,7 @@ packaging==23.2
     #   spacy
     #   thinc
     #   weasel
-pbr==5.11.1
+pbr==6.0.0
     # via -r requirements.in
 prefixed==0.7.0
     # via enlighten
@@ -105,7 +105,7 @@ requests==2.31.0
     # via
     #   spacy
     #   weasel
-rpds-py==0.10.6
+rpds-py==0.12.0
     # via
     #   jsonschema
     #   referencing
@@ -125,7 +125,7 @@ spacy-legacy==3.0.12
     # via spacy
 spacy-loggers==1.0.5
     # via spacy
-sqlalchemy==2.0.22
+sqlalchemy==2.0.23
     # via -r requirements.in
 srsly==2.4.8
     # via
@@ -162,7 +162,7 @@ wasabi==1.1.2
     #   weasel
 wcwidth==0.2.9
     # via blessed
-weasel==0.3.3
+weasel==0.3.4
     # via spacy
 
 # The following packages are considered to be unsafe in a requirements file:
