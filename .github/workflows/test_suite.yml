@@ -53,7 +53,7 @@ jobs:
   publish:
     name: Release (PYPI)
     needs: test
-    runs-on: ubuntu-23.10
+    runs-on: ubuntu-latest
     # First condition is to not run on forks
     # Second condition is to run only on push to main or tags
     if: |
