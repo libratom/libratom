@@ -9,7 +9,7 @@ jobs:
     env:
       CACHED_HTTPD_USERS_MAIL_DIR: /tmp/libratom/test_data/httpd-users
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: actions/setup-python@v4
       with:
         python-version: 3.11
