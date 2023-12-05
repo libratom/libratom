@@ -13,29 +13,28 @@ argon2-cffi==21.3.0
     #   notebook
 argon2-cffi-bindings==21.2.0
     # via argon2-cffi
+arrow==1.3.0
+    # via isoduration
 astroid==2.12.13
     # via pylint
 asttokens==2.1.0
     # via stack-data
-attrs==22.1.0
+attrs==23.1.0
     # via
     #   flake8-bugbear
     #   jsonschema
     #   pytest
+    #   referencing
 babel==2.11.0
     # via jupyterlab-server
 backcall==0.2.0
     # via ipython
 beautifulsoup4==4.11.1
-    # via
-    #   -r requirements.in
-    #   nbconvert
+    # via nbconvert
 black==22.10.0
     # via -r requirements-dev.in
 bleach==5.0.1
     # via nbconvert
-blessed==1.19.1
-    # via enlighten
 blis==0.7.9
     # via thinc
 build==0.9.0
@@ -55,20 +54,18 @@ charset-normalizer==2.1.1
     # via requests
 click==8.1.3
     # via
-    #   -r requirements.in
     #   black
-    #   click-log
     #   pip-tools
     #   pytest-click
     #   typer
-click-log==0.4.0
-    # via -r requirements.in
 comm==0.1.1
     # via ipykernel
 confection==0.0.3
     # via thinc
 coverage[toml]==6.5.0
-    # via pytest-cov
+    # via
+    #   coverage
+    #   pytest-cov
 cymem==2.0.7
     # via
     #   preshed
@@ -86,8 +83,6 @@ dill==0.3.6
     # via pylint
 distlib==0.3.6
     # via virtualenv
-enlighten==1.11.1
-    # via -r requirements.in
 entrypoints==0.4
     # via jupyter-client
 exceptiongroup==1.0.4
@@ -108,17 +103,14 @@ flake8==6.0.0
     #   flake8-bugbear
 flake8-bugbear==22.10.27
     # via -r requirements-dev.in
-future==0.18.2
-    # via treelib
-greenlet==2.0.1
-    # via sqlalchemy
+fqdn==1.5.1
+    # via jsonschema
 huggingface-hub==0.11.1
     # via transformers
-humanfriendly==10.0
-    # via -r requirements.in
 idna==3.4
     # via
     #   anyio
+    #   jsonschema
     #   requests
 importlib-metadata==5.1.0
     # via
@@ -142,6 +134,8 @@ ipython-genutils==0.2.0
     #   notebook
 ipywidgets==8.0.2
     # via -r requirements-dev.in
+isoduration==20.11.0
+    # via jsonschema
 isort==5.10.1
     # via
     #   -r requirements-dev.in
@@ -159,11 +153,15 @@ jinja2==3.1.2
     #   spacy
 json5==0.9.10
     # via jupyterlab-server
-jsonschema==4.17.1
+jsonpointer==2.4
+    # via jsonschema
+jsonschema[format-nongpl]==4.20.0
     # via
-    #   -r requirements.in
+    #   jupyter-events
     #   jupyterlab-server
     #   nbformat
+jsonschema-specifications==2023.11.2
+    # via jsonschema
 jupyter-client==7.4.7
     # via
     #   ipykernel
@@ -180,12 +178,16 @@ jupyter-core==5.1.0
     #   nbconvert
     #   nbformat
     #   notebook
-jupyter-server==1.23.3
+jupyter-events==0.9.0
+    # via jupyter-server
+jupyter-server==2.11.2
     # via
     #   jupyterlab
     #   jupyterlab-server
     #   nbclassic
     #   notebook-shim
+jupyter-server-terminals==0.4.4
+    # via jupyter-server
 jupyterlab==3.5.0
     # via -r requirements-dev.in
 jupyterlab-pygments==0.2.2
@@ -198,8 +200,6 @@ langcodes==3.3.0
     # via spacy
 lazy-object-proxy==1.8.0
     # via astroid
-libpff-python-ratom==20220304
-    # via -r requirements.in
 markupsafe==2.1.1
     # via
     #   jinja2
@@ -258,19 +258,20 @@ numpy==1.23.5
     #   spacy
     #   thinc
     #   transformers
-nvidia-cublas-cu11==11.10.3.66; sys_platform=="linux"
+nvidia-cublas-cu11==11.10.3.66
     # via
     #   nvidia-cudnn-cu11
     #   torch
-nvidia-cuda-nvrtc-cu11==11.7.99; sys_platform=="linux"
+nvidia-cuda-nvrtc-cu11==11.7.99
     # via torch
-nvidia-cuda-runtime-cu11==11.7.99; sys_platform=="linux"
+nvidia-cuda-runtime-cu11==11.7.99
     # via torch
-nvidia-cudnn-cu11==8.5.0.96; sys_platform=="linux"
+nvidia-cudnn-cu11==8.5.0.96
     # via torch
+overrides==7.4.0
+    # via jupyter-server
 packaging==21.3
     # via
-    #   -r requirements.in
     #   build
     #   huggingface-hub
     #   ipykernel
@@ -291,8 +292,6 @@ pathspec==0.10.2
     # via black
 pathy==0.10.0
     # via spacy
-pbr==5.11.0
-    # via -r requirements.in
 pep517==0.13.0
     # via build
 pexpect==4.8.0
@@ -311,8 +310,6 @@ pluggy==1.0.0
     # via
     #   pytest
     #   tox
-prefixed==0.5.0
-    # via enlighten
 preshed==3.0.8
     # via
     #   spacy
@@ -325,9 +322,7 @@ prometheus-client==0.15.0
 prompt-toolkit==3.0.33
     # via ipython
 psutil==5.9.4
-    # via
-    #   -r requirements.in
-    #   ipykernel
+    # via ipykernel
 ptyprocess==0.7.0
     # via
     #   pexpect
@@ -363,8 +358,6 @@ pynacl==1.5.0
     # via pygithub
 pyparsing==3.0.9
     # via packaging
-pyrsistent==0.19.2
-    # via jsonschema
 pysnooper==1.1.1
     # via -r requirements-dev.in
 pytest==7.2.0
@@ -386,12 +379,17 @@ pytest-mock==3.10.0
 pytest-sugar==0.9.6
     # via -r requirements-dev.in
 python-dateutil==2.8.2
-    # via jupyter-client
+    # via
+    #   arrow
+    #   jupyter-client
+python-json-logger==2.0.7
+    # via jupyter-events
 pytz==2022.6
     # via babel
 pyyaml==6.0
     # via
     #   huggingface-hub
+    #   jupyter-events
     #   transformers
 pyzmq==24.0.1
     # via
@@ -400,6 +398,11 @@ pyzmq==24.0.1
     #   jupyter-server
     #   nbclassic
     #   notebook
+referencing==0.31.1
+    # via
+    #   jsonschema
+    #   jsonschema-specifications
+    #   jupyter-events
 regex==2022.10.31
     # via transformers
 requests==2.28.1
@@ -410,7 +413,19 @@ requests==2.28.1
     #   pygithub
     #   spacy
     #   transformers
-send2trash==1.8.0
+rfc3339-validator==0.1.4
+    # via
+    #   jsonschema
+    #   jupyter-events
+rfc3986-validator==0.1.1
+    # via
+    #   jsonschema
+    #   jupyter-events
+rpds-py==0.13.2
+    # via
+    #   jsonschema
+    #   referencing
+send2trash==1.8.2
     # via
     #   jupyter-server
     #   nbclassic
@@ -419,8 +434,8 @@ six==1.16.0
     # via
     #   asttokens
     #   bleach
-    #   blessed
     #   python-dateutil
+    #   rfc3339-validator
     #   tox
 smart-open==5.2.1
     # via pathy
@@ -429,9 +444,7 @@ sniffio==1.3.0
 soupsieve==2.3.2.post1
     # via beautifulsoup4
 spacy==3.4.3
-    # via
-    #   -r requirements.in
-    #   spacy-transformers
+    # via spacy-transformers
 spacy-alignments==0.8.6
     # via spacy-transformers
 spacy-legacy==3.0.10
@@ -440,8 +453,6 @@ spacy-loggers==1.0.3
     # via spacy
 spacy-transformers==1.1.8
     # via -r requirements-dev.in
-sqlalchemy==1.4.44
-    # via -r requirements.in
 srsly==2.4.5
     # via
     #   confection
@@ -450,15 +461,12 @@ srsly==2.4.5
     #   thinc
 stack-data==0.6.2
     # via ipython
-striprtf==0.0.22
-    # via -r requirements.in
-tabulate==0.9.0
-    # via -r requirements.in
 termcolor==2.1.1
     # via pytest-sugar
 terminado==0.17.0
     # via
     #   jupyter-server
+    #   jupyter-server-terminals
     #   nbclassic
     #   notebook
 thinc==8.1.5
@@ -497,7 +505,7 @@ tqdm==4.64.1
     #   huggingface-hub
     #   spacy
     #   transformers
-traitlets==5.5.0
+traitlets==5.14.0
     # via
     #   comm
     #   ipykernel
@@ -505,6 +513,7 @@ traitlets==5.5.0
     #   ipywidgets
     #   jupyter-client
     #   jupyter-core
+    #   jupyter-events
     #   jupyter-server
     #   matplotlib-inline
     #   nbclassic
@@ -514,12 +523,12 @@ traitlets==5.5.0
     #   notebook
 transformers==4.21.3
     # via spacy-transformers
-treelib==1.6.1
-    # via -r requirements.in
 typer==0.7.0
     # via
     #   pathy
     #   spacy
+types-python-dateutil==2.8.19.14
+    # via arrow
 typing-extensions==4.4.0
     # via
     #   astroid
@@ -528,6 +537,8 @@ typing-extensions==4.4.0
     #   pydantic
     #   pylint
     #   torch
+uri-template==1.3.0
+    # via jsonschema
 urllib3==1.26.13
     # via requests
 virtualenv==20.17.0
@@ -538,9 +549,9 @@ wasabi==0.10.1
     #   spacy-loggers
     #   thinc
 wcwidth==0.2.5
-    # via
-    #   blessed
-    #   prompt-toolkit
+    # via prompt-toolkit
+webcolors==1.13
+    # via jsonschema
 webencodings==0.5.1
     # via
     #   bleach
