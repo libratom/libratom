@@ -28,7 +28,7 @@ click==8.1.3
     #   typer
 click-log==0.4.0
     # via -r requirements.in
-confection==0.0.3
+confection>=0.1.5
     # via thinc
 cymem==2.0.7
     # via
