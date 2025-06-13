@@ -96,7 +96,7 @@ smart-open==5.2.1
     # via pathy
 soupsieve==2.3.2.post1
     # via beautifulsoup4
-spacy>=3.7.0,<3.8.0
+spacy>=3.8.7,<4.0.0
     # via -r requirements.in
 spacy-loggers==1.0.3
     # via spacy
