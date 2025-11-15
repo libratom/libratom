@@ -6,12 +6,11 @@ Command-line interface utilities
 import json
 import re
 from contextlib import AbstractContextManager
-from importlib import reload
+from importlib.metadata import PackageNotFoundError, distribution
 from pathlib import Path
 from typing import Optional
 
 import click
-import pkg_resources
 import spacy
 from jsonschema import validate
 from packaging.version import parse
@@ -97,8 +96,8 @@ def get_installed_model_version(name: str) -> Optional[str]:
     """
 
     try:
-        return pkg_resources.get_distribution(name).version
-    except pkg_resources.DistributionNotFound:
+        return distribution(name).version
+    except PackageNotFoundError:
         return None
 
 
@@ -169,8 +168,11 @@ def install_spacy_model(
 
     # Confirm installation
     try:
-        reload(pkg_resources)
-        installed_version = pkg_resources.get_distribution(model).version
+        # Force reimport of metadata since a new package was installed
+        from importlib import invalidate_caches
+
+        invalidate_caches()
+        installed_version = distribution(model).version
 
     except Exception as exc:
         click.echo(
@@ -192,7 +194,7 @@ def install_spacy_model(
         return -1
 
     click.echo(
-        click.style(f"✔ Installed {model}, version {installed_version}", fg="green")
+        click.style(f"✅ Installed {model}, version {installed_version}", fg="green")
     )
     return 0
 

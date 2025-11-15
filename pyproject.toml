@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "libratom"
+dynamic = ["version"]
+description = "Python library and supporting utilities to parse and process PST and mbox e-mail archives"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "RATOM", email = "ratom@protonmail.com"}
+]
+maintainers = [
+    {name = "RATOM", email = "ratom@protonmail.com"}
+]
+keywords = ["pst", "mbox", "email", "archive", "parser"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Communications :: Email",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Archiving",
+]
+
+[project.urls]
+Homepage = "https://github.com/libratom/libratom"
+Repository = "https://github.com/libratom/libratom"
+Issues = "https://github.com/libratom/libratom/issues"
+Documentation = "https://github.com/libratom/libratom"
+
+[project.scripts]
+ratom = "libratom.cli.cli:ratom"
+
+[tool.setuptools]
+packages = ["libratom"]
+
+[tool.setuptools.package-data]
+libratom = ["data/*"]
+
+[tool.setuptools_scm]
+# Version from git tags

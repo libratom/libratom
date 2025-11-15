@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring,invalid-name,too-few-public-methods
+# pylint: disable=missing-docstring,invalid-name,too-few-public-methods,too-many-positional-arguments
 
 import datetime
 import json
@@ -143,18 +143,18 @@ def dump_eml_files(
 
 
 @pytest.mark.parametrize(
-    "params, expected",
+    "params, expected, expected_exit_code",
     [
-        ([], "Usage"),
-        (["-h"], "Usage"),
-        (["--help"], "Usage"),
-        (["--version"], libratom.__version__),
+        ([], "Usage", 2),  # No args shows help with exit code 2
+        (["-h"], "Usage", 0),  # Explicit help flag exits with 0
+        (["--help"], "Usage", 0),  # Explicit help flag exits with 0
+        (["--version"], libratom.__version__, 0),  # Version exits with 0
     ],
 )
-def test_ratom(cli_runner, params, expected):
-
+def test_ratom(cli_runner, params, expected, expected_exit_code):
     result = cli_runner.invoke(ratom, args=params)
-    assert result.exit_code == 0
+
+    assert result.exit_code == expected_exit_code
     assert expected in result.output
 
     with pytest.raises(ValueError):
@@ -349,10 +349,11 @@ def test_ratom_entities_from_mbox_files(
 def test_ratom_entities_enron_004(
     isolated_cli_runner,
     enron_dataset_part004,
-    en_core_web_sm_3_4_1,  # pylint: disable=unused-argument
+    en_core_web_sm_3_8_0,  # pylint: disable=unused-argument
     params,
     expected,
 ):
+    # pylint: disable=not-callable
     result = extract_entities(
         params, enron_dataset_part004, isolated_cli_runner, expected
     )
@@ -405,7 +406,7 @@ def test_ratom_entities_enron_004(
             .filter_by(name="spacy_model_version")
             .one()
             .value
-            == "3.4.1"
+            == "3.8.0"
         )
 
 
@@ -429,7 +430,7 @@ def test_ratom_entities_enron_004(
 def test_ratom_commands_with_header_fields(
     isolated_cli_runner,
     enron_dataset_part001,
-    en_core_web_sm_3_4_1,  # pylint: disable=unused-argument
+    en_core_web_sm_3_8_0,  # pylint: disable=unused-argument
     command,
     params,
     expected_counts,
@@ -461,10 +462,11 @@ def test_ratom_commands_with_header_fields(
 def test_ratom_entities_eml_files(
     isolated_cli_runner,
     test_eml_files,
-    en_core_web_sm_3_4_1,  # pylint: disable=unused-argument
+    en_core_web_sm_3_8_0,  # pylint: disable=unused-argument
     params,
     expected,
 ):
+    # pylint: disable=not-callable
     # Bad date string in example13.eml but valid for entity extraction
     valid_eml_files = test_eml_files / "emails" / "rfc2822"
 
@@ -473,7 +475,7 @@ def test_ratom_entities_eml_files(
     with db_session_from_cmd_out(result) as session:
 
         # Verify total entity count
-        assert session.query(Entity).count() == 86
+        assert session.query(Entity).count() == 85
 
         # Verify count per entity type
         results = (
@@ -485,17 +487,18 @@ def test_ratom_entities_eml_files(
         assert results
 
         expected_counts = {
-            "CARDINAL": 16,
-            "DATE": 20,
-            "FAC": 1,
+            "CARDINAL": 21,
+            "DATE": 17,
+            "FAC": 3,
             "GPE": 2,
-            "LAW": 3,
+            "LAW": 1,
             "MONEY": 1,
-            "ORG": 4,
+            "ORG": 6,
             "PRODUCT": 2,
-            "PERSON": 29,
-            "TIME": 13,
-            "WORK_OF_ART": 5,
+            "PERSON": 33,
+            "QUANTITY": 1,
+            "TIME": 5,
+            "WORK_OF_ART": 1,
         }
 
         for entity_type, count in results:
@@ -605,7 +608,7 @@ def test_process_message():
         {
             "filepath": filepath,
             "message_id": message_id,
-            "date": datetime.datetime.utcnow(),
+            "date": datetime.datetime.now(datetime.timezone.utc),
             "body": "hello",
             "body_type": BodyType.PLAIN,
             "spacy_model_name": None,

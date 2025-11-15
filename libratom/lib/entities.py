@@ -1,4 +1,4 @@
-# pylint: disable=broad-except,invalid-name,protected-access,consider-using-ternary
+# pylint: disable=broad-except,invalid-name,protected-access,consider-using-ternary,too-many-positional-arguments
 """
 Set of utility functions that use spaCy to perform named entity recognition
 """
@@ -6,7 +6,7 @@ Set of utility functions that use spaCy to perform named entity recognition
 import logging
 import multiprocessing
 from dataclasses import asdict
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
@@ -53,7 +53,7 @@ def process_message(
         "filepath": filepath,
         "message_id": message_id,
         "date": date,
-        "processing_start_time": datetime.utcnow(),
+        "processing_start_time": datetime.now(timezone.utc),
         "attachments": attachments,
     }
 
@@ -67,7 +67,7 @@ def process_message(
         doc = spacy_model(message_body)
         res["entities"] = [(ent.text, ent.label_) for ent in doc.ents]
 
-        res["processing_end_time"] = datetime.utcnow()
+        res["processing_end_time"] = datetime.now(timezone.utc)
 
         if include_message_contents:
             res["body"] = message_body
@@ -116,9 +116,12 @@ def extract_entities(
     header_field_type_mapping = get_header_field_type_mapping(session)
 
     # Start of multiprocessing
+    # Use spawn context for transformer models to avoid CUDA/GPU issues
+    # For CPU-only models, the default context (usually fork on Linux) works fine
+    # Originally coded to address: https://github.com/explosion/spaCy/issues/6662
     ctx = multiprocessing.get_context(
         "spawn" if spacy_model_name.endswith("_trf") else None
-    )  # https://github.com/explosion/spaCy/issues/6662
+    )
 
     with ctx.Pool(processes=jobs, initializer=worker_init) as pool:
 
@@ -167,9 +170,10 @@ def extract_entities(
 
                 # Link message to a file_report
                 try:
-                    file_report = (
-                        session.query(FileReport).filter_by(path=filepath).one()
-                    )
+                    with session.no_autoflush:
+                        file_report = (
+                            session.query(FileReport).filter_by(path=filepath).one()
+                        )
                 except Exception as exc:
                     file_report = None
                     logger.info(

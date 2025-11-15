@@ -2,6 +2,12 @@
 Set of Python tools for the RATOM project
 """
 
-from pbr import version
+try:
+    from importlib.metadata import version
 
-__version__ = version.VersionInfo(__package__).release_string()
+    __version__ = version(__package__ or __name__)
+except ImportError:
+    # Fallback for Python < 3.8
+    from importlib_metadata import version
+
+    __version__ = version(__package__ or __name__)

@@ -376,8 +376,8 @@ def bad_eml_export_input(eml_export_input_json) -> Path:
 
 
 @pytest.fixture(scope="function")
-def en_core_web_sm_3_4_1() -> None:
-    model, version = "en_core_web_sm", "3.4.1"
+def en_core_web_sm_3_8_0() -> None:
+    model, version = "en_core_web_sm", "3.8.0"
 
     existing_version = get_installed_model_version(model)
 
@@ -393,8 +393,8 @@ def en_core_web_sm_3_4_1() -> None:
 
 
 @pytest.fixture(scope="function")
-def en_core_web_trf_3_4_1() -> None:
-    model, version = "en_core_web_trf", "3.4.1"
+def en_core_web_trf_3_8_0() -> None:
+    model, version = "en_core_web_trf", "3.8.0"
 
     existing_version = get_installed_model_version(model)
 

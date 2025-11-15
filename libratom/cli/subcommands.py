@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name,broad-except
+# pylint: disable=invalid-name,broad-except,too-many-positional-arguments
 """
 The functions in this module are entry points for ratom sub-commands, e.g. `ratom entities ...`
 """
@@ -73,13 +73,16 @@ def entities(
         logger.info(f"No PST file found in {src}")
 
     # Compute and store file information
-    with progress_bar_context(
-        total=len(files),
-        desc="Initial file scan",
-        unit="files",
-        color="green",
-        leave=False,
-    ) as file_bar, db_session(Session) as session:
+    with (
+        progress_bar_context(
+            total=len(files),
+            desc="Initial file scan",
+            unit="files",
+            color="green",
+            leave=False,
+        ) as file_bar,
+        db_session(Session) as session,
+    ):
         status = scan_files(
             files, session, jobs=jobs, progress_callback=file_bar.update
         )
@@ -123,14 +126,17 @@ def entities(
             for file in session.query(FileReport).filter(FileReport.error.is_(None))
         ]
 
-        with progress_bar_context(
-            total=msg_count, desc="Processing messages", unit="msg", color="blue"
-        ) as processing_msg_bar, progress_bar_context(
-            total=msg_count,
-            desc="Generating message reports",
-            unit="msg",
-            color="green",
-        ) as reporting_msg_bar:
+        with (
+            progress_bar_context(
+                total=msg_count, desc="Processing messages", unit="msg", color="blue"
+            ) as processing_msg_bar,
+            progress_bar_context(
+                total=msg_count,
+                desc="Generating message reports",
+                unit="msg",
+                color="green",
+            ) as reporting_msg_bar,
+        ):
 
             status = extract_entities(
                 files=good_files,
@@ -188,13 +194,16 @@ def report(
         logger.info(f"No PST file found in {src}")
 
     # Compute and store file information
-    with progress_bar_context(
-        total=len(files),
-        desc="Initial file scan",
-        unit="files",
-        color="green",
-        leave=False,
-    ) as file_bar, db_session(Session) as session:
+    with (
+        progress_bar_context(
+            total=len(files),
+            desc="Initial file scan",
+            unit="files",
+            color="green",
+            leave=False,
+        ) as file_bar,
+        db_session(Session) as session,
+    ):
         status = scan_files(
             files, session, jobs=jobs, progress_callback=file_bar.update
         )

@@ -130,8 +130,7 @@ class PffArchive(Archive):
 
         for folder in self.folders(bfs):
             try:
-                for message in folder.sub_messages:
-                    yield message
+                yield from folder.sub_messages
             except OSError as exc:
                 logger.debug(exc, exc_info=True)
     # fmt: on

@@ -7,13 +7,13 @@ from email import policy
 from email.generator import Generator
 from email.parser import Parser
 from importlib import reload
+from importlib.metadata import entry_points
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Set, Tuple, Union
 
 import requests
 import spacy
 import thinc
-from pkg_resources import load_entry_point
 from requests import HTTPError
 from spacy.language import Language
 
@@ -142,7 +142,19 @@ def load_spacy_model(spacy_model_name: str) -> Optional[Language]:
                 # If we just installed a transformer model along with spacy-transformers in a child process
                 # we need to set up an entry point for spacy-transformers in the current process.
                 # This entry point will be registered as a pipeline factory function by the model's language class.
-                load_entry_point("spacy-transformers", "spacy_factories", "transformer")
+                try:
+                    # Get the transformer entry point from spacy-transformers
+                    transformer_eps = entry_points(
+                        group="spacy_factories", name="transformer"
+                    )
+                    if transformer_eps:
+                        # Load the first (and should be only) transformer entry point
+                        transformer_ep = next(iter(transformer_eps))
+                        transformer_ep.load()
+                except Exception as ep_exc:
+                    logger.warning(
+                        f"Unable to load spacy-transformers entry point: {ep_exc}"
+                    )
 
                 # If Pytorch was also just installed, certain modules that depend on it
                 # may need reloading to work in the current process

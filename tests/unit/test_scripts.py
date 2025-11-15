@@ -1,7 +1,7 @@
 # pylint: disable=missing-docstring
 import filecmp
 import os
-from importlib import resources
+from importlib.resources import as_file, files
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -23,9 +23,12 @@ def test_validate_media_type_list(cli_runner):
     This test will fail if the media types file is out of date
     """
 
-    with TemporaryDirectory() as tmp_dir, resources.path(
-        data, "media_types.json"
-    ) as existing_media_types_file:
+    #    with TemporaryDirectory() as tmp_dir, resources.path(
+    #        data, "media_types.json"
+    with (
+        TemporaryDirectory() as tmp_dir,
+        as_file(files(data).joinpath("media_types.json")) as existing_media_types_file,
+    ):
         new_media_types_file = Path(tmp_dir) / "media_types.json"
 
         cli_runner.invoke(

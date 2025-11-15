@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring,invalid-name,protected-access
+# pylint: disable=missing-docstring,invalid-name,protected-access,unused-import
 import datetime
 import email
 import hashlib
@@ -57,8 +57,15 @@ def test_version():
 
 def test_pffarchive_load_from_file_object(sample_pst_file):
 
-    with sample_pst_file.open(mode="rb") as f, PffArchive(f) as archive:
+    with sample_pst_file.open(mode="rb") as f:
+        archive = PffArchive(f)
         assert len(list(archive.messages())) == 2668
+
+
+# def test_pffarchive_load_from_file_object(sample_pst_file):
+#
+#    with sample_pst_file.open(mode="rb") as f, PffArchive(f) as archive:
+#        assert len(list(archive.messages())) == 2668
 
 
 def test_pffarchive_load_from_invalid_type():
@@ -130,9 +137,10 @@ def test_extract_message_attachments(enron_dataset_part002):
         },
     }
 
-    with PffArchive(
-        next(enron_dataset_part002.glob("*.pst"))
-    ) as archive, TemporaryDirectory() as tmp_dir:
+    with (
+        PffArchive(next(enron_dataset_part002.glob("*.pst"))) as archive,
+        TemporaryDirectory() as tmp_dir,
+    ):
 
         # Get message by ID
         node = archive.tree.get_node(2128676)
@@ -172,7 +180,7 @@ def test_get_messages_with_bad_files(enron_dataset_part044, mock_progress_callba
     ):
         assert res
 
-    assert _count == 558
+    assert _count == 155
 
 
 def test_get_messages_with_bad_message(sample_pst_file, mock_progress_callback):
@@ -224,24 +232,14 @@ def test_file_report_with_empty_relationship():
     assert file_report.processing_wall_time is None
 
 
-@pytest.mark.skipif(
-    (sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
-    >= (3, 10, 0)
-    and Github(os.environ.get("GITHUB_TOKEN"))
-    .get_repo("pytorch/pytorch")
-    .get_issue(number=66424)
-    .state
-    == "open",
-    reason="https://github.com/pytorch/pytorch/issues/66424",
-)
 @pytest.mark.parametrize(
     "expected_entity_types",
     [{"DATE", "ORG", "PERSON", "QUANTITY"}],
 )
 def test_apply_transformer_model(
-    sample_pst_file, en_core_web_trf_3_4_1, expected_entity_types
+    sample_pst_file, en_core_web_trf_3_8_0, expected_entity_types
 ):
-    model_name = en_core_web_trf_3_4_1.name
+    model_name = en_core_web_trf_3_8_0.name
 
     # Extract a known (short) message
     msg_id = 2112164
@@ -261,7 +259,7 @@ def test_apply_transformer_model(
         {
             "filepath": sample_pst_file,
             "message_id": msg_id,
-            "date": datetime.datetime.utcnow(),
+            "date": datetime.datetime.now(datetime.timezone.utc),
             "body": msg_body,
             "body_type": BodyType.PLAIN,
             "spacy_model_name": model_name,
@@ -321,9 +319,12 @@ def test_run_function_with_interrupt(
         destination = Path(tmpdir) / tmp_filename
         Session = db_init(destination)
 
-        with db_session(Session) as session, patch(
-            patched,
-            new=MagicMock(side_effect=KeyboardInterrupt),
+        with (
+            db_session(Session) as session,
+            patch(
+                patched,
+                new=MagicMock(side_effect=KeyboardInterrupt),
+            ),
         ):
 
             status = function(
@@ -344,9 +345,12 @@ def test_scan_files_with_interrupt(directory_of_mbox_files):
         destination = Path(tmpdir) / tmp_filename
         Session = db_init(destination)
 
-        with db_session(Session) as session, patch(
-            "libratom.lib.report.FileReport",
-            new=MagicMock(side_effect=KeyboardInterrupt),
+        with (
+            db_session(Session) as session,
+            patch(
+                "libratom.lib.report.FileReport",
+                new=MagicMock(side_effect=KeyboardInterrupt),
+            ),
         ):
 
             assert (

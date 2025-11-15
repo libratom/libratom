@@ -12,12 +12,12 @@ Python library and supporting utilities to parse and process PST and mbox email 
 
 ## Installation
 
-Libratom requires Python 3.8 or newer, and can be installed from the Python Package Index. Installing with **pip** will automatically install all required dependencies. These dependencies include a version of **libpff** that will be compiled automatically with C tooling during install. A selection of environments we have tested follows:
+Libratom requires Python 3.10 or newer, and can be installed from the Python Package Index. Installing with **pip** will automatically install all required dependencies. These dependencies include a version of **libpff** that will be compiled automatically with C tooling during install. A selection of environments we have tested follows:
 
-*   Ubuntu 18.04LTS, 20.04LTS, and 22.04LTS releases require build-essential, python3, python3-pip, and python3-venv packages
+*   Ubuntu 22.04LTS and 24.04LTS require build-essential, python3, python3-pip, and python3-venv packages
 *   RHEL 9 requires python3, python3-pip, python3-devel, and the Development Tools package group.
-*   macOS 10.14 (and newer) releases require Xcode 11 (or newer), Xcode CLI tools, and Python 3 installed using Homebrew (or your preferred method)
-*   Windows 10/11 releases require Visual Studio Code, Build Tools for Visual Studio, and Python 3 installed using Anaconda 3 (or your preferred method)
+*   macOS 14.5 (and newer) releases require Xcode 15 (or newer), Xcode CLI tools, and Python 3 installed using Homebrew (or your preferred method)
+*   Windows 11 releases require Visual Studio Code, Build Tools for Visual Studio, and Python 3 installed using Anaconda 3 (or your preferred method)
 
 Need guidance setting up an environment on your platform? Navigate to one of the linked sections below before continuing.
 
@@ -139,7 +139,7 @@ Note that a request to install a specific version will replace any existing vers
 
 ## Scan and report
 
-To generate a report (file metadata, message count, and attachment metadata) from an email source (file or directory) in the same sqlite3 databse format as the entity extraction command without actually extracting any entities, use the report command.
+To generate a report (file metadata, message count, and attachment metadata) from an email source (file or directory) in the same sqlite3 database format as the entity extraction command without actually extracting any entities, use the report command.
 
 To see detailed help for the report command, type:
 
@@ -215,7 +215,7 @@ Download and run the Build Tools for Visual Studio 2022 installer from <https://
 
 In the Workloads tab, check the box for "C++ build tools". Click the Install button at the bottom right of the window. Once you see "Installation Succeeded!", close the window.
 
-Visit <https://www.anaconda.com/products/individual> to download and install the 64-bit Python 3.8 or Python 3.9 Anaconda distribution. Find and double-click the downloaded executable and follow the prompts, accepting all default selections.
+Visit <https://www.anaconda.com/products/individual> to download and install the 64-bit Python 3.11 (or later) Anaconda distribution. Find and double-click the downloaded executable and follow the prompts, accepting all default selections.
 
 Open the Windows Start Menu, select Anaconda3 (64-bit) and click "Anaconda Prompt (Anaconda3)".
 
@@ -290,9 +290,9 @@ Follow the remaining instructions in the Installation section at the top of this
 
 ### Ubuntu environment setup
 
-To install and test this software in a new Python virtual environment in Ubuntu 18.04LTS or newer:
+To install and test this software in a new Python virtual environment in Ubuntu 22.04LTS or newer:
 
-Make sure Python 3.8 or newer, python3-pip, python3-venv, and build-essential are installed. Open a terminal and type the following command:
+Make sure Python 3.11 or newer, python3-pip, python3-venv, and build-essential are installed. Open a terminal and type the following command:
 
 ```shell
 sudo apt install build-essential python3 python3-pip python3-venv
