@@ -1,4 +1,3 @@
-# pylint: disable=used-before-assignment
 """
 Non-code files
 """

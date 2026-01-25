@@ -1,5 +1,3 @@
-# pylint: disable=missing-docstring
-
 import mimetypes
 import re
 from typing import AnyStr

@@ -1,4 +1,3 @@
-# pylint: disable=missing-docstring
 # flake8: noqa
 
 from libratom.lib.eml import EmlArchive

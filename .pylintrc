@@ -36,10 +36,6 @@ persistent=yes
 # Specify a configuration file.
 #rcfile=
 
-# When enabled, pylint would attempt to guess common misconfiguration and emit
-# user-friendly hints instead of false-positive error messages.
-suggestion-mode=yes
-
 # Allow loading of arbitrary C extensions. Extensions are imported into the
 # active Python interpreter and may run arbitrary code.
 unsafe-load-any-extension=no
@@ -65,12 +61,14 @@ disable=logging-fstring-interpolation,
         line-too-long,  # formatting handled by black
         ungrouped-imports,  # import order handled by isort
         duplicate-code,  # remove when this is fixed: https://github.com/PyCQA/pylint/issues/214
+        missing-docstring,
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once). See also the "--disable" option for examples.
-enable=c-extension-no-member
+enable=c-extension-no-member,
+       useless-suppression,
 
 
 [REPORTS]

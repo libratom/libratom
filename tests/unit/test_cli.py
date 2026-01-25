@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring,invalid-name,too-few-public-methods,too-many-positional-arguments
+# pylint: disable=too-few-public-methods,too-many-positional-arguments
 
 import datetime
 import json
@@ -570,7 +570,7 @@ def test_file_report(enron_dataset_part012):
         session = sessionmaker(bind=engine)()
 
         # There should be one FileReport instance for this run
-        file_report = session.query(FileReport).one()  # pylint: disable=no-member
+        file_report = session.query(FileReport).one()
 
         # Path
         assert file_report.path == str(file)

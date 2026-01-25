@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring,broad-except,import-outside-toplevel
+# pylint: disable=broad-except,import-outside-toplevel
 
 import itertools
 import json

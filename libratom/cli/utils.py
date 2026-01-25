@@ -1,4 +1,4 @@
-# pylint: disable=unused-argument,too-few-public-methods,arguments-differ,import-outside-toplevel,broad-except
+# pylint: disable=unused-argument,import-outside-toplevel,broad-except
 """
 Command-line interface utilities
 """

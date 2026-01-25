@@ -1,7 +1,7 @@
-# pylint: disable=broad-except
 """
 Database related utilities
 """
+
 import logging
 from contextlib import contextmanager
 from pathlib import Path

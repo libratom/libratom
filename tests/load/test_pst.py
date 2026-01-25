@@ -1,4 +1,3 @@
-# pylint: disable=missing-docstring,invalid-name
 import logging
 
 import humanfriendly

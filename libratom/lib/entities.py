@@ -1,4 +1,4 @@
-# pylint: disable=broad-except,invalid-name,protected-access,consider-using-ternary,too-many-positional-arguments
+# pylint: disable=broad-except,protected-access,too-many-positional-arguments
 """
 Set of utility functions that use spaCy to perform named entity recognition
 """

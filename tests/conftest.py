@@ -1,4 +1,5 @@
-# pylint: disable=invalid-name,missing-docstring,redefined-outer-name,stop-iteration-return,line-too-long
+# pylint: disable=redefined-outer-name,stop-iteration-return
+
 import json
 import os
 import time

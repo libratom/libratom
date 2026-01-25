@@ -1,4 +1,5 @@
-# pylint: disable=missing-docstring,invalid-name,protected-access,unused-import
+# pylint: disable=invalid-name,protected-access,unused-import
+
 import datetime
 import email
 import hashlib
@@ -391,25 +392,21 @@ def test_download_files_with_bad_urls():
 def test_utf8_message_with_no_cte_header_as_string():
     # Modified from https://github.com/python/cpython/blob/v3.10.8/Lib/test/test_email/test_email.py#L338
     # Confirm that the text is properly encoded and that an "8bit" CTE is added.
-    msg = textwrap.dedent(
-        """\
+    msg = textwrap.dedent("""\
         MIME-Version: 1.0
         Test if non-ascii messages with no Content-Type nor
         Content-Transfer-Encoding set can be as_string'd:
         Föö bär
-        """
-    )
+        """)
 
-    expected = textwrap.dedent(
-        """\
+    expected = textwrap.dedent("""\
         MIME-Version: 1.0
         content-transfer-encoding: 8bit
 
         Test if non-ascii messages with no Content-Type nor
         Content-Transfer-Encoding set can be as_string'd:
         Föö bär
-        """
-    )
+        """)
 
     assert MboxArchive.format_message(message_from_string(msg)) == expected
 

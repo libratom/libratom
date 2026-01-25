@@ -1,4 +1,4 @@
-# pylint: disable=broad-except,too-few-public-methods
+# pylint: disable=broad-except
 """
 Set of utilities for parallel execution of libratom code
 """

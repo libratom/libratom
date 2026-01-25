@@ -1,4 +1,4 @@
-# pylint: disable=consider-using-ternary,attribute-defined-outside-init
+# pylint: disable=attribute-defined-outside-init
 """
 PFF parsing utilities. Requires libpff.
 """
@@ -118,7 +118,7 @@ class PffArchive(Archive):
                 folders.extend(folder.sub_folders)
 
     # fmt: off
-    def messages(self, bfs: bool = True) -> Generator[pypff.message, None, None]:  # pylint: disable=arguments-differ
+    def messages(self, bfs: bool = True) -> Generator[pypff.message, None, None]:
         """Generator function to iterate over the archive's messages
 
         Args:

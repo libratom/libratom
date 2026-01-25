@@ -1,4 +1,3 @@
-# pylint: disable=missing-docstring
 import filecmp
 import os
 from importlib.resources import as_file, files

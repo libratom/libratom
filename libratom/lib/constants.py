@@ -1,5 +1,3 @@
-# pylint: disable=missing-docstring
-
 import os
 import textwrap
 from collections import namedtuple

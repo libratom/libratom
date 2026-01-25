@@ -1,4 +1,4 @@
-# pylint: disable=too-few-public-methods,missing-docstring,invalid-name
+# pylint: disable=too-few-public-methods
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship

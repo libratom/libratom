@@ -1,5 +1,3 @@
-# pylint: disable=too-few-public-methods,missing-docstring,invalid-name
-
 from operator import attrgetter
 
 from sqlalchemy import Column, Integer, String

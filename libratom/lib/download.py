@@ -1,4 +1,3 @@
-# pylint: disable=invalid-name,missing-docstring
 """
 Multithreaded download utilities
 """
