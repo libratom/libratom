@@ -5,7 +5,7 @@
 [![PyPI version](https://badge.fury.io/py/libratom.svg)](https://badge.fury.io/py/libratom)
 [![Build Status](https://github.com/libratom/libratom/actions/workflows/test_suite.yml/badge.svg?branch=main)](https://github.com/libratom/libratom/actions/workflows/test_suite.yml?query=branch%3Amain)
 [![codecov](https://codecov.io/gh/libratom/libratom/branch/main/graph/badge.svg)](https://codecov.io/gh/libratom/libratom)
-[![Maintainability](https://api.codeclimate.com/v1/badges/da1ce430d2d5fb3b548a/maintainability)](https://codeclimate.com/github/libratom/libratom/maintainability)
+[![Maintainability](https://qlty.sh/gh/libratom/projects/libratom/maintainability.svg)](https://qlty.sh/gh/libratom/projects/libratom)
 [![Twitter Follow](https://img.shields.io/twitter/follow/RATOM_project.svg?style=social&label=Follow)](https://twitter.com/RATOM_Project)
 
 Python library and supporting utilities to parse and process PST and mbox email sources.
