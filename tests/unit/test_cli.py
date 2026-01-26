@@ -396,7 +396,7 @@ def test_ratom_entities_enron_004(
             "WORK_OF_ART": 13150,
         }
 
-        assert expected_counts == {entity: count for (entity, count) in results}
+        assert expected_counts == dict(results)
 
         # Confirm spaCy model version for this job
         assert (
