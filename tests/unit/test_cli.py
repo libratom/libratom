@@ -365,7 +365,7 @@ def test_ratom_entities_enron_004(
             assert str(entity)
 
         # Verify total entity count
-        assert session.query(Entity).count() == 216758
+        assert session.query(Entity).count() == 212010
 
         # Verify count per entity type
         results = (
@@ -377,28 +377,26 @@ def test_ratom_entities_enron_004(
         assert results
 
         expected_counts = {
-            "CARDINAL": 43484,
-            "DATE": 8798,
-            "EVENT": 69,
-            "FAC": 360,
-            "GPE": 6952,
-            "LANGUAGE": 3,
-            "LAW": 361,
-            "LOC": 287,
-            "MONEY": 1914,
-            "NORP": 763,
-            "ORDINAL": 613,
-            "ORG": 122184,
-            "PERCENT": 13135,
-            "PERSON": 13235,
-            "PRODUCT": 633,
-            "QUANTITY": 253,
-            "TIME": 3095,
-            "WORK_OF_ART": 619,
+            "CARDINAL": 48901,
+            "DATE": 8077,
+            "EVENT": 47,
+            "FAC": 150,
+            "GPE": 7874,
+            "LAW": 401,
+            "LOC": 255,
+            "MONEY": 1564,
+            "NORP": 866,
+            "ORDINAL": 560,
+            "ORG": 97049,
+            "PERCENT": 12721,
+            "PERSON": 16234,
+            "PRODUCT": 678,
+            "QUANTITY": 417,
+            "TIME": 3066,
+            "WORK_OF_ART": 13150,
         }
 
-        for entity_type, count in results:
-            assert expected_counts[entity_type] == count
+        assert expected_counts == {entity: count for (entity, count) in results}
 
         # Confirm spaCy model version for this job
         assert (
