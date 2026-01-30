@@ -17,5 +17,6 @@ black
 tox
 requests
 spacy-transformers
+spacy-curated-transformers<1.0.0
 jupyterlab
 ipywidgets

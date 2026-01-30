@@ -12,7 +12,7 @@ attrs==25.4.0
     #   referencing
 beautifulsoup4==4.14.3
     # via -r requirements.in
-blessed==1.27.0
+blessed==1.28.0
     # via enlighten
 blis==1.3.3
     # via thinc
@@ -83,7 +83,7 @@ preshed==3.0.12
     # via
     #   spacy
     #   thinc
-psutil==7.2.1
+psutil==7.2.2
     # via -r requirements.in
 pydantic==2.12.5
     # via
@@ -157,7 +157,7 @@ wasabi==1.1.3
     #   spacy
     #   thinc
     #   weasel
-wcwidth==0.3.4
+wcwidth==0.5.2
     # via blessed
 weasel==0.4.3
     # via spacy
