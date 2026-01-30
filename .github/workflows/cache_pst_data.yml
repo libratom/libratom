@@ -10,7 +10,7 @@ jobs:
       EDRM_DIR: /tmp/libratom/test_data/RevisedEDRMv1_Complete
     strategy:
       matrix:
-        edrm-part: [1, 2, 3, 4, 12, 44, 129]
+        edrm-part: [1, 2, 3, 4, 12, 27, 44, 129]
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
