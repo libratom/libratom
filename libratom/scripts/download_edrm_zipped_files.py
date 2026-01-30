@@ -20,6 +20,7 @@ EDRM_PART_NAME_MAPPING = {
     3: "andrew_lewis",
     4: "andy_zipper",
     12: "chris_dorland",
+    27: "drew_fossum",
     44: "jason_wolfe",
     129: "vkaminski",
 }
