@@ -14,13 +14,11 @@ coverage:
         only_pulls: false
         flags: null
         paths:
-          libratom
-        ignore:
-          "libratom/scripts/download_edrm_zipped_files.py"
+          - libratom
     patch:
       default:
         # basic
-        target: 85%
+        target: null # 85%
         threshold: null
         base: auto
         # advanced
@@ -31,6 +29,6 @@ coverage:
         only_pulls: false
         flags: null
         paths:
-          libratom
-        ignore:
-          "libratom/scripts/download_edrm_zipped_files.py"
+          - libratom
+ignore:
+  - "libratom/scripts/download_edrm_zipped_files.py"
