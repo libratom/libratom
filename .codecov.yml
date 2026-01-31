@@ -18,7 +18,7 @@ coverage:
     patch:
       default:
         # basic
-        target: null # 85%
+        target: 60%
         threshold: null
         base: auto
         # advanced
