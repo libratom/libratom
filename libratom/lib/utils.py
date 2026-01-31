@@ -10,18 +10,18 @@ from libratom.lib.constants import BodyType
 mimetypes.init()
 
 
-def decode(content: AnyStr) -> str:
+def decode(content: AnyStr, encoding: str = "utf-8") -> str:
     if isinstance(content, bytes):
-        return str(content, encoding="utf-8", errors="replace")
+        return str(content, encoding, errors="replace")
 
     return content
 
 
 def cleanup_message_body(
-    body: AnyStr, body_type: BodyType, size_threshold: int = 0
+    body: AnyStr, body_type: BodyType, size_threshold: int = 0, encoding: str = "utf-8"
 ) -> str:
     # Decode first
-    body = decode(body)
+    body = decode(body, encoding)
 
     if body_type is BodyType.RTF:
         # Strip formatting
